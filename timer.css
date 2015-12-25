@@ -1,0 +1,28 @@
+.timer {
+    font-size: 64px;
+    text-align: center;
+}
+.bs-docs-footer {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-top: 100px;
+    color: #99979c;
+    text-align: center;
+    background-color: #2a2730;
+}
+.bs-docs-footer-links {
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+.bs-docs-footer-links li {
+    display: inline-block;
+}
+.bs-docs-footer a {
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    .bs-docs-footer {
+        text-align: left;
+    }
+}
