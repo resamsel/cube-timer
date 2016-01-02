@@ -8,11 +8,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="timer.css">
 </head>
-<body>
+<body><!-- class="started/stopped" -->
     <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
         <div class="container">
             <div class="navbar-header">
@@ -40,9 +41,24 @@
                         <h3 class="panel-title">Timer</h3>
                     </div>
                     <div class="panel-body-off">
-                        <div class="well well-sm">Scramble: B2  U  D2  R'  U2  B2  R2  D'  R2  F'  U2  L'  B'  U'  R2  B'  R2  L  F2  U2  L2  D'  R  F2  R2</div>
-                        <div class="center-block timer">00:00.00</div>
-                        <p class="alert alert-info">To start/stop the timer press <span class="label label-default">space bar</span>.</p>
+                        <div class="well well-sm">
+                            Scramble:
+                            <span id="scramble"></span>
+                        </div>
+                        <div id="timer" class="center-block timer">00:00.00</div>
+                        <div>
+                            <button class="start-stop btn btn-primary btn-lg btn-block">
+                                <span class="start">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                    Start
+                                </span>
+                                <span class="stop">
+                                    <span class="glyphicon glyphicon-stop"></span>
+                                    Stop
+                                </span>
+                            </button>
+                        </div>
+                        <p class="alert alert-info">Hint: To start/stop the timer press <span class="label label-default">space bar</span>.</p>
                     </div>
                 </div>
             </div>
@@ -52,10 +68,7 @@
                         <h3 class="panel-title">Times</h3>
                     </div>
                     <div class="panel-body">
-                        <ol>
-                            <li>01:30.21</li>
-                            <li>01:21.14</li>
-                            <li>01:56.61</li>
+                        <ol id="times" reversed="reversed">
                         </ol>
                     </div>
                 </div>
@@ -71,5 +84,9 @@
             <p>Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.</p>
         </div>
     </footer>
+
+    <script src="javascript/jquery.stopwatch.js"></script>
+    <script src="javascript/rubiks-cube-scrambler.js"></script>
+    <script src="javascript/timer.js"></script>
 </body>
 </html>

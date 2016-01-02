@@ -7,6 +7,25 @@ body {
     text-align: center;
     margin-bottom: 20px;
 }
+
+.start-stop {
+    margin-bottom: 20px;
+}
+.start-stop > .start,
+.stopped .start-stop .start {
+    display: inline-block;
+}
+.start-stop > .stop,
+.stopped .start-stop .stop {
+    display: none;
+}
+.started .start-stop .start {
+    display: none;
+}
+.started .start-stop .stop {
+    display: inline-block;
+}
+
 .bs-docs-footer {
     padding-top: 50px;
     padding-bottom: 50px;
