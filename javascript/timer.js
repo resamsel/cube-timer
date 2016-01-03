@@ -13,11 +13,31 @@ function defaultFormatMilliseconds(millis) {
     return [pad2(minutes), pad2(seconds)].join(':') + '.' + pad2(milliseconds);
 }
 
+function submitScore(elapsed) {
+    $('#times').prepend($('<li/>').text(defaultFormatMilliseconds(elapsed)));
+    if(typeof(Storage) !== "undefined") {
+        var times = [];
+        if(localStorage.times) {
+            times = JSON.parse(localStorage.times);
+        }
+        times.push(elapsed);
+        localStorage.times = JSON.stringify(times);
+    }
+}
+
+function retrieveScores() {
+    if(typeof(Storage) !== "undefined") {
+        if(localStorage.times) {
+            return JSON.parse(localStorage.times);
+        }
+    }
+    return [];
+}
+
 function start() {
     $('#timer').stopwatch({
-        updateInterval: 30,
+        updateInterval: 31, // prime number
         formatter: defaultFormatMilliseconds,
-//        format: '{mm}:{ss}'
     }).stopwatch('reset').stopwatch('start');
     $('body').removeClass('stopped').addClass('started');
 }
@@ -27,7 +47,7 @@ function stop() {
     sw = $('#timer').stopwatch();
     sw.stopwatch('stop');
     elapsed = sw.data('stopwatch').elapsed;
-    $('#times').prepend($('<li/>').text(defaultFormatMilliseconds(elapsed)));
+    submitScore(elapsed);
     $('body').removeClass('started').addClass('stopped');
     scramble();
 }
@@ -69,4 +89,8 @@ $(document).ready(function() {
     $('body').bind('keydown', onspacedown);
     $('body').bind('keyup', onspaceup);
     $('button.start-stop').bind('click', toggle);
+    var scores = retrieveScores();
+    for (var i = 0; i < scores.length; i++) {
+        $('#times').prepend($('<li/>').text(defaultFormatMilliseconds(scores[i])));
+    }
 });
