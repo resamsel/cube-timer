@@ -1,3 +1,10 @@
+// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+
 function pad2(number) {
     return (number < 10 ? '0' : '') + number;
 }
@@ -13,25 +20,58 @@ function defaultFormatMilliseconds(millis) {
     return [pad2(minutes), pad2(seconds)].join(':') + '.' + pad2(milliseconds);
 }
 
+function showScore(score) {
+    var button = $('<button/>').
+        text('-').
+        addClass('btn btn-warning btn-xs btn-remove').
+        bind('click', removeScore);
+    $('#times').prepend(
+        $('<li/>').
+            text(defaultFormatMilliseconds(score.value)).
+            attr('id', 'id-' + score.id).
+            append(button)
+    );
+}
+
 function submitScore(elapsed) {
-    $('#times').prepend($('<li/>').text(defaultFormatMilliseconds(elapsed)));
+    var score = {id: new Date().getTime(), value: elapsed};
+    showScore(score);
     if(typeof(Storage) !== "undefined") {
-        var times = [];
-        if(localStorage.times) {
-            times = JSON.parse(localStorage.times);
+        var scores = [];
+        if(localStorage.scores) {
+            scores = JSON.parse(localStorage.scores);
         }
-        times.push(elapsed);
-        localStorage.times = JSON.stringify(times);
+        scores.push(score);
+        storeScores(scores);
+    }
+}
+
+function storeScores(scores) {
+    if(typeof(Storage) !== "undefined") {
+        localStorage.scores = JSON.stringify(scores);
     }
 }
 
 function retrieveScores() {
     if(typeof(Storage) !== "undefined") {
-        if(localStorage.times) {
-            return JSON.parse(localStorage.times);
+        if(localStorage.scores) {
+            return JSON.parse(localStorage.scores);
         }
     }
     return [];
+}
+
+function removeScore(e) {
+    var id = e.target.parentNode.id;
+    var scores = retrieveScores();
+    for (var i = 0; i < scores.length; i++) {
+        if('id-' + scores[i].id == id) {
+            scores.remove(i);
+            storeScores(scores);
+            break;
+        }
+    }
+    $(e.target.parentNode).remove();
 }
 
 function start() {
@@ -91,6 +131,6 @@ $(document).ready(function() {
     $('button.start-stop').bind('click', toggle);
     var scores = retrieveScores();
     for (var i = 0; i < scores.length; i++) {
-        $('#times').prepend($('<li/>').text(defaultFormatMilliseconds(scores[i])));
+        showScore(scores[i]);
     }
 });

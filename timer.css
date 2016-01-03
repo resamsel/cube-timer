@@ -30,6 +30,11 @@ body {
     max-height: 200px;
     overflow-x: scroll;
 }
+#times button.btn-remove {
+    line-height: 0.8;
+    margin-left: 5px;
+    margin-top: -3px;
+}
 
 .footer {
     padding-top: 50px;
