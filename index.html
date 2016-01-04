@@ -65,6 +65,11 @@
             <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
+                        <div class="btn-group pull-right" role="group">
+                            <button id="export" type="button" class="btn btn-default btn-xs" title="Export">
+                                <span class="glyphicon glyphicon-download"></span>
+                            </button>
+                        </div>
                         <h3 class="panel-title">Times</h3>
                     </div>
                     <div class="panel-body">
@@ -84,6 +89,20 @@
             <p>Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.</p>
         </div>
     </footer>
+    
+    <div class="modal fade export-dialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Export Times</h4>
+                </div>
+                <div class="modal-body">
+                  <textarea id="export-content" class="form-control" rows="12"></textarea>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <script src="javascript/jquery.stopwatch.js"></script>
     <script src="javascript/rubiks-cube-scrambler.js"></script>

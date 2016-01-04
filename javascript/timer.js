@@ -155,6 +155,14 @@ function onspaceup(e) {
     }
 }
 
+function toCsv(scores) {
+    var result = 'Date;Duration\n';
+    for (var i = 0; i < scores.length; i++) {
+        result += scores[i].id + ';' + scores[i].value + '\n';
+    }
+    return result;
+}
+
 $(document).ready(function() {
     cube.reset();
     scramble();
@@ -166,4 +174,12 @@ $(document).ready(function() {
         showScore(scores[i]);
     }
     updateLabels();
+
+    $('#export').bind('click', function() {
+        $('#export-content').val(toCsv(retrieveScores()));
+        $('.export-dialog').modal('show');
+    });
+    $('#export-content').bind('click', function() {
+        this.setSelectionRange(0, this.value.length);
+    });
 });
