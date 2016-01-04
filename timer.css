@@ -27,13 +27,12 @@ body {
 }
 
 #times {
-    max-height: 200px;
+    max-height: 11.5em;
     overflow-x: scroll;
 }
 #times button.btn-remove {
     line-height: 0.8;
-    margin-left: 5px;
-    margin-top: -3px;
+    margin: -3px 5px 0 5px;
 }
 
 .footer {
@@ -56,6 +55,9 @@ body {
 }
 
 @media (min-width: 768px) {
+    #times {
+        max-height: 8.3em;
+    }
     .footer {
         text-align: left;
     }

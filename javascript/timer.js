@@ -44,6 +44,7 @@ function submitScore(elapsed) {
         scores.push(score);
         storeScores(scores);
     }
+    updateLabels();
 }
 
 function storeScores(scores) {
@@ -72,6 +73,37 @@ function removeScore(e) {
         }
     }
     $(e.target.parentNode).remove();
+    updateLabels();
+}
+
+function mark(score, text) {
+    $('#id-' + score.id).append(' <span class="label label-success">' + text + '</span>');
+}
+
+function updateLabels() {
+    var scores = retrieveScores(),
+        best = {id: 0, value: 999999999},
+        best5 = {id: 0, value: 999999999},
+        best12 = {id: 0, value: 999999999};
+    for (var i = 0; i < scores.length; i++) {
+        if (scores[i].value < best.value) {
+            best = scores[i];
+        }
+        if ((scores.length - i - 1) < 5 && scores[i].value < best5.value) {
+            best5 = scores[i];
+        }
+        if ((scores.length - i - 1) < 12 && scores[i].value < best12.value) {
+            best12 = scores[i];
+        }
+    }
+
+    // Remove first
+    $('#times .label').remove();
+
+    // Then mark
+    mark(best, 'best');
+    mark(best5, 'best (5)');
+    mark(best12, 'best (12)');
 }
 
 function start() {
@@ -133,4 +165,5 @@ $(document).ready(function() {
     for (var i = 0; i < scores.length; i++) {
         showScore(scores[i]);
     }
+    updateLabels();
 });
