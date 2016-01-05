@@ -43,6 +43,10 @@ body {
     white-space: nowrap;
 }
 
+#hint {
+    display: none;
+}
+
 .footer {
     padding-top: 50px;
     padding-bottom: 50px;
@@ -65,6 +69,9 @@ body {
 @media (min-width: 768px) {
     #times {
         max-height: 8.3em;
+    }
+    #hint {
+        display: block;
     }
     .footer {
         text-align: left;
