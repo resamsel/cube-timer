@@ -214,7 +214,7 @@ function toCsv(scores) {
 
 function toDate(timestamp) {
     var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
-    return jintervals(interval, "{Greatest} ago");
+    return jintervals(interval, "{G.} ago");
 }
 
 $(document).ready(function() {

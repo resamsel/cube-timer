@@ -3,13 +3,18 @@ body {
 }
 
 #timer {
-    font-size: 64px;
+    font-size: 96px;
     text-align: center;
     margin-bottom: 20px;
 }
 
+.start-stop-container {
+    text-align: center;
+}
 .start-stop {
     margin-bottom: 20px;
+    display: block;
+    width: 100%;
 }
 .start-stop > .start,
 .stopped .start-stop .start {
@@ -43,6 +48,28 @@ body {
     white-space: nowrap;
 }
 
+.col-form-4, .col-form-8 {
+    float: left;
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.col-form-4 {
+    width: 33.333333333%;
+}
+.col-form-8 {
+    width: 66.666666667%;
+}
+.col-form-offset-4 {
+    margin-left: 33.333333333%;
+}
+.form-horizontal .control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}
+
 #hint {
     display: none;
 }
@@ -67,6 +94,10 @@ body {
 }
 
 @media (min-width: 768px) {
+    .start-stop {
+        display: inline-block;
+        width: auto;
+    }
     #times {
         max-height: 8.3em;
     }

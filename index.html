@@ -46,8 +46,8 @@
                             <span id="scramble"></span>
                         </div>
                         <div id="timer">00:00.00</div>
-                        <div>
-                            <button class="start-stop btn btn-primary btn-lg btn-block">
+                        <div class="start-stop-container">
+                            <button class="start-stop btn btn-primary btn-lg">
                                 <span class="start">
                                     <span class="glyphicon glyphicon-play"></span>
                                     Start
@@ -84,11 +84,36 @@
                         <h3 class="panel-title">Configuration</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="checkbox">
-                            <label>
-                                <input id="subtext" type="checkbox" /> Show <i>sub-X</i> labels
-                            </label>
-                        </div>
+                        <form id="config" class="form-horizontal">
+                            <div class="form-group" style="display:none"><!-- disabled until implemented -->
+                                <label for="inspectionTime" class="col-form-4 control-label">Inspection time</label>
+                                <div class="col-form-8">
+                                    <select id="inspectionTime" class="form-control">
+                                        <option value="0">None</option>
+                                        <!--<option value="3">3 seconds</option>-->
+                                        <!--<option value="5">5 seconds</option>-->
+                                        <!--<option value="10">10 seconds</option>-->
+                                        <!--<option value="15">15 seconds</option>-->
+                                    </select>
+                                </div>
+                                <div class="col-form-offset-4 col-form-8">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="sound" type="checkbox" /> Play sound after inspection
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class-off="form-group"><!-- disabled until above configuration is implemented -->
+                                <div class-off="col-form-offset-4 col-form-8">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="subtext" type="checkbox" /> Show <span class="label label-info">sub X</span> labels
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
