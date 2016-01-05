@@ -23,14 +23,21 @@ function defaultFormatMilliseconds(millis) {
 function showScore(score) {
     var button = $('<button/>').
         text('-').
-        addClass('btn btn-warning btn-xs btn-remove').
+        data('scoreId', score.id).
+        addClass('btn btn-default btn-xs btn-remove').
         bind('click', removeScore);
-    $('#times').prepend(
-        $('<li/>').
-            text(defaultFormatMilliseconds(score.value)).
+    $('#times > tbody').prepend(
+        $('<tr/>').
             attr('id', 'id-' + score.id).
-            append(button)
+            append($('<td/>').addClass('index text-right')).
+            append($('<td/>').
+                addClass('value').
+                text(defaultFormatMilliseconds(score.value))).
+            append($('<td/>').addClass('date').text(toDate(score.id))).
+            append($('<td/>').addClass('tags')).
+            append($('<td/>').addClass('actions').append(button))
     );
+    updateIndex();
 }
 
 function submitScore(elapsed) {
@@ -63,47 +70,89 @@ function retrieveScores() {
 }
 
 function removeScore(e) {
-    var id = e.target.parentNode.id;
+    var id = $(e.target).data('scoreId');
     var scores = retrieveScores();
     for (var i = 0; i < scores.length; i++) {
-        if('id-' + scores[i].id == id) {
+        if(scores[i].id == id) {
             scores.remove(i);
             storeScores(scores);
             break;
         }
     }
-    $(e.target.parentNode).remove();
+    $('#id-' + id).remove();
+    updateIndex();
     updateLabels();
 }
 
-function mark(score, text) {
-    $('#id-' + score.id).append(' <span class="label label-success">' + text + '</span>');
+function storeConfig(key, value) {
+    if(typeof(Storage) !== "undefined") {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+}
+
+function getConfig(key, defaultValue) {
+    if(typeof(Storage) !== "undefined") {
+        var value = localStorage.getItem(key);
+        if(value !== "undefined") {
+            return JSON.parse(value);
+        }
+    }
+    return defaultValue;
+}
+
+function mark(score, text, type_) {
+    $('#id-' + score.id + ' > td.tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
+}
+
+function subXLabel(value) {
+    var x = Math.floor(value / 1000);
+
+    if (x < 60) {
+        return x - x % 10 + 10;
+    }
+
+    return x - x % 30 + 30;
+}
+
+function updateIndex() {
+    var max = $('#times > tbody > tr').length + 1;
+    for(var i = 0; i < max; i++) {
+        $('#times tr:nth-child(' + i + ') td.index').
+            text((max - i) + '.');
+    }
 }
 
 function updateLabels() {
     var scores = retrieveScores(),
+        score,
         best = {id: 0, value: 999999999},
         best5 = {id: 0, value: 999999999},
-        best12 = {id: 0, value: 999999999};
-    for (var i = 0; i < scores.length; i++) {
-        if (scores[i].value < best.value) {
-            best = scores[i];
-        }
-        if ((scores.length - i - 1) < 5 && scores[i].value < best5.value) {
-            best5 = scores[i];
-        }
-        if ((scores.length - i - 1) < 12 && scores[i].value < best12.value) {
-            best12 = scores[i];
-        }
-    }
+        best12 = {id: 0, value: 999999999},
+        markSubX = getConfig('subtext', true);
 
     // Remove first
     $('#times .label').remove();
 
+    for (var i = 0; i < scores.length; i++) {
+        score = scores[i];
+        if (score.value < best.value) {
+            best = score;
+        }
+        if ((scores.length - i - 1) < 5 && score.value < best5.value) {
+            best5 = score;
+        }
+        if ((scores.length - i - 1) < 12 && score.value < best12.value) {
+            best12 = score;
+        }
+        if(markSubX) {
+            mark(score, 'sub ' + subXLabel(score.value), 'info');
+        }
+    }
+
     // Then mark
-    mark(best, 'best');
-    mark(best5, 'best (5)');
-    mark(best12, 'best (12)');
+    mark(best, 'best', 'success');
+    mark(best5, 'best (5)', 'success');
+    mark(best12, 'best (12)', 'success');
 }
 
 function start() {
@@ -163,6 +212,11 @@ function toCsv(scores) {
     return result;
 }
 
+function toDate(timestamp) {
+    var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
+    return jintervals(interval, "{Greatest} ago");
+}
+
 $(document).ready(function() {
     cube.reset();
     scramble();
@@ -182,4 +236,12 @@ $(document).ready(function() {
     $('#export-content').bind('click', function() {
         this.setSelectionRange(0, this.value.length);
     });
+    
+    // configuration
+    $('#subtext').
+        prop('checked', getConfig('subtext', true)).
+        bind('click', function(e) {
+            storeConfig('subtext', e.target.checked);
+            updateLabels();
+        });
 });

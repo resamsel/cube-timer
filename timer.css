@@ -28,11 +28,19 @@ body {
 
 #times {
     max-height: 11.5em;
-    overflow-x: scroll;
+    overflow-y: scroll;
 }
 #times button.btn-remove {
-    line-height: 0.8;
-    margin: -3px 5px 0 5px;
+    margin: 0;
+}
+#times td.index,
+#times td.value,
+#times td.date,
+#times td.actions {
+    width: 5px;
+}
+#times td.date {
+    white-space: nowrap;
 }
 
 .footer {
