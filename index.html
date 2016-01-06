@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-    <!-- Optional theme -->
+    <!-- Optional theme
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    -->
+
+    <!-- Bootstrap Material Design -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.7/css/bootstrap-material-design.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.7/css/ripples.min.css" rel="stylesheet">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="timer.css">
+    <link rel="stylesheet" href="css/timer.css">
 </head>
 <body><!-- class="started/stopped" -->
     <header class="navbar navbar-static-top nav" id="top" role="banner">
@@ -36,31 +48,33 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <div class="panel-off panel-default-off">
-                    <div class="panel-heading" style="display: none">
-                        <h3 class="panel-title">Timer</h3>
-                    </div>
-                    <div class="panel-body-off">
-                        <div class="well well-sm">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="text-center">
                             Scramble:
                             <span id="scramble"></span>
                         </div>
-                        <div id="timer">00:00.00</div>
-                        <div class="start-stop-container">
-                            <button class="start-stop btn btn-primary btn-lg">
-                                <span class="start">
-                                    <span class="glyphicon glyphicon-play"></span>
-                                    Start
-                                </span>
-                                <span class="stop">
-                                    <span class="glyphicon glyphicon-stop"></span>
-                                    Stop
-                                </span>
-                            </button>
-                        </div>
-                        <p id="hint" class="alert alert-info">Hint: To start/stop the timer press <span class="label label-default">space bar</span>.</p>
+                        <div id="timer" class="text-center">00:00.00</div>
+                    </div>
+                    <div class="panel-footer start-stop-container">
+                        <button class="start-stop btn btn-primary btn-lg">
+                            <span class="start">
+                                <span class="glyphicon glyphicon-play"></span>
+                                Start
+                            </span>
+                            <span class="stop">
+                                <span class="glyphicon glyphicon-stop"></span>
+                                Stop
+                            </span>
+                        </button>
                     </div>
                 </div>
+                <p id="hint" class="alert alert-info alert-dismissible" style="display: none">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    Hint: To start/stop the timer press <span class="label label-default">space bar</span>.
+                </p>
             </div>
             <div class="col-md-4">
                 <div class="panel panel-default">
@@ -99,16 +113,20 @@
                                 <div class="col-form-offset-4 col-form-8">
                                     <div class="checkbox">
                                         <label>
-                                            <input id="sound" type="checkbox" /> Play sound after inspection
+                                            <input id="sound" type="checkbox" />
+                                            <span class="checkbox-material"><span class="check"></span></span>
+                                            Play sound after inspection
                                         </label>
                                     </div>
                                 </div>
                             </div>
-                            <div class-off="form-group"><!-- disabled until above configuration is implemented -->
+                            <div class="form-group-off"><!-- disabled until above configuration is implemented -->
                                 <div class-off="col-form-offset-4 col-form-8">
                                     <div class="checkbox">
                                         <label>
-                                            <input id="subtext" type="checkbox" /> Show <span class="label label-info">sub X</span> labels
+                                            <input id="subtext" type="checkbox" />
+                                            <span class="checkbox-material"><span class="check"></span></span>
+                                            Show <span class="label label-info">sub X</span> labels
                                         </label>
                                     </div>
                                 </div>
@@ -143,9 +161,9 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <script src="javascript/jquery.stopwatch.js"></script>
-    <script src="javascript/rubiks-cube-scrambler.js"></script>
-    <script src="javascript/jintervals.js"></script>
-    <script src="javascript/timer.js"></script>
+    <script src="js/jquery.stopwatch.js"></script>
+    <script src="js/rubiks-cube-scrambler.js"></script>
+    <script src="js/jintervals.js"></script>
+    <script src="js/timer.js"></script>
 </body>
 </html>

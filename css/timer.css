@@ -4,15 +4,12 @@ body {
 
 #timer {
     font-size: 96px;
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 .start-stop-container {
     text-align: center;
 }
 .start-stop {
-    margin-bottom: 20px;
     display: block;
     width: 100%;
 }
@@ -46,6 +43,10 @@ body {
 }
 #times td.date {
     white-space: nowrap;
+}
+
+.panel-heading .btn-group {
+    margin: -2px 1px 0 1px;
 }
 
 .col-form-4, .col-form-8 {
@@ -94,10 +95,6 @@ body {
 }
 
 @media (min-width: 768px) {
-    .start-stop {
-        display: inline-block;
-        width: auto;
-    }
     #times {
         max-height: 8.3em;
     }

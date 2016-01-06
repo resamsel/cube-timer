@@ -93,7 +93,7 @@ function storeConfig(key, value) {
 function getConfig(key, defaultValue) {
     if(typeof(Storage) !== "undefined") {
         var value = localStorage.getItem(key);
-        if(value !== "undefined") {
+        if(value !== null) {
             return JSON.parse(value);
         }
     }
@@ -218,6 +218,13 @@ function toDate(timestamp) {
 }
 
 $(document).ready(function() {
+    if(getConfig('hintVisible', true)) {
+        $('#hint').show();
+        $('#hint .close').bind('click', function() {
+            storeConfig('hintVisible', false);
+        });
+    }
+
     cube.reset();
     scramble();
     $('body').bind('keydown', onspacedown);
