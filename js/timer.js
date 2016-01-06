@@ -5,6 +5,18 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
+Array.prototype.unique = function(eq) {
+    var a = this.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(eq(a[i], a[j]))
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+};
+
 function pad2(number) {
     return (number < 10 ? '0' : '') + number;
 }
@@ -26,7 +38,7 @@ function showScore(score) {
         data('scoreId', score.id).
         addClass('btn btn-default btn-xs btn-remove').
         bind('click', removeScore);
-    $('#times > tbody').prepend(
+    $('#times tbody').prepend(
         $('<tr/>').
             attr('id', 'id-' + score.id).
             append($('<td/>').addClass('index text-right')).
@@ -56,6 +68,7 @@ function submitScore(elapsed) {
 
 function storeScores(scores) {
     if(typeof(Storage) !== "undefined") {
+        scores = scores.unique(function(a, b) { return a.id == b.id });
         localStorage.scores = JSON.stringify(scores);
     }
 }
@@ -114,8 +127,17 @@ function subXLabel(value) {
     return x - x % 30 + 30;
 }
 
+function updateScores() {
+    $('#times tbody > tr').remove();
+    var scores = retrieveScores();
+    for (var i = 0; i < scores.length; i++) {
+        showScore(scores[i]);
+    }
+    updateLabels();
+}
+
 function updateIndex() {
-    var max = $('#times > tbody > tr').length + 1;
+    var max = $('#times tbody > tr').length + 1;
     for(var i = 0; i < max; i++) {
         $('#times tr:nth-child(' + i + ') td.index').
             text((max - i) + '.');
@@ -145,6 +167,7 @@ function updateLabels() {
             best12 = score;
         }
         if(markSubX) {
+            console.log('subXLabel for ' + JSON.stringify(score));
             mark(score, 'sub ' + subXLabel(score.value), 'info');
         }
     }
@@ -204,10 +227,53 @@ function onspaceup(e) {
     }
 }
 
+function doImportAppend() {
+    doImport(false);
+}
+
+function doImportReplace() {
+    doImport(true);
+}
+
+function doImport(replace) {
+    var content = $('#import-content').val().split('\n'),
+        scores = [],
+        line, date, value;
+
+    for(var i = 0; i < content.length; i++) {
+        line = content[i].split(';');
+
+        if(line.length != 2 || line[0] == 'Date' || line[1] == 'Duration') {
+            continue;
+        }
+
+        date = new Date(line[0]);
+        value = new Number(line[1]);
+        console.log(line);
+        if(date !== null && value !== null) {
+            console.log('importing');
+            scores.push({id: date.getTime(), value});
+        }
+    }
+
+    if(!replace) {
+        // Appending scores
+        scores = scores.concat(retrieveScores());
+    }
+
+    scores = scores.sort(function(a, b) { return a.id - b.id });
+
+    console.log(scores);
+
+    storeScores(scores);
+
+    updateScores();
+}
+
 function toCsv(scores) {
     var result = 'Date;Duration\n';
     for (var i = 0; i < scores.length; i++) {
-        result += scores[i].id + ';' + scores[i].value + '\n';
+        result += $.format.date(new Date(scores[i].id), 'yyyy-MM-ddTHH:mm:ssZ') + ';' + scores[i].value + '\n';
     }
     return result;
 }
@@ -215,6 +281,52 @@ function toCsv(scores) {
 function toDate(timestamp) {
     var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
     return jintervals(interval, "{G.} ago");
+}
+
+function receivedText() {
+    console.log(fr);
+    $('#import-content').val(fr.result);
+    $('.import-dialog').modal('show');
+}
+
+var fr = new FileReader();
+fr.onload = receivedText;
+function handleFileSelect()
+{
+    console.log('handleFileSelect');
+
+    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+        alert('The File APIs are not fully supported in this browser.');
+        return;
+    }
+
+    var input = document.getElementById('import-file');
+    if (!input) {
+        alert("Um, couldn't find the fileinput element.");
+        return;
+    }
+
+    var files = input.files;
+    if (!files) {
+        alert("This browser doesn't seem to support the `files` property of file inputs.");
+    }
+    else if (!files[0]) {
+        alert("Please select a file before clicking 'Load'");
+    }
+    else {
+        console.log(files);
+        var file = new Blob([files[0]], {type: 'text/plain'});
+        console.log(file);
+        fr.readAsText(file);
+        //fr.readAsDataURL(file);
+
+        /*
+         * We need to reset the file input field, this seems to be the easiest
+         * way
+         */
+        var control = $(input);
+        control.replaceWith(control = control.clone(true));
+    }
 }
 
 $(document).ready(function() {
@@ -230,20 +342,22 @@ $(document).ready(function() {
     $('body').bind('keydown', onspacedown);
     $('body').bind('keyup', onspaceup);
     $('button.start-stop').bind('click', toggle);
-    var scores = retrieveScores();
-    for (var i = 0; i < scores.length; i++) {
-        showScore(scores[i]);
-    }
-    updateLabels();
+    updateScores();
 
-    $('#export').bind('click', function() {
-        $('#export-content').val(toCsv(retrieveScores()));
-        $('.export-dialog').modal('show');
-    });
-    $('#export-content').bind('click', function() {
+    $('#export-content, #import-content').bind('click', function() {
         this.setSelectionRange(0, this.value.length);
     });
-    
+    $('#export').bind('click', function() {
+        $('.export-dialog').modal('show');
+        $('#export-content').val(toCsv(retrieveScores()));
+    });
+    $('#import-file').change(handleFileSelect);
+    $('#import').bind('click', function() {
+        $('#import-file').click();
+    });
+    $('#import-append').bind('click', doImportAppend);
+    $('#import-replace').bind('click', doImportReplace);
+
     // configuration
     $('#subtext').
         prop('checked', getConfig('subtext', true)).

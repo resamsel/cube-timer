@@ -81,16 +81,21 @@
                     <div class="panel-heading">
                         <div class="btn-group pull-right" role="group">
                             <button id="export" type="button" class="btn btn-default btn-xs" title="Export">
-                                <span class="glyphicon glyphicon-download"></span>
+                                <span class="glyphicon glyphicon-export"></span>
+                            </button>
+                            <button id="import" type="button" class="btn btn-default btn-xs" title="Import">
+                                <span class="glyphicon glyphicon-import"></span>
                             </button>
                         </div>
                         <h3 class="panel-title">Times</h3>
                     </div>
                     <div class="panel-body">
-                        <table id="times" class="table table-condensed  table-hover">
-                            <tbody>
-                            </tbody>
-                        </table>
+                        <div id="times" class="table-responsive">
+                            <table class="table table-condensed  table-hover">
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="panel panel-default">
@@ -146,24 +151,59 @@
             <p>Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.</p>
         </div>
     </footer>
-    
+
     <div class="modal fade export-dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title">Export Times</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Export Times</h4>
                 </div>
                 <div class="modal-body">
-                  <textarea id="export-content" class="form-control" rows="12"></textarea>
+                    <textarea id="export-content" class="form-control" rows="12"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <div class="modal fade import-dialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Import Times</h4>
+                </div>
+                <div class="modal-body">
+                  <textarea id="import-content" class="form-control" rows="12"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button id="import-append" type="button" class="btn btn-primary" data-dismiss="modal">
+                        Append
+                    </button>
+                    <button id="import-replace" type="button" class="btn btn-primary" data-dismiss="modal">
+                        Replace
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div style="display: none">
+        <input id="import-file" type="file">
+    </div>
+
     <script src="js/jquery.stopwatch.js"></script>
     <script src="js/rubiks-cube-scrambler.js"></script>
     <script src="js/jintervals.js"></script>
+    <script src="js/jquery.dateFormat.min.js"></script>
     <script src="js/timer.js"></script>
 </body>
 </html>

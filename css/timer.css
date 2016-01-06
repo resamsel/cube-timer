@@ -96,12 +96,27 @@ body {
 
 @media (min-width: 768px) {
     #times {
-        max-height: 8.3em;
+        max-height: 400px;
     }
     #hint {
         display: block;
     }
     .footer {
         text-align: left;
+    }
+}
+@media (max-width: 420px) {
+    #timer {
+        font-size: 84px;
+    }
+}
+@media (max-width: 380px) {
+    #timer {
+        font-size: 72px;
+    }
+}
+@media (max-width: 340px) {
+    #timer {
+        font-size: 64px;
     }
 }
