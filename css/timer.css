@@ -65,10 +65,33 @@ body {
 .col-form-offset-4 {
     margin-left: 33.333333333%;
 }
+
+/*
+ * Material theme fixes
+ */
 .form-horizontal .control-label {
     padding-top: 7px;
     margin-bottom: 0;
     text-align: right;
+}
+.form-group {
+    margin-top: 0;
+}
+.form-horizontal label {
+    text-align: left;
+}
+.form-control,
+.form-group .checkbox label,
+.form-group .radio label,
+.form-group label,
+.form-group label.control-label {
+    font-size: 14px;
+}
+select.form-control {
+    margin-top: 7px;
+}
+.form-group label.control-label {
+    margin: 12px 0 0 0;
 }
 
 #hint {
