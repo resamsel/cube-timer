@@ -33,22 +33,15 @@ function defaultFormatMilliseconds(millis) {
 }
 
 function showScore(score) {
-    var button = $('<button/>').
-        text('-').
-        data('scoreId', score.id).
-        addClass('btn btn-default btn-xs btn-remove').
-        bind('click', removeScore);
-    $('#times tbody').prepend(
-        $('<tr/>').
-            attr('id', 'id-' + score.id).
-            append($('<td/>').addClass('index text-right')).
-            append($('<td/>').
-                addClass('value').
-                text(defaultFormatMilliseconds(score.value))).
-            append($('<td/>').addClass('date').text(toDate(score.id))).
-            append($('<td/>').addClass('tags')).
-            append($('<td/>').addClass('actions').append(button))
-    );
+    var row = $('#times #template').clone();
+
+    row.attr('id', 'id-' + score.id);
+    row.find('.value').text(defaultFormatMilliseconds(score.value));
+    row.find('.date').text(toDate(score.id));
+    row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
+
+    $('#times tbody').prepend(row);
+
     updateIndex();
 }
 
@@ -83,7 +76,7 @@ function retrieveScores() {
 }
 
 function removeScore(e) {
-    var id = $(e.target).data('scoreId');
+    var id = $(this).data('scoreId');
     var scores = retrieveScores();
     for (var i = 0; i < scores.length; i++) {
         if(scores[i].id == id) {
@@ -139,7 +132,7 @@ function updateScores() {
 function updateIndex() {
     var max = $('#times tbody > tr').length + 1;
     for(var i = 0; i < max; i++) {
-        $('#times tr:nth-child(' + i + ') td.index').
+        $('#times tbody tr:nth-child(' + i + ') td.index').
             text((max - i) + '.');
     }
 }
@@ -167,7 +160,6 @@ function updateLabels() {
             best12 = score;
         }
         if(markSubX) {
-            console.log('subXLabel for ' + JSON.stringify(score));
             mark(score, 'sub ' + subXLabel(score.value), 'info');
         }
     }
@@ -249,9 +241,7 @@ function doImport(replace) {
 
         date = new Date(line[0]);
         value = new Number(line[1]);
-        console.log(line);
         if(date !== null && value !== null) {
-            console.log('importing');
             scores.push({id: date.getTime(), value});
         }
     }
@@ -262,8 +252,6 @@ function doImport(replace) {
     }
 
     scores = scores.sort(function(a, b) { return a.id - b.id });
-
-    console.log(scores);
 
     storeScores(scores);
 
@@ -284,7 +272,6 @@ function toDate(timestamp) {
 }
 
 function receivedText() {
-    console.log(fr);
     $('#import-content').val(fr.result);
     $('.import-dialog').modal('show');
 }
@@ -293,8 +280,6 @@ var fr = new FileReader();
 fr.onload = receivedText;
 function handleFileSelect()
 {
-    console.log('handleFileSelect');
-
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
         alert('The File APIs are not fully supported in this browser.');
         return;
@@ -314,9 +299,7 @@ function handleFileSelect()
         alert("Please select a file before clicking 'Load'");
     }
     else {
-        console.log(files);
         var file = new Blob([files[0]], {type: 'text/plain'});
-        console.log(file);
         fr.readAsText(file);
         //fr.readAsDataURL(file);
 
