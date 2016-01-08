@@ -37,26 +37,25 @@ function showScore(score) {
 
     row.attr('id', 'id-' + score.id);
     row.find('.value').text(defaultFormatMilliseconds(score.value));
-    row.find('.date').text(toDate(score.id));
+    row.find('.date').text(toDate(score.id)).data('date', score.id);
     row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
 
     $('#times tbody').prepend(row);
-
-    updateIndex();
 }
 
 function submitScore(elapsed) {
     var score = {id: new Date().getTime(), value: elapsed};
     showScore(score);
+    storeScore(score);
+    update();
+}
+
+function storeScore(score) {
     if(typeof(Storage) !== "undefined") {
-        var scores = [];
-        if(localStorage.scores) {
-            scores = JSON.parse(localStorage.scores);
-        }
+        var scores = retrieveScores();
         scores.push(score);
         storeScores(scores);
     }
-    updateLabels();
 }
 
 function storeScores(scores) {
@@ -85,9 +84,12 @@ function removeScore(e) {
             break;
         }
     }
-    $('#id-' + id).remove();
-    updateIndex();
-    updateLabels();
+    $('#id-' + id).fadeOut({
+        complete: function() {
+            $(this).remove();
+            update();
+        }
+    });
 }
 
 function storeConfig(key, value) {
@@ -126,7 +128,7 @@ function updateScores() {
     for (var i = 0; i < scores.length; i++) {
         showScore(scores[i]);
     }
-    updateLabels();
+    update();
 }
 
 function updateIndex() {
@@ -135,6 +137,13 @@ function updateIndex() {
         $('#times tbody tr:nth-child(' + i + ') td.index').
             text((max - i) + '.');
     }
+}
+
+function updateDates() {
+    $('#times tbody > tr .date').each(function() {
+        var that = $(this);
+        that.text(toDate(that.data('date')));
+    });
 }
 
 function updateLabels() {
@@ -168,6 +177,12 @@ function updateLabels() {
     mark(best, 'best', 'success');
     mark(best5, 'best (5)', 'success');
     mark(best12, 'best (12)', 'success');
+}
+
+function update() {
+    updateIndex();
+    updateDates();
+    updateLabels();
 }
 
 function start() {
@@ -335,6 +350,8 @@ $(document).ready(function() {
     });
     $('#export-content, #import-content').bind('click', function() {
         this.setSelectionRange(0, this.value.length);
+        // Does not work on Chrome...
+        // window.clipboardData.setData("Text", $(this).val());
     });
     $('#export').bind('click', function() {
         $('.export-dialog').modal('show');
