@@ -327,6 +327,12 @@ $(document).ready(function() {
     $('button.start-stop').bind('click', toggle);
     updateScores();
 
+    /*
+     * Dialogs
+     */
+    $('#config-button').bind('click', function() {
+        $('.config-dialog').modal('show');
+    });
     $('#export-content, #import-content').bind('click', function() {
         this.setSelectionRange(0, this.value.length);
     });
@@ -342,6 +348,16 @@ $(document).ready(function() {
     $('#import-replace').bind('click', doImportReplace);
 
     // configuration
+    $('#inspectionTime').
+        val(getConfig('inspectionTime', 0)).
+        change(function() {
+            storeConfig('inspectionTime', Number($(this).val()));
+        });
+    $('#soundAfterInspection').
+        prop('checked', getConfig('soundAfterInspection', false)).
+        bind('click', function(e) {
+            storeConfig('soundAfterInspection', e.target.checked);
+        });
     $('#subtext').
         prop('checked', getConfig('subtext', true)).
         bind('click', function(e) {

@@ -48,6 +48,9 @@
                             <li><a href="javascript:void(0)">3x3x3</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a id="config-button" href="javascript:void(0)">Configuration</a>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -118,11 +121,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Configuration</h3>
-                    </div>
-                    <div class="panel-body">
+            </div>
+        </div>
+    </div>
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="https://github.com/resamsel/cube-timer">GitHub</a></li>
+            </ul>
+            <p>Designed and built by @resamsel.</p>
+            <p>Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.</p>
+        </div>
+    </footer>
+
+    <div class="modal fade config-dialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Configuration</h4>
+                </div>
+                <div class="modal-body">
                         <form id="config" class="form-horizontal">
                             <div class="form-group">
                                 <label for="inspectionTime" class="col-form-4 control-label">Inspection time</label>
@@ -138,7 +157,7 @@
                                 <div class="col-form-offset-4 col-form-8">
                                     <div class="checkbox">
                                         <label>
-                                            <input id="sound" type="checkbox" />
+                                            <input id="soundAfterInspection" type="checkbox" />
                                             <span class="checkbox-material"><span class="check"></span></span>
                                             Play sound after inspection
                                         </label>
@@ -157,20 +176,15 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <footer class="footer" role="contentinfo">
-        <div class="container">
-            <ul class="footer-links">
-                <li><a href="https://github.com/resamsel/cube-timer">GitHub</a></li>
-            </ul>
-            <p>Designed and built by @resamsel.</p>
-            <p>Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.</p>
-        </div>
-    </footer>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <div class="modal fade export-dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
