@@ -12,9 +12,9 @@ function handleClientLoad() {
 function checkAuth() {
     gapi.auth.authorize(
         {
-            client_id: clientId,
-            scope: scopes,
-            immediate: true
+            'client_id': clientId,
+            'scope': scopes,
+            'immediate': true
         },
         handleAuthResult
     );
@@ -36,9 +36,9 @@ function handleAuthClick(event) {
     console.log('handleAuthClick');
     gapi.auth.authorize(
         {
-            client_id: clientId,
-            scope: scopes,
-            immediate: false
+            'client_id': clientId,
+            'scope': scopes,
+            'immediate': false
         },
         handleAuthResult
     );
@@ -55,8 +55,9 @@ function requestFileList() {
     gapi.client.request(
         {
             'path': '/drive/v3/files',
-            'method': 'GET',
-            'q': 'Cube Times'
+            'params': {
+                'q': 'Cube Times'
+            }
         }
     ).execute(handleFileList);
 }
