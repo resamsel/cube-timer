@@ -224,7 +224,17 @@
                   <h4 class="modal-title">Import Times</h4>
                 </div>
                 <div class="modal-body">
-                  <textarea id="import-content" class="form-control" rows="12"></textarea>
+                    <button id="import-from-file" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-open"></span>
+                        Load from local file
+                    </button>
+
+                    <button id="import-from-drive" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-open"></span>
+                        Load from Google Drive
+                    </button>
+
+                    <textarea id="import-content" class="form-control" rows="12"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -255,7 +265,7 @@
 
     <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
     <!--Register Google Api-->
-    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
 
 
 

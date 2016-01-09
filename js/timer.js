@@ -286,9 +286,13 @@ function toDate(timestamp) {
     return jintervals(interval, "{G.} ago");
 }
 
-function receivedText() {
-    $('#import-content').val(fr.result);
+function showImportData(text) {
+    $('#import-content').val(text);
     $('.import-dialog').modal('show');
+}
+
+function receivedText() {
+    showImportData(fr.result);
 }
 
 var fr = new FileReader();
@@ -357,10 +361,15 @@ $(document).ready(function() {
         $('.export-dialog').modal('show');
         $('#export-content').val(toCsv(retrieveScores()));
     });
-    $('#import-file').change(handleFileSelect);
     $('#import').bind('click', function() {
+        $('#import-content').val('');
+        $('.import-dialog').modal('show');
+    });
+    $('#import-file').change(handleFileSelect);
+    $('#import-from-file').bind('click', function() {
         $('#import-file').click();
     });
+    $('#import-from-drive').bind('click', handlePickerClick);
     $('#import-append').bind('click', doImportAppend);
     $('#import-replace').bind('click', doImportReplace);
 

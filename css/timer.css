@@ -94,6 +94,10 @@ select.form-control {
     margin: 12px 0 0 0;
 }
 
+.picker.picker-dialog {
+    z-index: 9999;
+}
+
 #hint {
     display: none;
 }
