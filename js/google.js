@@ -23,17 +23,22 @@ function checkAuth() {
 // Gets the result after the authorization and if successful,
 // it makes the api call to get the  //user's information.
 function handleAuthResult(authResult) {
+    console.log('Handling authorization result for response:');
+    console.log(authResult);
     if (authResult && !authResult.error) {
+        localStorage.googleAccessToken = authResult.access_token;
         $('#google-login').hide();
         makeApiCall();
     } else {
+        console.log('Enabling Google button');
         $('#google-login').fadeIn().bind('click', handleAuthClick);
     }
 }
 
 // Make api call on button click to authorize client
 function handleAuthClick(event) {
-    console.log('handleAuthClick');
+    console.log('Handling authorization click for response:');
+    console.log(event);
     gapi.auth.authorize(
         {
             'client_id': clientId,
@@ -52,33 +57,39 @@ function makeApiCall() {
 }
 
 function requestFileList() {
+    console.log('Requesting file list');
     gapi.client.request(
         {
-            'path': '/drive/v3/files',
-            'params': {
-                'q': 'Cube Times'
-            }
+            'path': '/drive/v3/files'
         }
     ).execute(handleFileList);
 }
 
 function handleFileList(response) {
+    console.log('Handling file list for response:');
     console.log(response);
-    var files = response.files, file;
-    for (var i = 0; i < files.length; i++) {
-        file = files[i];
-        if (file.name == 'Cube Times') {
-            console.log(file);
-            requestFileExport(file.id);
+    if (response && !response.error) {
+        var files = response.files, file;
+        for (var i = 0; i < files.length; i++) {
+            file = files[i];
+            if (file.name == 'Cube Times') {
+                requestFileExport(file.id);
+                return;
+            }
         }
+        requestFileCreation('Cube Times');
     }
 }
 
 function requestFileExport(fileId) {
+    console.log('Requesting file export for id ' + fileId);
     gapi.client.request(
         {
             'path': '/drive/v3/files/' + fileId + '/export',
             'method': 'GET',
+            'headers': {
+                'Authorization': 'Bearer ' + localStorage.googleAccessToken
+            },
             'params': {
                 'mimeType': 'text/csv'
             }
@@ -87,5 +98,13 @@ function requestFileExport(fileId) {
 }
 
 function handleFileExport(response) {
+    console.log('Handling file export for response:');
     console.log(response);
+    if (response && !response.error) {
+    }
+}
+
+function requestFileCreation(name) {
+    console.log('Requesting file creation with name ' + name);
+    console.log('TODO');
 }
