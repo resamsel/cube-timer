@@ -276,7 +276,11 @@ function doImport(replace) {
 function toCsv(scores) {
     var result = 'Date;Duration\n';
     for (var i = 0; i < scores.length; i++) {
-        result += $.format.date(new Date(scores[i].id), 'yyyy-MM-ddTHH:mm:ssZ') + ';' + scores[i].value + '\n';
+        result += $.format.date(
+                new Date(scores[i].id),
+                'yyyy-MM-ddTHH:mm:ss.SSSZ'
+            )
+            + ';' + scores[i].value + '\n';
     }
     return result;
 }
