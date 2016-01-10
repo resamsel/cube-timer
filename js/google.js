@@ -102,5 +102,9 @@ function handleFileExport(response) {
     if (response && !response.error) {
         // TODO: Put text into textarea
         showImportData(response.text);
+    } else {
+        $('#import-error .content')
+            .text('Server error while exporting selected file: ' + response.error.message);
+        $('#import-error').fadeIn();
     }
 }

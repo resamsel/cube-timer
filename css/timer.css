@@ -98,6 +98,10 @@ select.form-control {
     z-index: 9999;
 }
 
+#import-error {
+    display: none;
+}
+
 #hint {
     display: none;
 }
