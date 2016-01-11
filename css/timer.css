@@ -35,13 +35,10 @@ body {
 #times button.btn-remove {
     margin: 0;
 }
-#times td.index,
-#times td.value,
-#times td.date,
-#times td.actions {
-    width: 5px;
+#template {
+    display: none;
 }
-#times td.date {
+#times .date {
     white-space: nowrap;
 }
 
@@ -64,6 +61,37 @@ body {
 }
 .col-form-offset-4 {
     margin-left: 33.333333333%;
+}
+
+.index.row-action-primary {
+    float: left;
+    margin-top: 6px;
+    color: #777;
+    min-width: 40px;
+    text-align: right;
+}
+.list-group .list-group-item {
+    padding: 0;
+}
+.list-group .list-group-item .row-action-primary,
+.list-group .list-group-item .row-picture {
+    padding-right: 8px;
+}
+.list-group-item-heading {
+    margin-bottom: 0;
+}
+.list-group .list-group-item .row-content {
+    min-height: 56px;
+}
+.list-group .list-group-item .row-content .action-secondary {
+    top: 24px;
+}
+.list-group .list-group-separator {
+    margin-top: 0;
+}
+.list-group .list-group-separator:before {
+    width: -webkit-calc(100% - 40px);
+    width: calc(100% - 40px);
 }
 
 /*
@@ -93,6 +121,11 @@ select.form-control {
 .form-group label.control-label {
     margin: 12px 0 0 0;
 }
+.list-group .list-group-item .row-content .action-secondary~* {
+    max-width: -webkit-calc(100%);
+    max-width: calc(100%);
+}
+/** /Fixes */
 
 .picker.picker-dialog {
     z-index: 9999;

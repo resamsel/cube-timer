@@ -40,7 +40,7 @@ function showScore(score) {
     row.find('.date').text(toDate(score.id)).data('date', score.id);
     row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
 
-    $('#times tbody').prepend(row);
+    $('#times .times-content').prepend(row);
 }
 
 function submitScore(elapsed) {
@@ -109,7 +109,7 @@ function getConfig(key, defaultValue) {
 }
 
 function mark(score, text, type_) {
-    $('#id-' + score.id + ' > td.tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
+    $('#id-' + score.id + ' > * .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
 }
 
 function subXLabel(value) {
@@ -123,7 +123,7 @@ function subXLabel(value) {
 }
 
 function updateScores() {
-    $('#times tbody > tr').remove();
+    $('#times .times-content > *').remove();
     var scores = retrieveScores();
     for (var i = 0; i < scores.length; i++) {
         showScore(scores[i]);
@@ -132,15 +132,15 @@ function updateScores() {
 }
 
 function updateIndex() {
-    var max = $('#times tbody > tr').length + 1;
+    var max = $('#times .times-content > *').length + 1;
     for(var i = 0; i < max; i++) {
-        $('#times tbody tr:nth-child(' + i + ') td.index').
+        $('#times .times-content *:nth-child(' + i + ') .index').
             text((max - i) + '.');
     }
 }
 
 function updateDates() {
-    $('#times tbody > tr .date').each(function() {
+    $('#times .times-content > * .date').each(function() {
         var that = $(this);
         that.text(toDate(that.data('date')));
     });
