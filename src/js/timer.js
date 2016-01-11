@@ -324,7 +324,6 @@ function handleFileSelect()
     else {
         var file = new Blob([files[0]], {type: 'text/plain'});
         fr.readAsText(file);
-        //fr.readAsDataURL(file);
 
         /*
          * We need to reset the file input field, this seems to be the easiest
@@ -367,6 +366,7 @@ $(document).ready(function() {
     });
     $('#import').bind('click', function() {
         $('#import-content').val('');
+        $('#import-error').hide();
         $('.import-dialog').modal('show');
     });
     $('#import-file').change(handleFileSelect);
