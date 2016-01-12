@@ -171,6 +171,9 @@ select.form-control {
     }
 }
 @media (min-width: 768px) {
+    .navbar .navbar-brand {
+        padding-left: 30px;
+    }
     #times {
         max-height: 400px;
     }
