@@ -292,15 +292,15 @@ function onspaceup(e) {
     }
 }
 
-function doImportAppend() {
-    doImport(false);
+function handleImportAppend() {
+    handleImport(false);
 }
 
-function doImportReplace() {
-    doImport(true);
+function handleImportReplace() {
+    handleImport(true);
 }
 
-function doImport(replace) {
+function handleImport(replace) {
     var content = $('#import-content').val().split('\n'),
         scores = [],
         line, date, value;
@@ -348,9 +348,13 @@ function toDate(timestamp) {
     return jintervals(interval, "{G.} ago");
 }
 
-function receivedText() {
-    $('#import-content').val(fr.result);
+function showImportData(text) {
+    $('#import-content').val(text);
     $('.import-dialog').modal('show');
+}
+
+function receivedText() {
+    showImportData(fr.result);
 }
 
 var fr = new FileReader();
@@ -378,7 +382,6 @@ function handleFileSelect()
     else {
         var file = new Blob([files[0]], {type: 'text/plain'});
         fr.readAsText(file);
-        //fr.readAsDataURL(file);
 
         /*
          * We need to reset the file input field, this seems to be the easiest
@@ -408,6 +411,7 @@ $(document).ready(function() {
      * Dialogs
      */
     $('#config-button').bind('click', function() {
+        // Show dialog
         $('.config-dialog').modal('show');
     });
     $('#export-content, #import-content').bind('click', function() {
@@ -416,15 +420,25 @@ $(document).ready(function() {
         // window.clipboardData.setData("Text", $(this).val());
     });
     $('#export').bind('click', function() {
-        $('.export-dialog').modal('show');
         $('#export-content').val(toCsv(retrieveScores()));
+        // Show dialog
+        $('.export-dialog').modal('show');
+    });
+    $('#import').bind('click', function() {
+        // Reset input field
+        $('#import-content').val('');
+        // Hide previous errors
+        $('#import-error').hide();
+        // Show dialog
+        $('.import-dialog').modal('show');
     });
     $('#import-file').change(handleFileSelect);
-    $('#import').bind('click', function() {
+    $('#import-from-file').bind('click', function() {
         $('#import-file').click();
     });
-    $('#import-append').bind('click', doImportAppend);
-    $('#import-replace').bind('click', doImportReplace);
+    $('#import-from-drive').bind('click', handlePickerClick);
+    $('#import-append').bind('click', handleImportAppend);
+    $('#import-replace').bind('click', handleImportReplace);
 
     // configuration
     $('#inspectionTime').

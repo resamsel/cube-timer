@@ -52,6 +52,11 @@
                         </ul>
                     </li>
                     <li>
+                        <a id="google-login" style="display: none" href="javascript:void(0)">
+                            Login with Google
+                        </a>
+                    </li>
+                    <li>
                         <a id="config-button" href="javascript:void(0)">
                             <span class="glyphicon glyphicon-cog"></span>
                             Configuration
@@ -225,7 +230,26 @@
                   <h4 class="modal-title">Import Times</h4>
                 </div>
                 <div class="modal-body">
-                  <textarea id="import-content" class="form-control" rows="12"></textarea>
+                    <div class="btn-group" role="group">
+                        <button id="import-from-file" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-open"></span>
+                            Load from local file
+                        </button>
+
+                        <button id="import-from-drive" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-open"></span>
+                            Load from Google Drive
+                        </button>
+                    </div>
+
+                    <div id="import-error" class="alert alert-dismissible alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <span class="content"></span>
+                    </div>
+
+                    <div class="content">
+                        <textarea id="import-content" class="form-control" rows="12"></textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -250,6 +274,16 @@
     <script src="js/rubiks-cube-scrambler.js"></script>
     <script src="js/jintervals.js"></script>
     <script src="js/jquery.dateFormat.min.js"></script>
+    <script src="js/google.js"></script>
     <script src="js/timer.js"></script>
+
+
+    <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
+    <!--Register Google Api-->
+    <script src="https://apis.google.com/js/api.js"></script>
+
+
+
+
 </body>
 </html>
