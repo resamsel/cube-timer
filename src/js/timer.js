@@ -63,7 +63,7 @@ function storeScore(score) {
 
 function storeScores(scores) {
     if(typeof(Storage) !== "undefined") {
-        scores = scores.unique(function(a, b) { return a.id == b.id });
+        scores = scores.unique(function(a, b) { return a.id == b.id; });
         localStorage.scores = JSON.stringify(scores);
     }
 }
@@ -270,10 +270,10 @@ function toggle() {
 }
 
 function scramble() {
-    var i, scramble = cube.scramble(), len = scramble.length, result = "";
+    var i, scrambled = cube.scramble(), len = scrambled.length, result = "";
     for (i = 0; i < len; i += 5) {
         // Only allow a line break every 5 moves
-        result += scramble.slice(i, i + 5).join("&nbsp;") + " ";
+        result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
     }
     $('#scramble').html(result);
 }
@@ -313,9 +313,9 @@ function handleImport(replace) {
         }
 
         date = new Date(line[0]);
-        value = new Number(line[1]);
+        value = Number(line[1]);
         if(date !== null && value !== null) {
-            scores.push({id: date.getTime(), value});
+            scores.push({id: date.getTime(), value: value});
         }
     }
 
@@ -324,7 +324,7 @@ function handleImport(replace) {
         scores = scores.concat(retrieveScores());
     }
 
-    scores = scores.sort(function(a, b) { return a.id - b.id });
+    scores = scores.sort(function(a, b) { return a.id - b.id; });
 
     storeScores(scores);
 
@@ -333,13 +333,14 @@ function handleImport(replace) {
 
 function toCsv(scores) {
     var result = 'Date;Duration\n';
+
     for (var i = 0; i < scores.length; i++) {
         result += $.format.date(
                 new Date(scores[i].id),
                 'yyyy-MM-ddTHH:mm:ss.SSSZ'
-            )
-            + ';' + scores[i].value + '\n';
+            ) + ';' + scores[i].value + '\n';
     }
+
     return result;
 }
 
