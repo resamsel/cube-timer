@@ -9,13 +9,14 @@ Cube Timer uses [Grunt](http://gruntjs.com/) as build system, which must be inst
 ```
 brew install nodejs
 npm install -g grunt-cli bower
+npm install grunt
 ```
 
 As soon as `bower` and `grunt` are available as commands the build can be initialised.
 
 ```
 bower install
-grunt
+npm install
 ```
 
 ### Building
@@ -33,6 +34,10 @@ Any change within the src directory must be followed by a `grunt dist` to reflec
 ```
 grunt watch
 ```
+
+### Caveats
+
+The Google API only works when the app is delivered from http://localhost/. To use it, use a webserver that delivers the content of the dist directory.
 
 ## Sources
 
