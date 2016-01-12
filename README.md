@@ -1,5 +1,6 @@
 # cube-timer
-Rubik's Cube Timer
+Rubik's Cube Timer, strongly influenced by [Cube Timer](http://www.cubetimer.com/).
+
 
 ## Sources
 
