@@ -1,0 +1,22 @@
+{
+  "name": "cube-timer",
+  "description": "",
+  "main": "",
+  "authors": [
+    "René Samselnig <Rene.Samselnig@skiline.cc>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/resamsel/cube-timer",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-material-design": "~0.5.7",
+    "jquery-migrate": "~1.2.1"
+  }
+}
