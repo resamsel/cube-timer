@@ -2,6 +2,12 @@ body {
     background-color: #fafafa;
 }
 
+.navbar .navbar-brand {
+    background: url(../img/icon-128.png) no-repeat left center;
+    background-size: 28px;
+    margin-left: 10px;
+}
+
 #timer {
     font-size: 96px;
 }
@@ -159,6 +165,11 @@ select.form-control {
     color: #fff;
 }
 
+@media (max-width: 1199px) {
+    .navbar .navbar-brand {
+        padding: 10px 15px 10px 30px;
+    }
+}
 @media (min-width: 768px) {
     #times {
         max-height: 400px;
