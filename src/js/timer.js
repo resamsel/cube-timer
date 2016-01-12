@@ -234,15 +234,15 @@ function onspaceup(e) {
     }
 }
 
-function doImportAppend() {
-    doImport(false);
+function handleImportAppend() {
+    handleImport(false);
 }
 
-function doImportReplace() {
-    doImport(true);
+function handleImportReplace() {
+    handleImport(true);
 }
 
-function doImport(replace) {
+function handleImport(replace) {
     var content = $('#import-content').val().split('\n'),
         scores = [],
         line, date, value;
@@ -353,6 +353,7 @@ $(document).ready(function() {
      * Dialogs
      */
     $('#config-button').bind('click', function() {
+        // Show dialog
         $('.config-dialog').modal('show');
     });
     $('#export-content, #import-content').bind('click', function() {
@@ -361,12 +362,16 @@ $(document).ready(function() {
         // window.clipboardData.setData("Text", $(this).val());
     });
     $('#export').bind('click', function() {
-        $('.export-dialog').modal('show');
         $('#export-content').val(toCsv(retrieveScores()));
+        // Show dialog
+        $('.export-dialog').modal('show');
     });
     $('#import').bind('click', function() {
+        // Reset input field
         $('#import-content').val('');
+        // Hide previous errors
         $('#import-error').hide();
+        // Show dialog
         $('.import-dialog').modal('show');
     });
     $('#import-file').change(handleFileSelect);
@@ -374,8 +379,8 @@ $(document).ready(function() {
         $('#import-file').click();
     });
     $('#import-from-drive').bind('click', handlePickerClick);
-    $('#import-append').bind('click', doImportAppend);
-    $('#import-replace').bind('click', doImportReplace);
+    $('#import-append').bind('click', handleImportAppend);
+    $('#import-replace').bind('click', handleImportReplace);
 
     // configuration
     $('#inspectionTime').

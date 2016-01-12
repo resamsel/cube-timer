@@ -108,9 +108,9 @@ select.form-control {
 }
 
 .footer {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    margin-top: 100px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin-top: 20px;
     color: #99979c;
     text-align: center;
     background-color: #2a2730;
@@ -134,6 +134,9 @@ select.form-control {
         display: block;
     }
     .footer {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        margin-top: 50px;
         text-align: left;
     }
 }
