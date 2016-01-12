@@ -1,3 +1,6 @@
+var timerSound;
+var startSound;
+
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
@@ -40,7 +43,7 @@ function showScore(score) {
     row.find('.date').text(toDate(score.id)).data('date', score.id);
     row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
 
-    $('#times tbody').prepend(row);
+    $('#times .times-content').prepend(row);
 }
 
 function submitScore(elapsed) {
@@ -109,7 +112,7 @@ function getConfig(key, defaultValue) {
 }
 
 function mark(score, text, type_) {
-    $('#id-' + score.id + ' > td.tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
+    $('#id-' + score.id + ' > * .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
 }
 
 function subXLabel(value) {
@@ -123,7 +126,7 @@ function subXLabel(value) {
 }
 
 function updateScores() {
-    $('#times tbody > tr').remove();
+    $('#times .times-content > *').remove();
     var scores = retrieveScores();
     for (var i = 0; i < scores.length; i++) {
         showScore(scores[i]);
@@ -132,15 +135,15 @@ function updateScores() {
 }
 
 function updateIndex() {
-    var max = $('#times tbody > tr').length + 1;
+    var max = $('#times .times-content > *').length + 1;
     for(var i = 0; i < max; i++) {
-        $('#times tbody tr:nth-child(' + i + ') td.index').
+        $('#times .times-content *:nth-child(' + i + ') .index').
             text((max - i) + '.');
     }
 }
 
 function updateDates() {
-    $('#times tbody > tr .date').each(function() {
+    $('#times .times-content > * .date').each(function() {
         var that = $(this);
         that.text(toDate(that.data('date')));
     });
@@ -185,20 +188,75 @@ function update() {
     updateLabels();
 }
 
-function start() {
+/*
+ * Business logic
+ */
+
+// Vars for the countdown timer
+var count, counter, beep;
+function countdownTimer()
+{
+    count = count-1;
+    if (count <= 0)
+    {
+        clearInterval(counter);
+        startTimer();
+        return;
+    }
+
+    updateCountdown(count);
+}
+
+// Code for showing the number of seconds
+function updateCountdown(currentCount) {
+    if(count <= 3) {
+        console.log('Playing beep');
+        if(getConfig('soundAfterInspection', false)) {
+            timerSound.load();
+            timerSound.play();
+        }
+    }
+
+    $('#timer').text(count);
+}
+
+function startCountdown(inspectionTime) {
+    count = inspectionTime;
+    counter = setInterval(countdownTimer, 1000);
+    updateCountdown(count);
+}
+
+function startTimer() {
+    if(getConfig('inspectionTime', 0) > 0 && getConfig('soundAfterInspection', false)) {
+        startSound.load();
+        startSound.play();
+    }
     $('#timer').stopwatch({
         updateInterval: 31, // prime number
         formatter: defaultFormatMilliseconds,
     }).stopwatch('reset').stopwatch('start');
+}
+
+function start() {
     $('body').removeClass('stopped').addClass('started');
+    var inspectionTime = getConfig('inspectionTime', 0);
+    if(inspectionTime > 0) {
+        startCountdown(inspectionTime);
+    } else {
+        startTimer();
+    }
 }
 
 function stop() {
     var sw, elapsed;
+    clearInterval(counter);
     sw = $('#timer').stopwatch();
     sw.stopwatch('stop');
     elapsed = sw.data('stopwatch').elapsed;
-    submitScore(elapsed);
+    if(elapsed > 0) {
+        // Only use values stopwatch actually started
+        submitScore(elapsed);
+    }
     $('body').removeClass('started').addClass('stopped');
     scramble();
 }
@@ -387,16 +445,26 @@ $(document).ready(function() {
         val(getConfig('inspectionTime', 0)).
         change(function() {
             storeConfig('inspectionTime', Number($(this).val()));
-        });
-    $('#soundAfterInspection').
-        prop('checked', getConfig('soundAfterInspection', false)).
-        bind('click', function(e) {
+        }
+    );
+
+    $('#soundAfterInspection')
+        .prop('checked', getConfig('soundAfterInspection', false))
+        .bind('click', function(e) {
             storeConfig('soundAfterInspection', e.target.checked);
-        });
+        }
+    );
+    // pre-load sound
+    timerSound = new Audio('audio/timer.mp3');
+    startSound = new Audio('audio/start.mp3');
+    timerSound.load();
+    startSound.load();
+
     $('#subtext').
         prop('checked', getConfig('subtext', true)).
         bind('click', function(e) {
             storeConfig('subtext', e.target.checked);
             updateLabels();
-        });
+        }
+    );
 });
