@@ -1,3 +1,6 @@
+html {
+    overflow-y: visible;
+}
 body {
     background-color: #fafafa;
 }
@@ -32,6 +35,9 @@ body {
 }
 .started .start-stop .stop {
     display: inline-block;
+}
+
+.panel-times {
 }
 
 #times {

@@ -20,7 +20,6 @@ function handleAuthResult(authResult) {
         oauthToken = authResult.access_token;
         createPicker();
         $('#google-login').hide();
-        //makeApiCall();
     } else {
         console.log('Enabling Google button');
         $('#google-login').fadeIn().bind('click', onAuthApiLoad);
@@ -55,7 +54,6 @@ function createPicker() {
         view.setMimeTypes("application/vnd.google-apps.spreadsheet");
         var picker = new google.picker.PickerBuilder()
             .enableFeature(google.picker.Feature.NAV_HIDDEN)
-            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
             .setAppId(appId)
             .setOAuthToken(oauthToken)
             .addView(view)

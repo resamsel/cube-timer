@@ -6,8 +6,13 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [
-                    { expand: true, flatten: true, src: ['src/*.html'], dest: 'dist' },
-                    { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/js' },
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['src/*.html', 'src/manifest.json', 'src/background.js'],
+                        dest: 'dist/<%= pkg.name %>'
+                    },
+                    { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/<%= pkg.name %>/js' },
                     {
                         expand: true,
                         flatten: true,
@@ -17,11 +22,11 @@ module.exports = function(grunt) {
                             '**/css/bootstrap-material-design.min.css',
                             '**/css/ripples.min.css'
                         ],
-                        dest: 'dist/css'
+                        dest: 'dist/<%= pkg.name %>/css'
                     },
-                    { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/img' },
-                    { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/audio' },
-                    { expand: true, flatten: true, src: ['bower_components/bootstrap/dist/fonts/*'], dest: 'dist/fonts' },
+                    { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/<%= pkg.name %>/img' },
+                    { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' },
+                    { expand: true, flatten: true, src: ['bower_components/bootstrap/dist/fonts/*'], dest: 'dist/<%= pkg.name %>/fonts' },
                 ]
             }
         },
@@ -30,7 +35,7 @@ module.exports = function(grunt) {
             files: [
                 {
                     url: 'https://apis.google.com/js/api.js',
-                    dest: 'dist/js',
+                    dest: 'dist/<%= pkg.name %>/js',
                     name: 'google-api.js'
                 }
             ]
@@ -44,12 +49,12 @@ module.exports = function(grunt) {
             dist: {
                 // the files to concatenate
                 src: [
-                    'src/**/*.js',
+                    'src/js/**/*.js',
                     'bower_components/bootstrap/dist/js/bootstrap.min.js',
                     'bower_components/jquery-migrate/jquery-migrate.min.js'
                 ],
                 // the location of the resulting JS file
-                dest: 'dist/<%= pkg.name %>.js'
+                dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
             }
         },
 
@@ -60,7 +65,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/js/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+                    'dist/<%= pkg.name %>/js/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
                 }
             }
         },

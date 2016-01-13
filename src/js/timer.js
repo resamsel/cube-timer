@@ -53,64 +53,6 @@ function submitScore(elapsed) {
     update();
 }
 
-function storeScore(score) {
-    if(typeof(Storage) !== "undefined") {
-        var scores = retrieveScores();
-        scores.push(score);
-        storeScores(scores);
-    }
-}
-
-function storeScores(scores) {
-    if(typeof(Storage) !== "undefined") {
-        scores = scores.unique(function(a, b) { return a.id == b.id; });
-        localStorage.scores = JSON.stringify(scores);
-    }
-}
-
-function retrieveScores() {
-    if(typeof(Storage) !== "undefined") {
-        if(localStorage.scores) {
-            return JSON.parse(localStorage.scores);
-        }
-    }
-    return [];
-}
-
-function removeScore(e) {
-    var id = $(this).data('scoreId');
-    var scores = retrieveScores();
-    for (var i = 0; i < scores.length; i++) {
-        if(scores[i].id == id) {
-            scores.remove(i);
-            storeScores(scores);
-            break;
-        }
-    }
-    $('#id-' + id).fadeOut({
-        complete: function() {
-            $(this).remove();
-            update();
-        }
-    });
-}
-
-function storeConfig(key, value) {
-    if(typeof(Storage) !== "undefined") {
-        localStorage.setItem(key, JSON.stringify(value));
-    }
-}
-
-function getConfig(key, defaultValue) {
-    if(typeof(Storage) !== "undefined") {
-        var value = localStorage.getItem(key);
-        if(value !== null) {
-            return JSON.parse(value);
-        }
-    }
-    return defaultValue;
-}
-
 function mark(score, text, type_) {
     $('#id-' + score.id + ' > * .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
 }
@@ -127,11 +69,12 @@ function subXLabel(value) {
 
 function updateScores() {
     $('#times .times-content > *').remove();
-    var scores = retrieveScores();
-    for (var i = 0; i < scores.length; i++) {
-        showScore(scores[i]);
-    }
-    update();
+    retrieveScores(function(scores) {
+        for (var i = 0; i < scores.length; i++) {
+            showScore(scores[i]);
+        }
+        update();
+    });
 }
 
 function updateIndex() {
@@ -150,36 +93,40 @@ function updateDates() {
 }
 
 function updateLabels() {
-    var scores = retrieveScores(),
-        score,
-        best = {id: 0, value: 999999999},
-        best5 = {id: 0, value: 999999999},
-        best12 = {id: 0, value: 999999999},
-        markSubX = getConfig('subtext', true);
+    retrieveScores(updateLabelsCallback);
+}
 
-    // Remove first
-    $('#times .label').remove();
+function updateLabelsCallback(scores) {
+    getConfig('subtext', true, function(markSubX) {
+        var score,
+            best = {id: 0, value: 999999999},
+            best5 = {id: 0, value: 999999999},
+            best12 = {id: 0, value: 999999999};
 
-    for (var i = 0; i < scores.length; i++) {
-        score = scores[i];
-        if (score.value < best.value) {
-            best = score;
-        }
-        if ((scores.length - i - 1) < 5 && score.value < best5.value) {
-            best5 = score;
-        }
-        if ((scores.length - i - 1) < 12 && score.value < best12.value) {
-            best12 = score;
-        }
-        if(markSubX) {
-            mark(score, 'sub ' + subXLabel(score.value), 'info');
-        }
-    }
+        // Remove first
+        $('#times .label').remove();
 
-    // Then mark
-    mark(best, 'best', 'success');
-    mark(best5, 'best (5)', 'success');
-    mark(best12, 'best (12)', 'success');
+        for (var i = 0; i < scores.length; i++) {
+            score = scores[i];
+            if (score.value < best.value) {
+                best = score;
+            }
+            if ((scores.length - i - 1) < 5 && score.value < best5.value) {
+                best5 = score;
+            }
+            if ((scores.length - i - 1) < 12 && score.value < best12.value) {
+                best12 = score;
+            }
+            if(markSubX) {
+                mark(score, 'sub ' + subXLabel(score.value), 'info');
+            }
+        }
+
+        // Then mark
+        mark(best, 'best', 'success');
+        mark(best5, 'best (5)', 'success');
+        mark(best12, 'best (12)', 'success');
+    });
 }
 
 function update() {
@@ -210,11 +157,12 @@ function countdownTimer()
 // Code for showing the number of seconds
 function updateCountdown(currentCount) {
     if(count <= 3) {
-        console.log('Playing beep');
-        if(getConfig('soundAfterInspection', false)) {
-            timerSound.load();
-            timerSound.play();
-        }
+        getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+            if(soundAfterInspection) {
+                timerSound.load();
+                timerSound.play();
+            }
+        });
     }
 
     $('#timer').text(count);
@@ -227,24 +175,30 @@ function startCountdown(inspectionTime) {
 }
 
 function startTimer() {
-    if(getConfig('inspectionTime', 0) > 0 && getConfig('soundAfterInspection', false)) {
-        startSound.load();
-        startSound.play();
-    }
-    $('#timer').stopwatch({
+    var timerConfig = {
         updateInterval: 31, // prime number
-        formatter: defaultFormatMilliseconds,
-    }).stopwatch('reset').stopwatch('start');
+        formatter: defaultFormatMilliseconds
+    };
+    getConfig('inspectionTime', 0, function(inspectionTime) {
+        getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+            if(inspectionTime > 0 && soundAfterInspection) {
+                startSound.load();
+                startSound.play();
+            }
+            $('#timer').stopwatch(timerConfig).stopwatch('reset').stopwatch('start');
+        });
+    });
 }
 
 function start() {
     $('body').removeClass('stopped').addClass('started');
-    var inspectionTime = getConfig('inspectionTime', 0);
-    if(inspectionTime > 0) {
-        startCountdown(inspectionTime);
-    } else {
-        startTimer();
-    }
+    getConfig('inspectionTime', 0, function(inspectionTime) {
+        if(inspectionTime > 0) {
+            startCountdown(inspectionTime);
+        } else {
+            startTimer();
+        }
+    });
 }
 
 function stop() {
@@ -321,14 +275,14 @@ function handleImport(replace) {
 
     if(!replace) {
         // Appending scores
-        scores = scores.concat(retrieveScores());
+        retrieveScores(function(s) {
+            storeScores(scores.concat(s));
+            updateScores();
+        });
+    } else {
+        storeScores(scores);
+        updateScores();
     }
-
-    scores = scores.sort(function(a, b) { return a.id - b.id; });
-
-    storeScores(scores);
-
-    updateScores();
 }
 
 function toCsv(scores) {
@@ -394,12 +348,14 @@ function handleFileSelect()
 }
 
 $(document).ready(function() {
-    if(getConfig('hintVisible', true)) {
-        $('#hint').show();
-        $('#hint .close').bind('click', function() {
-            storeConfig('hintVisible', false);
-        });
-    }
+    getConfig('hintVisible', true, function(hintVisible) {
+        if(hintVisible) {
+            $('#hint').show();
+            $('#hint .close').bind('click', function() {
+                storeConfig('hintVisible', false);
+            });
+        }
+    });
 
     cube.reset();
     scramble();
@@ -421,7 +377,9 @@ $(document).ready(function() {
         // window.clipboardData.setData("Text", $(this).val());
     });
     $('#export').bind('click', function() {
-        $('#export-content').val(toCsv(retrieveScores()));
+        retrieveScores(function(scores) {
+            $('#export-content').val(toCsv(scores));
+        });
         // Show dialog
         $('.export-dialog').modal('show');
     });
@@ -442,30 +400,35 @@ $(document).ready(function() {
     $('#import-replace').bind('click', handleImportReplace);
 
     // configuration
-    $('#inspectionTime').
-        val(getConfig('inspectionTime', 0)).
-        change(function() {
-            storeConfig('inspectionTime', Number($(this).val()));
-        }
-    );
+    getConfig('inspectionTime', 0, function(inspectionTime) {
+        $('#inspectionTime')
+            .val(inspectionTime)
+            .change(function() {
+                storeConfig('inspectionTime', Number($(this).val()));
+            });
+    });
 
-    $('#soundAfterInspection')
-        .prop('checked', getConfig('soundAfterInspection', false))
-        .bind('click', function(e) {
-            storeConfig('soundAfterInspection', e.target.checked);
-        }
-    );
+    getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+        $('#soundAfterInspection')
+            .prop('checked', soundAfterInspection)
+            .bind('click', function(e) {
+                storeConfig('soundAfterInspection', e.target.checked);
+            }
+        );
+    });
     // pre-load sound
     timerSound = new Audio('audio/timer.mp3');
     startSound = new Audio('audio/start.mp3');
     timerSound.load();
     startSound.load();
 
-    $('#subtext').
-        prop('checked', getConfig('subtext', true)).
-        bind('click', function(e) {
-            storeConfig('subtext', e.target.checked);
-            updateLabels();
-        }
-    );
+    getConfig('subtext', true, function(subtext) {
+        $('#subtext').
+            prop('checked', subtext).
+            bind('click', function(e) {
+                storeConfig('subtext', e.target.checked);
+                updateLabels();
+            }
+        );
+    });
 });
