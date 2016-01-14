@@ -8,6 +8,7 @@ body {
 }
 
 #wrapper {
+    padding-top: 70px; /* navbar-fixed-top */
     min-height: 100%;
     height: auto !important;
     height: 100%;
@@ -186,7 +187,7 @@ select.form-control {
         padding-left: 30px;
     }
     #times {
-        max-height: 400px;
+        max-height: 800px;
     }
     #hint {
         display: block;
