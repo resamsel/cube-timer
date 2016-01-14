@@ -70,26 +70,27 @@ function defaultCallback(key, defaultValue, callback) {
     };
 }
 
-function storeConfig(key, value) {
-    dao.set(key, value);
+function storeConfig(key, value, callback) {
+    dao.set(key, value, callback);
 }
 
 function getConfig(key, defaultValue, callback) {
     return dao.get(key, defaultCallback(key, defaultValue, callback));
 }
 
-function storeScore(score) {
+function storeScore(score, callback) {
     retrieveScores(function(scores) {
         scores.push(score);
-        storeScores(scores);
+        storeScores(scores, callback);
     });
 }
 
-function storeScores(scores) {
+function storeScores(scores, callback) {
     scores.sort(function(a, b) { return a.id - b.id; });
     return dao.set(
         'scores',
-        scores.unique(function(a, b) { return a.id == b.id; })
+        scores.unique(function(a, b) { return a.id == b.id; }),
+        callback
     );
 }
 
@@ -98,20 +99,26 @@ function retrieveScores(callback) {
 }
 
 function removeScore(e) {
-    var id = $(this).data('scoreId');
-    retrieveScores(function(scores){
+    var element = $(this);
+    var id = element.data('scoreId');
+    retrieveScores(function(scores) {
         for (var i = 0; i < scores.length; i++) {
             if(scores[i].id == id) {
                 scores.remove(i);
-                storeScores(scores);
-                break;
+                storeScores(scores, removeScoreHandler(element, id));
+                return;
             }
         }
+    });
+}
+
+function removeScoreHandler(element, id) {
+    return function() {
         $('#id-' + id).fadeOut({
             complete: function() {
-                $(this).remove();
+                element.remove();
                 update();
             }
         });
-    });
+    };
 }

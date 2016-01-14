@@ -49,8 +49,7 @@ function showScore(score) {
 function submitScore(elapsed) {
     var score = {id: new Date().getTime(), value: elapsed};
     showScore(score);
-    storeScore(score);
-    update();
+    storeScore(score, update);
 }
 
 function mark(score, text, type_) {
@@ -276,12 +275,10 @@ function handleImport(replace) {
     if(!replace) {
         // Appending scores
         retrieveScores(function(s) {
-            storeScores(scores.concat(s));
-            updateScores();
+            storeScores(scores.concat(s), updateScores);
         });
     } else {
-        storeScores(scores);
-        updateScores();
+        storeScores(scores, updateScores);
     }
 }
 
@@ -426,8 +423,7 @@ $(document).ready(function() {
         $('#subtext').
             prop('checked', subtext).
             bind('click', function(e) {
-                storeConfig('subtext', e.target.checked);
-                updateLabels();
+                storeConfig('subtext', e.target.checked, updateLabels);
             }
         );
     });

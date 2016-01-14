@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/timer.css">
 </head>
 <body><!-- class="started/stopped" -->
+    <div id="wrapper">
     <header class="navbar navbar-static-top nav" id="top" role="banner">
         <div class="container">
             <div class="navbar-header">
@@ -132,15 +133,16 @@
             </div>
         </div>
     </div>
-    <footer class="footer" role="contentinfo">
+    </div><!-- wrapper -->
+    <div id="footer" role="contentinfo">
         <div class="container">
-            <ul class="footer-links">
-                <li><a href="https://github.com/resamsel/cube-timer">GitHub</a></li>
-            </ul>
-            <p>Designed and built by @resamsel.</p>
-            <p>Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.</p>
+            <p class="credit">
+                Designed and built by 
+                <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>.
+                <a href="https://github.com/resamsel/cube-timer" target="_blank">GitHub</a>. Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.
+            </p>
         </div>
-    </footer>
+    </div>
 
     <div class="modal fade config-dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">

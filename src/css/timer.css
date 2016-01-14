@@ -1,8 +1,23 @@
-html {
+html,
+body {
     overflow-y: visible;
+    height: 100%;
 }
 body {
     background-color: #fafafa;
+}
+
+#wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -60px;
+}
+#wrapper > .container {
+    padding-bottom: 60px;
+}
+.container .credit {
+    margin: 20px 0;
 }
 
 .navbar .navbar-brand {
@@ -152,23 +167,13 @@ select.form-control {
     display: none;
 }
 
-.footer {
-    padding-top: 25px;
-    padding-bottom: 25px;
-    margin-top: 20px;
-    color: #99979c;
+#footer {
+    background-color: #eee;
+    height: 60px;
     text-align: center;
-    background-color: #2a2730;
 }
-.footer-links {
-    padding-left: 0;
-    margin-bottom: 20px;
-}
-.footer-links li {
-    display: inline-block;
-}
-.footer a {
-    color: #fff;
+#footer a {
+    color: #0088cc;
 }
 
 @media (max-width: 1199px) {
@@ -186,10 +191,7 @@ select.form-control {
     #hint {
         display: block;
     }
-    .footer {
-        padding-top: 50px;
-        padding-bottom: 50px;
-        margin-top: 50px;
+    #footer {
         text-align: left;
     }
 }
