@@ -1,275 +1,313 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Mobile support -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Mobile support -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Rubik's Cube Timer</title>
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+	<title>Rubik's Cube Timer</title>
+	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 
-    <!-- Bootstrap Material Design -->
-    <link href="css/bootstrap-material-design.min.css" rel="stylesheet">
-    <link href="css/ripples.min.css" rel="stylesheet">
+	<!-- Bootstrap Material Design -->
+	<link href="css/bootstrap-material-design.min.css" rel="stylesheet">
+	<link href="css/ripples.min.css" rel="stylesheet">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="js/jquery.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="js/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="css/timer.css">
+	<link rel="stylesheet" href="css/timer.css">
 </head>
 <body><!-- class="started/stopped" -->
-    <div id="wrapper">
-    <header class="navbar navbar-fixed-top nav" id="top" role="banner">
-        <div class="container">
-            <div class="navbar-header">
-                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="#" class="navbar-brand">Cube Timer</a>
-            </div>
-            <nav id="bs-navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown" style="display: none">
-                        <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
-                            3x3x3
-                            <b class="caret"></b>
-                            <div class="ripple-container"></div>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">3x3x3</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a id="google-login" style="display: none" href="#">
-                            Login with Google
-                        </a>
-                    </li>
-                    <li>
-                        <a id="config-button" href="#">
-                            <span class="glyphicon glyphicon-cog"></span>
-                            Configuration
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="text-center">
-                            Scramble:
-                            <span id="scramble"></span>
-                        </div>
-                        <div id="timer" class="text-center">00:00.00</div>
-                    </div>
-                    <div class="panel-footer start-stop-container">
-                        <button class="start-stop btn btn-primary btn-lg">
-                            <span class="start">
-                                <span class="glyphicon glyphicon-play"></span>
-                                Start
-                            </span>
-                            <span class="stop">
-                                <span class="glyphicon glyphicon-stop"></span>
-                                Stop
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <p id="hint" class="alert alert-info alert-dismissible" style="display: none">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                    Hint: To start/stop the timer press <span class="label label-default">space bar</span>.
-                </p>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default panel-times">
-                    <div class="panel-heading">
-                        <div class="btn-group btn-group-raised pull-right" role="group">
-                            <button id="export" type="button" class="btn btn-default btn-xs" title="Export">
-                                <span class="glyphicon glyphicon-export"></span>
-                            </button>
-                            <button id="import" type="button" class="btn btn-default btn-xs" title="Import">
-                                <span class="glyphicon glyphicon-import"></span>
-                            </button>
-                        </div>
-                        <h3 class="panel-title">Times</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div id="times" class="table-responsive">
-                            <div>
-                                <div id="template">
-                                    <div class="entry list-group-item">
-                                        <div class="index row-action-primary"></div>
-                                        <div class="row-content">
-                                            <div class="date least-content"></div>
-                                            <div class="value list-group-item-heading"></div>
-                                            <div class="actions action-secondary">
-                                                <button class="btn btn-default btn-xs btn-remove">
-                                                    <span class="glyphicon glyphicon-minus"></span>
-                                                </button>
-                                            </div>
-                                            <div class="tags list-group-item-text"></div>
-                                        </div>
-                                    </div>
-                                    <div class="list-group-separator"></div>
-                                </div>
-                                <div class="times-content list-group">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div><!-- wrapper -->
-    <div id="footer" role="contentinfo">
-        <div class="container">
-            <p class="credit">
-                Designed and built by 
-                <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>.
-                <a href="https://github.com/resamsel/cube-timer" target="_blank">GitHub</a>. Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.
-            </p>
-        </div>
-    </div>
+	<div id="wrapper">
+	<header class="navbar navbar-fixed-top nav" id="top" role="banner">
+		<div class="container">
+			<div class="navbar-header">
+				<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand">Cube Timer</a>
+			</div>
+			<nav id="bs-navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown" style="display: none">
+						<a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+							3x3x3
+							<b class="caret"></b>
+							<div class="ripple-container"></div>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#">3x3x3</a></li>
+						</ul>
+					</li>
+					<li>
+						<a id="google-login" style="display: none" href="#">
+							Login with Google
+						</a>
+					</li>
+					<li>
+						<a id="config-button" href="#">
+							<span class="glyphicon glyphicon-cog"></span>
+							Configuration
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+				<p id="hint" class="alert alert-info alert-dismissible" style="display: none">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					Hint: To start/stop the timer press <span class="label label-default">space bar</span>.
+				</p>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="text-center">
+							Scramble:
+							<span id="scramble"></span>
+						</div>
+						<div id="timer" class="text-center">00:00.00</div>
+					</div>
+					<div class="panel-footer start-stop-container">
+						<button class="start-stop btn btn-primary btn-lg">
+							<span class="start">
+								<span class="glyphicon glyphicon-play"></span>
+								Start
+							</span>
+							<span class="stop">
+								<span class="glyphicon glyphicon-stop"></span>
+								Stop
+							</span>
+						</button>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div id="stats" class="list-group">
+							<div id="stats-best" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">best</span>
+							</div>
+							<div id="stats-best5" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">best #5</span>
+							</div>
+							<div id="stats-best12" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">best #12</span>
+							</div>
+							<div id="stats-average" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">avg</span>
+							</div>
+							<div id="stats-average5" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">avg #5</span>
+							</div>
+							<div id="stats-average12" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">avg #12</span>
+							</div>
+							<div id="stats-average3of5" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">avg #3/5</span>
+							</div>
+							<div id="stats-average10of12" class="list-group-item">
+								<span class="value">00:00.00</span>
+								<span class="label label-success">avg #10/12</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default panel-times">
+					<div class="panel-heading">
+						<div class="btn-group btn-group-raised pull-right" role="group">
+							<button id="export" type="button" class="btn btn-default btn-xs" title="Export">
+								<span class="glyphicon glyphicon-export"></span>
+							</button>
+							<button id="import" type="button" class="btn btn-default btn-xs" title="Import">
+								<span class="glyphicon glyphicon-import"></span>
+							</button>
+						</div>
+						<h3 class="panel-title">Times</h3>
+					</div>
+					<div class="panel-body">
+						<div id="times" class="table-responsive">
+							<div>
+								<div id="template">
+									<div class="entry list-group-item">
+										<div class="index row-action-primary"></div>
+										<div class="row-content">
+											<div class="date least-content"></div>
+											<div class="value list-group-item-heading"></div>
+											<div class="actions action-secondary">
+												<button class="btn btn-default btn-xs btn-remove">
+													<span class="glyphicon glyphicon-minus"></span>
+												</button>
+											</div>
+											<div class="tags list-group-item-text"></div>
+										</div>
+									</div>
+									<div class="list-group-separator"></div>
+								</div>
+								<div class="times-content list-group">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div><!-- wrapper -->
+	<div id="footer" role="contentinfo">
+		<div class="container">
+			<p class="credit">
+				Designed and built by
+				<a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>.
+				<a href="https://github.com/resamsel/cube-timer" target="_blank">GitHub</a>. Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.
+			</p>
+		</div>
+	</div>
 
-    <div class="modal fade config-dialog" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Configuration</h4>
-                </div>
-                <div class="modal-body">
-                        <form id="config" class="form-horizontal">
-                            <div class="form-group">
-                                <label for="inspectionTime" class="col-form-4 control-label">Inspection time</label>
-                                <div class="col-form-8">
-                                    <select id="inspectionTime" class="form-control">
-                                        <option value="0">None</option>
-                                        <option value="3">3 seconds</option>
-                                        <option value="5">5 seconds</option>
-                                        <option value="10">10 seconds</option>
-                                        <option value="15">15 seconds</option>
-                                    </select>
-                                </div>
-                                <div class="col-form-offset-4 col-form-8">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input id="soundAfterInspection" type="checkbox" />
-                                            <span class="checkbox-material"><span class="check"></span></span>
-                                            Play sound after inspection
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-form-offset-4 col-form-8">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input id="subtext" type="checkbox" />
-                                            <span class="checkbox-material"><span class="check"></span></span>
-                                            Show <span class="label label-info">sub X</span> labels
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        Close
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+	<div class="modal fade config-dialog" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Configuration</h4>
+				</div>
+				<div class="modal-body">
+						<form id="config" class="form-horizontal">
+							<div class="form-group">
+								<label for="inspectionTime" class="col-form-4 control-label">Inspection time</label>
+								<div class="col-form-8">
+									<select id="inspectionTime" class="form-control">
+										<option value="0">None</option>
+										<option value="3">3 seconds</option>
+										<option value="5">5 seconds</option>
+										<option value="10">10 seconds</option>
+										<option value="15">15 seconds</option>
+									</select>
+								</div>
+								<div class="col-form-offset-4 col-form-8">
+									<div class="checkbox">
+										<label>
+											<input id="soundAfterInspection" type="checkbox" />
+											<span class="checkbox-material"><span class="check"></span></span>
+											Play sound after inspection
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-form-offset-4 col-form-8">
+									<div class="checkbox">
+										<label>
+											<input id="subtext" type="checkbox" />
+											<span class="checkbox-material"><span class="check"></span></span>
+											Show <span class="label label-info">sub X</span> labels
+										</label>
+									</div>
+								</div>
+							</div>
+						</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
-    <div class="modal fade export-dialog" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Export Times</h4>
-                </div>
-                <div class="modal-body">
-                    <textarea id="export-content" class="form-control" rows="12"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        Close
-                    </button>
-                    <button id="export-download" type="button" class="btn btn-primary" data-dismiss="modal">
-                        Download
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+	<div class="modal fade export-dialog" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Export Times</h4>
+				</div>
+				<div class="modal-body">
+					<textarea id="export-content" class="form-control" rows="12"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Close
+					</button>
+					<button id="export-download" type="button" class="btn btn-primary" data-dismiss="modal">
+						Download
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
-    <div class="modal fade import-dialog" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title">Import Times</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="btn-group" role="group">
-                        <button id="import-from-file" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-open"></span>
-                            Load from local file
-                        </button>
+	<div class="modal fade import-dialog" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Import Times</h4>
+				</div>
+				<div class="modal-body">
+					<div class="btn-group" role="group">
+						<button id="import-from-file" type="button" class="btn btn-default">
+							<span class="glyphicon glyphicon-open"></span>
+							Load from local file
+						</button>
 
-                        <button id="import-from-drive" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-open"></span>
-                            Load from Google Drive
-                        </button>
-                    </div>
+						<button id="import-from-drive" type="button" class="btn btn-default">
+							<span class="glyphicon glyphicon-open"></span>
+							Load from Google Drive
+						</button>
+					</div>
 
-                    <div id="import-error" class="alert alert-dismissible alert-danger">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <span class="content"></span>
-                    </div>
+					<div id="import-error" class="alert alert-dismissible alert-danger">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<span class="content"></span>
+					</div>
 
-                    <div class="content">
-                        <textarea id="import-content" class="form-control" rows="12"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        Close
-                    </button>
-                    <button id="import-append" type="button" class="btn btn-primary" data-dismiss="modal">
-                        Append
-                    </button>
-                    <button id="import-replace" type="button" class="btn btn-primary" data-dismiss="modal">
-                        Replace
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+					<div class="content">
+						<textarea id="import-content" class="form-control" rows="12"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Close
+					</button>
+					<button id="import-append" type="button" class="btn btn-primary" data-dismiss="modal">
+						Append
+					</button>
+					<button id="import-replace" type="button" class="btn btn-primary" data-dismiss="modal">
+						Replace
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
-    <div style="display: none">
-        <input id="import-file" type="file">
-    </div>
+	<div style="display: none">
+		<input id="import-file" type="file">
+	</div>
 
-    <script src="js/cube-timer.js"></script>
+	<script src="js/cube-timer.js"></script>
 
-    <!--Register Google Api-->
-    <script src="js/google-api.js"></script>
+	<!--Register Google Api-->
+	<script src="js/google-api.js"></script>
 
 </body>
 </html>

@@ -30,7 +30,7 @@ var localDAO = {
 var chromeDAO = {
     get: function(key, callback) {
         // console.log('chromeDAO.get(%s, callback)', key);
-        chrome.storage.sync.get(key, function (v) {
+        chrome.storage.local.get(key, function (v) {
             // console.log('get(%s): %o', key, v);
             var value = v[key];
             if(typeof(value) !== 'undefined') {
@@ -44,7 +44,7 @@ var chromeDAO = {
     set: function(key, value, callback) {
         var obj = {};
         obj[key] = JSON.stringify(value);
-        chrome.storage.sync.set(obj, callback);
+        chrome.storage.local.set(obj, callback);
     }
 };
 var dao;

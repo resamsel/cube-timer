@@ -123,8 +123,63 @@ function updateLabelsCallback(scores) {
 
         // Then mark
         mark(best, 'best', 'success');
-        mark(best5, 'best (5)', 'success');
-        mark(best12, 'best (12)', 'success');
+        mark(best5, 'best #5', 'success');
+        mark(best12, 'best #12', 'success');
+    });
+}
+
+function updateStats() {
+    retrieveScores(function(scores) {
+        var score,
+            best = {id: 0, value: 999999999},
+            best5 = {id: 0, value: 999999999},
+            best12 = {id: 0, value: 999999999},
+            total = 0, total5 = 0, total12 = 0,
+            last5 = [], last12 = [];
+        for (var i = 0; i < scores.length; i++) {
+            score = scores[i];
+            total += score.value;
+            if (score.value < best.value) {
+                best = score;
+            }
+            if ((scores.length - i - 1) < 5) {
+                if (score.value < best5.value) {
+                    best5 = score;
+                }
+                total5 += score.value;
+                last5.push(score.value);
+            }
+            if ((scores.length - i - 1) < 12) {
+                if (score.value < best12.value) {
+                    best12 = score;
+                }
+                total12 += score.value;
+                last12.push(score.value);
+            }
+        }
+
+        $('#stats-best .value')
+            .text(defaultFormatMilliseconds(best.value));
+        $('#stats-best5 .value')
+            .text(defaultFormatMilliseconds(best5.value));
+        $('#stats-best12 .value')
+            .text(defaultFormatMilliseconds(best12.value));
+        $('#stats-average .value')
+            .text(defaultFormatMilliseconds(total/scores.length));
+        $('#stats-average5 .value')
+            .text(defaultFormatMilliseconds(total5/Math.min(scores.length, 5)));
+        $('#stats-average12 .value')
+            .text(defaultFormatMilliseconds(total12/Math.min(scores.length, 12)));
+
+        last5.sort();
+        last12.sort();
+
+        $('#stats-average3of5 .value')
+            .text(defaultFormatMilliseconds(
+                last5.slice(0, 3).reduce(function(a, b) { return a + b; })/Math.min(last5.length, 3)));
+        $('#stats-average10of12 .value')
+            .text(defaultFormatMilliseconds(
+                last12.slice(0, 10).reduce(function(a, b) { return a + b; })/Math.min(last12.length, 10)));
     });
 }
 
@@ -132,6 +187,7 @@ function update() {
     updateIndex();
     updateDates();
     updateLabels();
+    updateStats();
 }
 
 /*

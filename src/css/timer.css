@@ -122,6 +122,16 @@ body {
     width: calc(100% - 40px);
 }
 
+#stats .list-group-item {
+    float: left;
+    padding: 5px 10px;
+    width: 33.333%;
+}
+
+#import-from-drive {
+    display: none;
+}
+
 /*
  * Material theme fixes
  */
@@ -189,11 +199,19 @@ select.form-control {
     #times {
         max-height: 800px;
     }
+    #stats .list-group-item {
+        width: 25%;
+    }
     #hint {
         display: block;
     }
     #footer {
         text-align: left;
+    }
+}
+@media (max-width: 560px) {
+    #stats .list-group-item {
+        width: 50%;
     }
 }
 @media (max-width: 420px) {
