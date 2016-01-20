@@ -29,6 +29,7 @@ body {
 
 #timer {
     font-size: 96px;
+    margin-top: -10px;
 }
 
 .start-stop-container {
