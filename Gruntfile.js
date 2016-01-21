@@ -84,6 +84,12 @@ module.exports = function(grunt) {
             }
         },
 
+        zip: {
+            'dist/<%= pkg.name %>.zip': [
+                'dist/<%= pkg.name %>/**'
+            ]
+        },
+
         watch: {
             files: ['<%= jshint.files %>', 'src/**'],
             tasks: ['jshint', 'dist']
@@ -96,8 +102,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-downloadfile');
+    grunt.loadNpmTasks('grunt-zip');
 
     grunt.registerTask('default', ['jshint']);
     grunt.registerTask('dist', ['copy', 'downloadfile', 'concat', 'uglify']);
+    grunt.registerTask('package', ['dist', 'zip']);
 
 };

@@ -1,7 +1,9 @@
 {
     "name": "Rubik's Cube Timer",
+    "short_name": "Cube Timer",
     "description": "This app allows you to record and manage your cube records",
-    "version": "0.1.1",
+    "author": "René Samselnig",
+    "version": "0.2.0",
     "manifest_version": 2,
 
     "app": {
@@ -15,7 +17,7 @@
         "128": "img/icon-128.png"
     },
     "permissions": [
-        "storage",
-        "https://apis.google.com/"
-    ]
+        "storage"
+    ],
+    "offline_enabled": true
 }

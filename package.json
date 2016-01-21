@@ -1,12 +1,13 @@
 {
   "name": "cube-timer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "devDependencies": {
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-downloadfile": "^0.3.2"
+    "grunt-downloadfile": "^0.3.2",
+    "grunt-zip": "^0.17.1"
   }
 }
