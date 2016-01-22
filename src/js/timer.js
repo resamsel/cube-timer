@@ -158,29 +158,53 @@ function updateStats() {
             }
         }
 
-        $('#stats-best .value')
-            .text(defaultFormatMilliseconds(best.value));
-        $('#stats-best5 .value')
-            .text(defaultFormatMilliseconds(best5.value));
-        $('#stats-best12 .value')
-            .text(defaultFormatMilliseconds(best12.value));
-        $('#stats-average .value')
-            .text(defaultFormatMilliseconds(total/scores.length));
-        $('#stats-average5 .value')
-            .text(defaultFormatMilliseconds(total5/Math.min(scores.length, 5)));
-        $('#stats-average12 .value')
-            .text(defaultFormatMilliseconds(total12/Math.min(scores.length, 12)));
+        if (scores.length > 0) {
+            updateStat('best', best.value);
+            updateStat('best5', best5.value);
+            updateStat('best12', best12.value);
+            updateStat('average', total/scores.length);
+            updateStat('average5', total5/Math.min(scores.length, 5));
+            updateStat('average12', total12/Math.min(scores.length, 12));
 
-        last5.sort();
-        last12.sort();
+            last5.sort();
+            last12.sort();
 
-        $('#stats-average3of5 .value')
-            .text(defaultFormatMilliseconds(
-                last5.slice(0, 3).reduce(function(a, b) { return a + b; })/Math.min(last5.length, 3)));
-        $('#stats-average10of12 .value')
-            .text(defaultFormatMilliseconds(
-                last12.slice(0, 10).reduce(function(a, b) { return a + b; })/Math.min(last12.length, 10)));
+            updateStat(
+                'average3of5',
+                last5
+                    .slice(0, 3)
+                    .reduce(
+                        function(a, b) {
+                            return a + b;
+                        }
+                    )/Math.min(last5.length, 3)
+            );
+            updateStat(
+                'average10of12',
+                last12
+                    .slice(0, 10)
+                    .reduce(
+                        function(a, b) {
+                            return a + b;
+                        }
+                    )/Math.min(last12.length, 10)
+            );
+        } else {
+            updateStat('best', 0);
+            updateStat('best5', 0);
+            updateStat('best12', 0);
+            updateStat('average', 0);
+            updateStat('average5', 0);
+            updateStat('average12', 0);
+            updateStat('average3of5', 0);
+            updateStat('average10of12', 0);
+        }
     });
+}
+
+function updateStat(key, value) {
+    $('#stats-' + key + ' .value')
+        .text(defaultFormatMilliseconds(value));
 }
 
 function update() {
