@@ -15,7 +15,6 @@ module.exports = function(grunt) {
                     { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/<%= pkg.name %>/js' },
                     { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/<%= pkg.name %>/img' },
                     { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' },
-                    { expand: true, flatten: true, src: ['bower_components/bootstrap/dist/fonts/*'], dest: 'dist/<%= pkg.name %>/fonts' },
                 ]
             }
         },
@@ -26,6 +25,11 @@ module.exports = function(grunt) {
                     url: 'https://apis.google.com/js/api.js',
                     dest: 'dist/<%= pkg.name %>/js',
                     name: 'google-api.js'
+                },
+                {
+                    url: 'https://fonts.gstatic.com/s/materialicons/v11/2fcrYFNaTjcS6g4U3t-Y5UEw0lE80llgEseQY3FEmqw.woff2',
+                    dest: 'dist/<%= pkg.name %>/fonts',
+                    name: 'material-icons.woff2'
                 }
             ]
         },

@@ -27,9 +27,18 @@ body {
     margin-left: 10px;
 }
 
+#timer-container {
+    margin-top: -10px;
+    text-align: center;
+}
 #timer {
     font-size: 96px;
-    margin-top: -10px;
+}
+
+.btn.btn-fab.btn-share {
+    vertical-align: super;
+    margin-left: 16px;
+    display: none;
 }
 
 .start-stop-container {
