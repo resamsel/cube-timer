@@ -13,17 +13,6 @@ module.exports = function(grunt) {
                         dest: 'dist/<%= pkg.name %>'
                     },
                     { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/<%= pkg.name %>/js' },
-                    {
-                        expand: true,
-                        flatten: true,
-                        src: [
-                            'src/css/*',
-                            '**/css/bootstrap.min.css',
-                            '**/css/bootstrap-material-design.min.css',
-                            '**/css/ripples.min.css'
-                        ],
-                        dest: 'dist/<%= pkg.name %>/css'
-                    },
                     { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/<%= pkg.name %>/img' },
                     { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' },
                     { expand: true, flatten: true, src: ['bower_components/bootstrap/dist/fonts/*'], dest: 'dist/<%= pkg.name %>/fonts' },
@@ -42,19 +31,24 @@ module.exports = function(grunt) {
         },
 
         concat: {
-            options: {
-                // define a string to put between each file in the concatenated output
-                separator: ';'
-            },
-            dist: {
+            js: {
                 // the files to concatenate
                 src: [
                     'src/js/**/*.js',
                     'bower_components/bootstrap/dist/js/bootstrap.min.js',
                     'bower_components/jquery-migrate/jquery-migrate.min.js'
                 ],
-                // the location of the resulting JS file
                 dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
+            },
+            css: {
+                // the files to concatenate
+                src: [
+                    'bower_components/bootstrap/dist/css/bootstrap.min.css',
+                    'bower_components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
+                    'bower_components/bootstrap-material-design/dist/css/ripples.min.css',
+                    'src/css/*.css'
+                ],
+                dest: 'dist/<%= pkg.name %>/css/<%= pkg.name %>.css'
             }
         },
 
@@ -65,7 +59,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/<%= pkg.name %>/js/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+                    'dist/<%= pkg.name %>/js/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
                 }
             }
         },
@@ -115,7 +109,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-downloadfile');
 
     grunt.registerTask('default', ['jshint']);
-    grunt.registerTask('assemble', ['copy', 'downloadfile', 'concat', 'uglify']);
+    grunt.registerTask(
+        'assemble',
+        [
+            'copy',
+            'downloadfile',
+            'concat',
+//            'uglify'
+        ]
+    );
     grunt.registerTask('dist', ['assemble', 'compress']);
 
 };
