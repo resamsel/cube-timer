@@ -87,6 +87,22 @@ module.exports = function(grunt) {
         watch: {
             files: ['<%= jshint.files %>', 'src/**'],
             tasks: ['jshint', 'dist']
+        },
+
+        compress: {
+            main: {
+                options: {
+                    archive: 'dist/<%= pkg.name %>.zip'
+                },
+                files: [
+                    {
+                        expand: true,
+                        src: ['<%= pkg.name %>/**'],
+                        cwd: 'dist/',
+                        dest: ''
+                    }
+                ]
+            }
         }
     });
 
@@ -95,10 +111,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-downloadfile');
 
     grunt.registerTask('default', ['jshint']);
     grunt.registerTask('assemble', ['copy', 'downloadfile', 'concat', 'uglify']);
-    grunt.registerTask('dist', ['assemble']);
+    grunt.registerTask('dist', ['assemble', 'compress']);
 
 };
