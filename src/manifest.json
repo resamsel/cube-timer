@@ -1,10 +1,11 @@
 {
-    "name": "Rubik's Cube Timer",
-    "short_name": "Cube Timer",
-    "description": "This app allows you to record and manage your cube records",
+    "name": "__MSG_appName__",
+    "short_name": "__MSG_appShortName__",
+    "description": "__MSG_appDescription__",
     "author": "René Samselnig",
     "version": "0.2.1",
     "manifest_version": 2,
+    "default_locale": "en",
 
     "app": {
         "background": {

@@ -8,13 +8,13 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-                        flatten: true,
-                        src: ['src/*.html', 'src/manifest.json', 'src/background.js'],
+                        cwd: 'src/',
+                        src: ['*.html', 'manifest.json', 'background.js', '_locales/**'],
                         dest: 'dist/<%= pkg.name %>'
                     },
                     { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/<%= pkg.name %>/js' },
                     { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/<%= pkg.name %>/img' },
-                    { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' },
+                    { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' }
                 ]
             }
         },

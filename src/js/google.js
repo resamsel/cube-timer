@@ -102,7 +102,7 @@ function handleFileExport(response) {
         showImportData(response.text);
     } else {
         $('#import-error .content')
-            .text('Server error while exporting selected file: ' + response.error.message);
+            .text(chrome.i18n.getMessage("importServerError", response.error.message));
         $('#import-error').fadeIn();
     }
 }

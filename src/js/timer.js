@@ -399,17 +399,12 @@ function handleFileSelect()
     }
 
     var input = document.getElementById('import-file');
-    if (!input) {
-        alert("Um, couldn't find the fileinput element.");
-        return;
-    }
-
     var files = input.files;
     if (!files) {
-        alert("This browser doesn't seem to support the `files` property of file inputs.");
+        alert(chrome.i18n.getMessage("importFilesUnsupported"));
     }
     else if (!files[0]) {
-        alert("Please select a file before clicking 'Load'");
+        alert(chrome.i18n.getMessage("importFilesEmpty"));
     }
     else {
         var file = new Blob([files[0]], {type: 'text/plain'});
@@ -425,6 +420,8 @@ function handleFileSelect()
 }
 
 $(document).ready(function() {
+    i18n();
+
     getConfig('hintVisible', true, function(hintVisible) {
         if(hintVisible) {
             $('#hint').show();
