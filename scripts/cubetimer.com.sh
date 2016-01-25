@@ -1,0 +1,1 @@
+cat ~/Downloads/cubetimer.com.csv | awk -F\; '{split($1, t, "."); split($2, a, "[:.]"); printf "%s.%03dZ;%d\n", t[1], t[2], a[1]*60*1000 + a[2]*1000 + a[3]*10}' > ~/Downloads/cubetimer.com2.csv
