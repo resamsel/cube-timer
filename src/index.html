@@ -40,6 +40,12 @@
 						</ul>
 					</li>
 					<li>
+						<a id="results-button" href="#">
+							<i class="material-icons">assessment</i>
+							<span i18n-key="results">Times</span>
+						</a>
+					</li>
+					<li>
 						<a id="config-button" href="#">
 							<i class="material-icons">settings</i>
 							<span i18n-key="configuration">Configuration</span>
@@ -51,7 +57,7 @@
 	</header>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-12">
 				<p id="hint" class="alert alert-info alert-dismissible" style="display: none">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<i class="material-icons">close</i>
@@ -125,45 +131,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4">
-				<div class="panel panel-default panel-times">
-					<div class="panel-heading">
-						<div class="btn-group btn-group-raised pull-right" role="group">
-							<button id="export" type="button" class="btn btn-default btn-xs" title="Export">
-								<i class="material-icons">file_download</i>
-							</button>
-							<button id="import" type="button" class="btn btn-default btn-xs" title="Import">
-								<i class="material-icons">file_upload</i>
-							</button>
-						</div>
-						<h3 class="panel-title" i18n-key="panelResults">Times</h3>
-					</div>
-					<div class="panel-body">
-						<div id="times" class="table-responsive">
-							<div>
-								<div id="template">
-									<div class="entry list-group-item">
-										<div class="index row-action-primary"></div>
-										<div class="row-content">
-											<div class="date least-content"></div>
-											<div class="value list-group-item-heading"></div>
-											<div class="actions action-secondary">
-												<button class="btn btn-default btn-xs btn-remove">
-													<i class="material-icons">remove</i>
-												</button>
-											</div>
-											<div class="tags list-group-item-text"></div>
-										</div>
-									</div>
-									<div class="list-group-separator"></div>
-								</div>
-								<div class="times-content list-group">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 	</div><!-- wrapper -->
@@ -174,6 +141,51 @@
 				<a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>.
 				<a href="https://github.com/resamsel/cube-timer" target="_blank">GitHub</a>. Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.
 			</p>
+		</div>
+	</div>
+
+	<div class="modal fade results-dialog" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i class="material-icons">close</i>
+					</button>
+					<h4 class="modal-title" i18n-key="results">Times</h4>
+				</div>
+				<div class="modal-body">
+					<div id="times">
+						<div id="template">
+							<div class="entry list-group-item">
+								<div class="index row-action-primary"></div>
+								<div class="row-content">
+									<div class="date least-content"></div>
+									<div class="value list-group-item-heading"></div>
+									<div class="actions action-secondary">
+										<button class="btn btn-default btn-xs btn-remove">
+											<i class="material-icons">remove</i>
+										</button>
+									</div>
+									<div class="tags list-group-item-text"></div>
+								</div>
+							</div>
+							<div class="list-group-separator"></div>
+						</div>
+						<div class="times-content list-group">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="import" type="button" class="btn btn-default" title="Import">
+						<i class="material-icons">file_upload</i>
+						<span i18n-key="buttonImport">Import</span>
+					</button>
+					<button id="export" type="button" class="btn btn-default" title="Export">
+						<i class="material-icons">file_download</i>
+						<span i18n-key="buttonExport">Export</span>
+					</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -222,12 +234,6 @@
 							</div>
 						</form>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<i class="material-icons">close</i>
-						Close
-					</button>
-				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
@@ -245,10 +251,6 @@
 					<textarea id="export-content" class="form-control" rows="12"></textarea>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<i class="material-icons">close</i>
-						Close
-					</button>
 					<button id="export-download" type="button" class="btn btn-primary" data-dismiss="modal">
 						Download
 					</button>
@@ -291,17 +293,13 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<i class="material-icons">close</i>
-						Close
+					<button id="import-replace" type="button" class="btn btn-default" data-dismiss="modal">
+						<i class="material-icons">content_paste</i>
+						Replace
 					</button>
 					<button id="import-append" type="button" class="btn btn-primary" data-dismiss="modal">
 						<i class="material-icons">add</i>
 						Append
-					</button>
-					<button id="import-replace" type="button" class="btn btn-primary" data-dismiss="modal">
-						<i class="material-icons">content_paste</i>
-						Replace
 					</button>
 				</div>
 			</div><!-- /.modal-content -->

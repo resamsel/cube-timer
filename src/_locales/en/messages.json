@@ -42,7 +42,7 @@
         "message": "Scramble:",
         "description": "The label indicating how to scramble the cube before solving it."
     },
-    "panelResults": {
+    "results": {
         "message": "Times",
         "description": "The label of the results/times panel."
     },

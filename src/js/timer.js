@@ -441,6 +441,10 @@ $(document).ready(function() {
     /*
      * Dialogs
      */
+    $('#results-button').bind('click', function() {
+        // Show dialog
+        $('.results-dialog').modal('show');
+    });
     $('#config-button').bind('click', function() {
         // Show dialog
         $('.config-dialog').modal('show');

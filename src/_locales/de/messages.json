@@ -42,8 +42,8 @@
         "message": "Mischen:",
         "description": "The label indicating how to scramble the cube before solving it."
     },
-    "panelResults": {
-        "message": "Times",
+    "results": {
+        "message": "Zeiten",
         "description": "The label of the results/times panel."
     },
 

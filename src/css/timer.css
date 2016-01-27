@@ -63,13 +63,6 @@ body {
     display: inline-block;
 }
 
-.panel-times {
-}
-
-#times {
-    max-height: 11.5em;
-    overflow-y: scroll;
-}
 #times button.btn-remove {
     margin: 0;
 }
@@ -78,6 +71,24 @@ body {
 }
 #times .date {
     white-space: nowrap;
+}
+
+.results-dialog .modal-dialog,
+.results-dialog .modal-content {
+    height: calc(100% - 60px);
+}
+
+.results-dialog .modal-body {
+    /* 100% = dialog height, 103px = header + footer */
+    max-height: calc(100% - 103px);
+    overflow-y: scroll;
+}
+
+.modal-footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    right: 0;
 }
 
 .panel-heading .btn-group {
@@ -138,39 +149,6 @@ body {
     width: 33.333%;
 }
 
-/*
- * Material theme fixes
- */
-.form-horizontal .control-label {
-    padding-top: 7px;
-    margin-bottom: 0;
-    text-align: right;
-}
-.form-group {
-    margin-top: 0;
-}
-.form-horizontal label {
-    text-align: left;
-}
-.form-control,
-.form-group .checkbox label,
-.form-group .radio label,
-.form-group label,
-.form-group label.control-label {
-    font-size: 14px;
-}
-select.form-control {
-    margin-top: 7px;
-}
-.form-group label.control-label {
-    margin: 12px 0 0 0;
-}
-.list-group .list-group-item .row-content .action-secondary~* {
-    max-width: -webkit-calc(100%);
-    max-width: calc(100%);
-}
-/** /Fixes */
-
 .picker.picker-dialog {
     z-index: 9999;
 }
@@ -191,47 +169,4 @@ select.form-control {
 }
 #footer a {
     color: #0088cc;
-}
-
-@media (max-width: 1199px) {
-    .navbar .navbar-brand {
-        padding: 10px 15px 10px 30px;
-    }
-}
-@media (min-width: 768px) {
-    .navbar .navbar-brand {
-        padding-left: 30px;
-    }
-    #times {
-        max-height: 800px;
-    }
-    #stats .list-group-item {
-        width: 25%;
-    }
-    #hint {
-        display: block;
-    }
-    #footer {
-        text-align: left;
-    }
-}
-@media (max-width: 560px) {
-    #stats .list-group-item {
-        width: 50%;
-    }
-}
-@media (max-width: 420px) {
-    #timer {
-        font-size: 84px;
-    }
-}
-@media (max-width: 380px) {
-    #timer {
-        font-size: 72px;
-    }
-}
-@media (max-width: 340px) {
-    #timer {
-        font-size: 64px;
-    }
 }
