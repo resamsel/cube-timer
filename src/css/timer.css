@@ -78,17 +78,24 @@ body {
     height: calc(100% - 60px);
 }
 
-.results-dialog .modal-body {
-    /* 100% = dialog height, 103px = header + footer */
-    max-height: calc(100% - 103px);
-    overflow-y: scroll;
+.modal-content .modal-body {
+    padding-bottom: 60px;
 }
-
+.modal-content .modal-footer {
+    padding: 15px;
+}
 .modal-footer {
-    position: relative;
+    position: absolute;
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.results-dialog .modal-body {
+    /* 100% = dialog height, 110px = header + footer */
+    max-height: calc(100% - 110px);
+    padding-bottom: 0;
+    overflow-y: scroll;
 }
 
 .panel-heading .btn-group {

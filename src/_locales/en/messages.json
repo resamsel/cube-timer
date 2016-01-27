@@ -55,6 +55,14 @@
         "message": "Stop",
         "description": "The name of the button to stop the timer."
     },
+    "buttonImport": {
+        "message": "Import",
+        "description": "The name of the button to import results."
+    },
+    "buttonExport": {
+        "message": "Export",
+        "description": "The name of the button to export results."
+    },
 
     "footer": {
         "message": "Designed and built by <a href=\"https://twitter.com/resamsel\" target=\"_blank\">@resamsel</a>. <a href=\"https://github.com/resamsel/cube-timer\" target=\"_blank\">GitHub</a>. Code licensed <a rel=\"license\" href=\"https://github.com/resamsel/cube-timer/blob/master/LICENSE\" target=\"_blank\">GPLv2</a>.",
