@@ -1,0 +1,71 @@
+{
+    "appName": {
+        "message": "Rubik's Cube Timer",
+        "description": "The title of the application, displayed in the web store."
+    },
+    "appShortName": {
+        "message": "Cube Timer",
+        "description": "The short name of the application."
+    },
+    "appDescription": {
+        "message": "This app allows you to record and manage your cube records.",
+        "description": "The description of the application, displayed in the web store."
+    },
+
+    "importFilesUnsupported": {
+        "message": "This browser doesn't seem to support the `files` property of file inputs.",
+        "description": "The message when the browser doesn't support the files feature of input elements."
+    },
+    "importFilesEmpty": {
+        "message": "Please select a file before clicking 'Load'",
+        "description": "The message when the user hasn't selected anything in the file input dialog."
+    },
+    "importServerError": {
+        "message": "Server error while exporting selected file: $message$",
+        "placeholders": {
+            "message": {
+                "content": "$1",
+                "example": ""
+            }
+        }
+    },
+
+    "configuration": {
+        "message": "Konfiguration",
+        "description": "The name of the link that opens the configuration dialog."
+    },
+    "hintSpacebar": {
+        "message": "Hinweis: Um den Timer zu starten oder zu stoppen kann auch die <span class=\"label label-default\">Leertaste</span> gedrückt werden.",
+        "description": "This hint tells about the spacebar as a short key to start/stop the timer."
+    },
+    "scrambleLabel": {
+        "message": "Mischen:",
+        "description": "The label indicating how to scramble the cube before solving it."
+    },
+    "results": {
+        "message": "Zeiten",
+        "description": "The label of the results/times panel."
+    },
+
+    "buttonStart": {
+        "message": "Start",
+        "description": "The name of the button to start the timer."
+    },
+    "buttonStop": {
+        "message": "Stop",
+        "description": "The name of the button to stop the timer."
+    },
+    "buttonImport": {
+        "message": "Import",
+        "description": "The name of the button to import results."
+    },
+    "buttonExport": {
+        "message": "Export",
+        "description": "The name of the button to export results."
+    },
+
+    "footer": {
+        "message": "Designed and built by <a href=\"https://twitter.com/resamsel\" target=\"_blank\">@resamsel</a>. <a href=\"https://github.com/resamsel/cube-timer\" target=\"_blank\">GitHub</a>. Code licensed <a rel=\"license\" href=\"https://github.com/resamsel/cube-timer/blob/master/LICENSE\" target=\"_blank\">GPLv2</a>.",
+        "description": "The footer message."
+    }
+}

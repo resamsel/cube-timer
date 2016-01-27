@@ -1,0 +1,31 @@
+/*
+ * Material theme fixes
+ */
+.form-horizontal .control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}
+.form-group {
+    margin-top: 0;
+}
+.form-horizontal label {
+    text-align: left;
+}
+.form-control,
+.form-group .checkbox label,
+.form-group .radio label,
+.form-group label,
+.form-group label.control-label {
+    font-size: 14px;
+}
+select.form-control {
+    margin-top: 7px;
+}
+.form-group label.control-label {
+    margin: 12px 0 0 0;
+}
+.list-group .list-group-item .row-content .action-secondary~* {
+    max-width: -webkit-calc(100%);
+    max-width: calc(100%);
+}
