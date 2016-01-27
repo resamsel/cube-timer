@@ -3,7 +3,7 @@ function i18n() {
         return;
     }
 
-    $(".i18n[i18n-key]").each(function() {
+    $("*[i18n-key]").each(function() {
         var that = $(this);
         that.html(chrome.i18n.getMessage(that.attr('i18n-key')));
     });
