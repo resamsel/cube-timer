@@ -15,7 +15,12 @@ module.exports = function(grunt) {
                     { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/<%= pkg.name %>/js' },
                     { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/<%= pkg.name %>/img' },
                     { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' }
-                ]
+                ],
+                options: {
+                    process: function (content, srcpath) {
+                        return content.replace(/@@version/g, grunt.file.readJSON('package.json').version);
+                    }
+                }
             }
         },
         
