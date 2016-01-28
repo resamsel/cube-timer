@@ -1,7 +1,8 @@
 module.exports = function(grunt) {
+    var pkg = grunt.file.readJSON('package.json');
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: pkg,
 
         copy: {
             main: {
@@ -35,7 +36,7 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>',
                 options: {
                     process: function (content, srcpath) {
-                        return content.replace(/@@version/g, grunt.file.readJSON('package.json').version);
+                        return content.replace(/@@version/g, pkg.version);
                     }
                 }
             }
