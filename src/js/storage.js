@@ -122,3 +122,38 @@ function removeScoreHandler(element, id) {
         });
     };
 }
+
+function retrieveHighlights(callback) {
+    dao.get(
+        'statsHighlights',
+        defaultCallback(
+            'statsHighlights',
+            ['best'],
+            callback
+        )
+    );
+}
+
+function storeHighlights(highlights, callback) {
+    dao.set('statsHighlights', highlights, callback);
+}
+
+function storeHighlight(stat, checked, callback) {
+    retrieveHighlights(function(highlights) {
+        var index = highlights.indexOf(stat);
+        if(index > -1) {
+            // Stat exists
+            if(!checked) {
+                // ...but shouldn't
+                highlights.remove(index);
+            }
+        } else {
+            // Stat doesn't exist
+            if(checked) {
+                // ...but should
+                highlights.push(stat);
+            }
+        }
+        storeHighlights(highlights, callback);
+    });
+}

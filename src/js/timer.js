@@ -36,9 +36,10 @@ function defaultFormatMilliseconds(millis) {
 }
 
 function showScore(score) {
-    var row = $('#times #template').clone();
+    var row = $('#times .template').clone();
 
     row.attr('id', 'id-' + score.id);
+    row.removeClass('template');
     row.find('.value').text(defaultFormatMilliseconds(score.value));
     row.find('.date').text(toDate(score.id)).data('date', score.id);
     row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
@@ -207,6 +208,17 @@ function updateStat(key, value) {
         .text(defaultFormatMilliseconds(value));
 }
 
+function updateHighlights() {
+    retrieveHighlights(function(highlights) {
+        $('#stats .stat').removeClass('highlight');
+        var highlight;
+        for(var i = 0; i < highlights.length; i++) {
+            highlight = highlights[i];
+            $('#stats-' + highlight).addClass('highlight');
+        }
+    });
+}
+
 function update() {
     updateIndex();
     updateDates();
@@ -362,6 +374,15 @@ function handleImport(replace) {
     }
 }
 
+function handleStatChange(event) {
+    var that = $(event.target);
+    storeHighlight(
+        that.attr('stat'),
+        that.prop('checked'),
+        updateHighlights
+    );
+}
+
 function toCsv(scores) {
     var result = 'Date;Duration\n';
 
@@ -508,4 +529,26 @@ $(document).ready(function() {
             }
         );
     });
+
+    retrieveHighlights(function(highlights) {
+        var container = $('#statsHighlights .stats-content'),
+            highlight, stat;
+
+        $('#stats .stat').each(function(index, element) {
+            highlight = $(element).attr('id').replace('stats-', '');
+            stat = $('#statsHighlights .template').clone();
+            stat.removeClass('template');
+
+            stat.find('input[type=checkbox]')
+                .attr('id', 'stat-' + highlight)
+                .attr('stat', highlight)
+                .prop('checked', highlights.indexOf(highlight) > -1);
+            stat.find('.label')
+                .text(highlight);
+            stat.change(handleStatChange);
+
+            container.append(stat);
+        });
+    });
+    updateHighlights();
 });
