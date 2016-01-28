@@ -95,35 +95,35 @@
 				<div class="panel panel-default">
 					<div class="panel-body">
 						<div id="stats" class="list-group">
-							<div id="stats-best" class="list-group-item">
+							<div id="stats-best" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">best</span>
 							</div>
-							<div id="stats-best5" class="list-group-item">
+							<div id="stats-best5" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">best #5</span>
 							</div>
-							<div id="stats-best12" class="list-group-item">
+							<div id="stats-best12" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">best #12</span>
 							</div>
-							<div id="stats-average" class="list-group-item">
+							<div id="stats-average" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">avg</span>
 							</div>
-							<div id="stats-average5" class="list-group-item">
+							<div id="stats-average5" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">avg #5</span>
 							</div>
-							<div id="stats-average12" class="list-group-item">
+							<div id="stats-average12" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">avg #12</span>
 							</div>
-							<div id="stats-average3of5" class="list-group-item">
+							<div id="stats-average3of5" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">avg #3/5</span>
 							</div>
-							<div id="stats-average10of12" class="list-group-item">
+							<div id="stats-average10of12" class="list-group-item stat">
 								<span class="value">00:00.00</span>
 								<span class="label label-success">avg #10/12</span>
 							</div>
@@ -155,7 +155,7 @@
 				</div>
 				<div class="modal-body">
 					<div id="times">
-						<div id="template">
+						<div class="template">
 							<div class="entry list-group-item">
 								<div class="index row-action-primary"></div>
 								<div class="row-content">
@@ -228,6 +228,20 @@
 											<input id="subtext" type="checkbox" />
 											<span class="checkbox-material"><span class="check"></span></span>
 											Show <span class="label label-info">sub X</span> labels
+										</label>
+									</div>
+								</div>
+							</div>
+							<div id="statsHighlights" class="form-group">
+								<div class="col-form-4 control-label">
+									Highlight
+								</div>
+								<div class="col-form-8 stats-content">
+									<div class="template checkbox">
+										<label>
+											<input id="stat-template" type="checkbox" stat="template" />
+											<span class="checkbox-material"><span class="check"></span></span>
+											<span class="label label-success">best</span>
 										</label>
 									</div>
 								</div>
