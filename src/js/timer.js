@@ -20,6 +20,10 @@ Array.prototype.unique = function(eq) {
     return a;
 };
 
+Array.prototype.last = function() {
+    return this[this.length - 1];
+};
+
 function pad2(number) {
     return (number < 10 ? '0' : '') + number;
 }
@@ -129,19 +133,27 @@ function updateLabelsCallback(scores) {
     });
 }
 
+function scoreValue(score) {
+    return score.value;
+}
+
 function updateStats() {
     retrieveScores(function(scores) {
         var score,
             best = {id: 0, value: 999999999},
             best5 = {id: 0, value: 999999999},
             best12 = {id: 0, value: 999999999},
+            worst = {id: 0, value: 0},
             total = 0, total5 = 0, total12 = 0,
-            last5 = [], last12 = [];
+            last5 = [], last12 = [], best3of5, best10of12;
         for (var i = 0; i < scores.length; i++) {
             score = scores[i];
             total += score.value;
             if (score.value < best.value) {
                 best = score;
+            }
+            if (score.value > worst.value) {
+                worst = score;
             }
             if ((scores.length - i - 1) < 5) {
                 if (score.value < best5.value) {
@@ -160,45 +172,58 @@ function updateStats() {
         }
 
         if (scores.length > 0) {
+            last5.sort();
+            last12.sort();
+            best3of5 = last5.slice(0, 3);
+            best10of12 = last12.slice(0, 10);
+
             updateStat('best', best.value);
             updateStat('best5', best5.value);
             updateStat('best12', best12.value);
-            updateStat('average', total/scores.length);
-            updateStat('average5', total5/Math.min(scores.length, 5));
-            updateStat('average12', total12/Math.min(scores.length, 12));
-
-            last5.sort();
-            last12.sort();
-
+            updateStat('worst', worst.value);
+            updateStat('worst5', last5.last());
+            updateStat('worst12', last12.last());
+            updateStat('stddev', standardDeviation(scores, scoreValue));
+            updateStat('stddev5', standardDeviation(last5));
+            updateStat('stddev12', standardDeviation(last12));
+            updateStat('average', average(scores, scoreValue));
+            updateStat('average5', average(last5));
+            updateStat('average12', average(last12));
+            updateStat('average3of5', average(best3of5));
+            updateStat('average10of12', average(best10of12));
             updateStat(
-                'average3of5',
-                last5
-                    .slice(0, 3)
-                    .reduce(
-                        function(a, b) {
-                            return a + b;
-                        }
-                    )/Math.min(last5.length, 3)
+                'median',
+                median(
+                    scores,
+                    function(v) {
+                        return v.value;
+                    }
+                )
             );
-            updateStat(
-                'average10of12',
-                last12
-                    .slice(0, 10)
-                    .reduce(
-                        function(a, b) {
-                            return a + b;
-                        }
-                    )/Math.min(last12.length, 10)
-            );
+            updateStat('median5', median(last5));
+            updateStat('median12', median(last12));
+            updateStat('median3of5', median(best3of5));
+            updateStat('median10of12', median(best10of12));
         } else {
             updateStat('best', 0);
             updateStat('best5', 0);
             updateStat('best12', 0);
+            updateStat('worst', 0);
+            updateStat('worst5', 0);
+            updateStat('worst12', 0);
             updateStat('average', 0);
             updateStat('average5', 0);
             updateStat('average12', 0);
             updateStat('average3of5', 0);
             updateStat('average10of12', 0);
+            updateStat('median', 0);
+            updateStat('median5', 0);
+            updateStat('median12', 0);
+            updateStat('median3of5', 0);
+            updateStat('median10of12', 0);
+            updateStat('stddev', 0);
+            updateStat('stddev5', 0);
+            updateStat('stddev12', 0);
         }
     });
 }
