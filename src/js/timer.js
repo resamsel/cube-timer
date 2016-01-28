@@ -139,7 +139,7 @@ function scoreValue(score) {
 
 function updateStats() {
     retrieveScores(function(scores) {
-        var score,
+        var score, avg80,
             best = {id: 0, value: 999999999},
             best5 = {id: 0, value: 999999999},
             best12 = {id: 0, value: 999999999},
@@ -172,6 +172,7 @@ function updateStats() {
         }
 
         if (scores.length > 0) {
+            avg80 = scores.map(scoreValue).sort().slice(0, Math.max(1, Math.floor(scores.length*0.8)));
             last5.sort();
             last12.sort();
             best3of5 = last5.slice(0, 3);
@@ -189,6 +190,7 @@ function updateStats() {
             updateStat('average', average(scores, scoreValue));
             updateStat('average5', average(last5));
             updateStat('average12', average(last12));
+            updateStat('average80', average(avg80));
             updateStat('average3of5', average(best3of5));
             updateStat('average10of12', average(best10of12));
             updateStat(
@@ -214,6 +216,7 @@ function updateStats() {
             updateStat('average', 0);
             updateStat('average5', 0);
             updateStat('average12', 0);
+            updateStat('average80', 0);
             updateStat('average3of5', 0);
             updateStat('average10of12', 0);
             updateStat('median', 0);
