@@ -1,24 +1,42 @@
 module.exports = function(grunt) {
+    var pkg = grunt.file.readJSON('package.json');
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: pkg,
 
         copy: {
             main: {
-                files: [
-                    {
-                        expand: true,
-                        cwd: 'src/',
-                        src: ['*.html', 'manifest.json', 'background.js', '_locales/**'],
-                        dest: 'dist/<%= pkg.name %>'
-                    },
-                    { expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'dist/<%= pkg.name %>/js' },
-                    { expand: true, flatten: true, src: ['src/img/*'], dest: 'dist/<%= pkg.name %>/img' },
-                    { expand: true, flatten: true, src: ['src/audio/*'], dest: 'dist/<%= pkg.name %>/audio' }
-                ],
+                expand: true,
+                cwd: 'src/',
+                src: ['*.html', 'background.js', '_locales/**'],
+                dest: 'dist/<%= pkg.name %>'
+            },
+            jquery: {
+                expand: true,
+                flatten: true,
+                src: 'bower_components/jquery/dist/jquery.min.js',
+                dest: 'dist/<%= pkg.name %>/js'
+            },
+            image: {
+                expand: true,
+                flatten: true,
+                src: 'src/img/*',
+                dest: 'dist/<%= pkg.name %>/img'
+            },
+            audio: {
+                expand: true,
+                flatten: true,
+                src: 'src/audio/*',
+                dest: 'dist/<%= pkg.name %>/audio'
+            },
+            manifest: {
+                expand: true,
+                cwd: 'src/',
+                src: 'manifest.json',
+                dest: 'dist/<%= pkg.name %>',
                 options: {
                     process: function (content, srcpath) {
-                        return content.replace(/@@version/g, grunt.file.readJSON('package.json').version);
+                        return content.replace(/@@version/g, pkg.version);
                     }
                 }
             }
