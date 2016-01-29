@@ -165,6 +165,9 @@ body {
 #statsHighlights .checkbox.template {
     display: none;
 }
+#statsHighlights .checkbox {
+    width: 33%;
+}
 .stat.highlight .label.label-success {
     background-color: #4caf50;
 }

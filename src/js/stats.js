@@ -2,18 +2,18 @@ function identity(v) {
     return v;
 }
 
+function addition(a, b) {
+    return a + b;
+}
+
 function average(data, mapper) {
     if (typeof(mapper) === 'undefined') {
         mapper = identity;
     }
 
-    var sum = data.map(mapper).reduce(
-        function(a, b) {
-            return a + b;
-        }
-    );
-    
-    return sum/data.length;
+    var sum = data.map(mapper).reduce(addition, 0);
+
+    return sum / data.length;
 }
 
 function median(data, mapper) {
@@ -50,4 +50,12 @@ function standardDeviation(data, mapper) {
     var avgSquareDiff = average(squareDiffs);
 
     return Math.sqrt(avgSquareDiff);
+}
+
+function movingAverage(data, size) {
+    var avg = [];
+    for (var i = 0; i < data.length; i++) {
+        avg.push(average(data.slice(Math.max(i - size, 0), i)));
+    }
+    return avg;
 }

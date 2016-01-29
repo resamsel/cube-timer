@@ -3,7 +3,7 @@
   "description": "",
   "main": "",
   "authors": [
-    "René Samselnig <Rene.Samselnig@skiline.cc>"
+    "René Samselnig <Rene.Samselnig@gmail.com>"
   ],
   "license": "MIT",
   "homepage": "https://github.com/resamsel/cube-timer",
@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "bootstrap-material-design": "~0.5.7",
-    "jquery-migrate": "~1.2.1"
+    "jquery-migrate": "~1.2.1",
+    "chartist": "~0.9.5"
   }
 }

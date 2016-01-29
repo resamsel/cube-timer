@@ -1,0 +1,38 @@
+.ct-legend {
+    position: relative;
+    z-index: 10;
+    list-style: none;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0 5px;
+    margin-left: 60px;
+    margin-top: 3px;
+}
+
+.ct-legend   li {
+    position: relative;
+    padding-left: 23px;
+    margin-bottom: 3px;
+    cursor: pointer;
+}
+
+.ct-legend li:before {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    content: '';
+    border: 3px solid transparent;
+    border-radius: 2px;
+    margin-top: 3px;
+}
+
+.ct-legend    li.inactive:before {
+    background: transparent;
+}
+
+.ct-legend.ct-legend-inside {
+    position: absolute;
+    top: 0;
+    right: 0;
+}

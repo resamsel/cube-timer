@@ -1,5 +1,17 @@
 var timerSound;
 var startSound;
+var config = {
+    stats: [
+        'best', 'best5', 'best12',
+        'worst', 'worst5', 'worst12',
+        'best80', 'best3of5', 'best10of12',
+        'stddev', 'stddev5', 'stddev12',
+        'average', 'average5', 'average12',
+        'average80', 'average3of5', 'average10of12',
+        'median', 'median5', 'median12',
+        'median80', 'median3of5', 'median10of12',
+    ]
+};
 
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
@@ -20,8 +32,11 @@ Array.prototype.unique = function(eq) {
     return a;
 };
 
-Array.prototype.last = function() {
-    return this[this.length - 1];
+Array.prototype.last = function(defaultValue) {
+    if(this.length > 0) {
+        return this[this.length - 1];
+    }
+    return defaultValue || 0;
 };
 
 function pad2(number) {
@@ -133,101 +148,64 @@ function updateLabelsCallback(scores) {
     });
 }
 
+function scoreKey(score) {
+    return score.id;
+}
+
 function scoreValue(score) {
     return score.value;
 }
 
+function compareNumbers(a, b) {
+    return a - b;
+}
+
 function updateStats() {
     retrieveScores(function(scores) {
-        var score, avg80,
-            best = {id: 0, value: 999999999},
-            best5 = {id: 0, value: 999999999},
-            best12 = {id: 0, value: 999999999},
-            worst = {id: 0, value: 0},
-            total = 0, total5 = 0, total12 = 0,
-            last5 = [], last12 = [], best3of5, best10of12;
-        for (var i = 0; i < scores.length; i++) {
-            score = scores[i];
-            total += score.value;
-            if (score.value < best.value) {
-                best = score;
-            }
-            if (score.value > worst.value) {
-                worst = score;
-            }
-            if ((scores.length - i - 1) < 5) {
-                if (score.value < best5.value) {
-                    best5 = score;
-                }
-                total5 += score.value;
-                last5.push(score.value);
-            }
-            if ((scores.length - i - 1) < 12) {
-                if (score.value < best12.value) {
-                    best12 = score;
-                }
-                total12 += score.value;
-                last12.push(score.value);
-            }
+        statsChart(scores);
+
+        if (scores.length < 1) {
+            scores.push({id: 0, value: 0});
         }
 
-        if (scores.length > 0) {
-            avg80 = scores.map(scoreValue).sort().slice(0, Math.max(1, Math.floor(scores.length*0.8)));
-            last5.sort();
-            last12.sort();
-            best3of5 = last5.slice(0, 3);
-            best10of12 = last12.slice(0, 10);
+        var values = scores.map(scoreValue);
+        var last5 = values.slice(-5).sort(compareNumbers);
+        var last12 = values.slice(-12).sort(compareNumbers);
+        var best3of5 = last5.slice(0, 3).sort(compareNumbers);
+        var best10of12 = last12.slice(0, 10).sort(compareNumbers);
 
-            updateStat('best', best.value);
-            updateStat('best5', best5.value);
-            updateStat('best12', best12.value);
-            updateStat('worst', worst.value);
-            updateStat('worst5', last5.last());
-            updateStat('worst12', last12.last());
-            updateStat('stddev', standardDeviation(scores, scoreValue));
-            updateStat('stddev5', standardDeviation(last5));
-            updateStat('stddev12', standardDeviation(last12));
-            updateStat('average', average(scores, scoreValue));
-            updateStat('average5', average(last5));
-            updateStat('average12', average(last12));
-            updateStat('average80', average(avg80));
-            updateStat('average3of5', average(best3of5));
-            updateStat('average10of12', average(best10of12));
-            updateStat(
-                'median',
-                median(
-                    scores,
-                    function(v) {
-                        return v.value;
-                    }
-                )
-            );
-            updateStat('median5', median(last5));
-            updateStat('median12', median(last12));
-            updateStat('median3of5', median(best3of5));
-            updateStat('median10of12', median(best10of12));
-        } else {
-            updateStat('best', 0);
-            updateStat('best5', 0);
-            updateStat('best12', 0);
-            updateStat('worst', 0);
-            updateStat('worst5', 0);
-            updateStat('worst12', 0);
-            updateStat('average', 0);
-            updateStat('average5', 0);
-            updateStat('average12', 0);
-            updateStat('average80', 0);
-            updateStat('average3of5', 0);
-            updateStat('average10of12', 0);
-            updateStat('median', 0);
-            updateStat('median5', 0);
-            updateStat('median12', 0);
-            updateStat('median3of5', 0);
-            updateStat('median10of12', 0);
-            updateStat('stddev', 0);
-            updateStat('stddev5', 0);
-            updateStat('stddev12', 0);
-        }
+        console.log(last5);
+        values.sort(compareNumbers);
+
+        var avg80 = values.slice(0, Math.max(1, Math.floor(scores.length*0.8)));
+
+        updateStat('best', values[0]);
+        updateStat('best5', last5[0]);
+        updateStat('best12', last12[0]);
+        updateStat('best80', avg80[0]);
+        updateStat('best3of5', best3of5[0]);
+        updateStat('best10of12', best10of12[0]);
+        updateStat('worst', values.last(0));
+        updateStat('worst5', last5.last(0));
+        updateStat('worst12', last12.last(0));
+        updateStat('stddev', standardDeviation(scores, scoreValue));
+        updateStat('stddev5', standardDeviation(last5));
+        updateStat('stddev12', standardDeviation(last12));
+        updateStat('stddev80', standardDeviation(avg80));
+        updateStat('stddev3of5', standardDeviation(best3of5));
+        updateStat('stddev10of12', standardDeviation(best10of12));
+        updateStat('average', average(scores, scoreValue));
+        updateStat('average5', average(last5));
+        updateStat('average12', average(last12));
+        updateStat('average80', average(avg80));
+        updateStat('average3of5', average(best3of5));
+        updateStat('average10of12', average(best10of12));
+        updateStat('median', median(scores, scoreValue));
+        updateStat('median5', median(last5));
+        updateStat('median12', median(last12));
+        updateStat('median80', median(avg80));
+        updateStat('median3of5', median(best3of5));
+        updateStat('median10of12', median(best10of12));
     });
 }
 
@@ -558,12 +536,23 @@ $(document).ready(function() {
         );
     });
 
+    var container = $('#stats'), stat, e;
+    for(var i = 0; i < config.stats.length; i++) {
+        stat = config.stats[i];
+        e = $('#stats .template').clone();
+        e.removeClass('template');
+
+        e.attr('id', 'stats-' + stat)
+            .find('.label')
+            .html(translate('stat_' + stat + '_short'));
+        container.append(e);
+    }
     retrieveHighlights(function(highlights) {
         var container = $('#statsHighlights .stats-content'),
             highlight, stat;
 
-        $('#stats .stat').each(function(index, element) {
-            highlight = $(element).attr('id').replace('stats-', '');
+        for(var i = 0; i < config.stats.length; i++) {
+            highlight = config.stats[i];
             stat = $('#statsHighlights .template').clone();
             stat.removeClass('template');
 
@@ -572,11 +561,11 @@ $(document).ready(function() {
                 .attr('stat', highlight)
                 .prop('checked', highlights.indexOf(highlight) > -1);
             stat.find('.label')
-                .text(highlight);
+                .html(translate('stat_' + highlight + '_short'));
             stat.change(handleStatChange);
 
             container.append(stat);
-        });
+        }
     });
     updateHighlights();
 });
