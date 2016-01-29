@@ -165,6 +165,15 @@ body {
 #statsHighlights .checkbox.template {
     display: none;
 }
+#statsHighlights .checkbox {
+    width: 33%;
+}
+.stat.highlight .label.label-success {
+    background-color: #4caf50;
+}
+.stat .label.label-success {
+    background-color: #cecece;
+}
 
 .picker.picker-dialog {
     z-index: 9999;

@@ -11,10 +11,12 @@ module.exports = function(grunt) {
                 src: ['*.html', 'background.js', '_locales/**'],
                 dest: 'dist/<%= pkg.name %>'
             },
-            jquery: {
+            js: {
                 expand: true,
                 flatten: true,
-                src: 'bower_components/jquery/dist/jquery.min.js',
+                src: [
+                    'bower_components/jquery/dist/jquery.min.js'
+                ],
                 dest: 'dist/<%= pkg.name %>/js'
             },
             image: {
@@ -61,9 +63,10 @@ module.exports = function(grunt) {
             js: {
                 // the files to concatenate
                 src: [
-                    'src/js/**/*.js',
                     'bower_components/bootstrap/dist/js/bootstrap.min.js',
-                    'bower_components/jquery-migrate/jquery-migrate.min.js'
+                    'bower_components/jquery-migrate/jquery-migrate.min.js',
+                    'bower_components/chartist/dist/chartist.min.js',
+                    'src/js/**/*.js'
                 ],
                 dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
             },
@@ -73,6 +76,7 @@ module.exports = function(grunt) {
                     'bower_components/bootstrap/dist/css/bootstrap.min.css',
                     'bower_components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
                     'bower_components/bootstrap-material-design/dist/css/ripples.min.css',
+                    'bower_components/chartist/dist/chartist.min.css',
                     'src/css/*.css'
                 ],
                 dest: 'dist/<%= pkg.name %>/css/<%= pkg.name %>.css'

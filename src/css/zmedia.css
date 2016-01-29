@@ -2,9 +2,6 @@
     .navbar .navbar-brand {
         padding-left: 30px;
     }
-    #stats .list-group-item {
-        width: 25%;
-    }
     #hint {
         display: block;
     }
@@ -23,11 +20,6 @@
 @media (max-width: 768px) {
     body #wrapper {
         padding-top: 65px;
-    }
-}
-@media (max-width: 560px) {
-    #stats .list-group-item {
-        width: 50%;
     }
 }
 @media (max-width: 420px) {
