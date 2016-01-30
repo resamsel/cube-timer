@@ -544,7 +544,7 @@ $(document).ready(function() {
 
         e.attr('id', 'stats-' + stat)
             .find('.label')
-            .html(translate('stat_' + stat + '_short'));
+            .html(translate(stat + '_short'));
         container.append(e);
     }
     retrieveHighlights(function(highlights) {
@@ -561,7 +561,7 @@ $(document).ready(function() {
                 .attr('stat', highlight)
                 .prop('checked', highlights.indexOf(highlight) > -1);
             stat.find('.label')
-                .html(translate('stat_' + highlight + '_short'));
+                .html(translate(highlight + '_short'));
             stat.change(handleStatChange);
 
             container.append(stat);

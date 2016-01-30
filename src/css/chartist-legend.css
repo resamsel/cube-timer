@@ -9,11 +9,13 @@
     margin-top: 3px;
 }
 
-.ct-legend   li {
+.ct-legend li {
     position: relative;
-    padding-left: 23px;
+    padding-left: 20px;
+    margin-left: 12px;
     margin-bottom: 3px;
     cursor: pointer;
+    display: inline-block;
 }
 
 .ct-legend li:before {

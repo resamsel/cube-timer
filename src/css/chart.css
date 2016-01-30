@@ -1,34 +1,43 @@
 .ct-series-a .ct-line,
 .ct-series-b .ct-line,
-.ct-series-c .ct-line {
+.ct-series-c .ct-line,
+.ct-series-d .ct-line {
     /* Control the thickness of your lines */
     stroke-width: 2px;
 }
 
 .ct-series-a .ct-line {
     /* Set the colour of this series line */
-    stroke: #E91E63;
-    stroke-width: 3px;
+    stroke: black;
 }
 .ct-legend .ct-series-0:before {
-    background-color: #E91E63;
-    border-color: #E91E63;
+    background-color: black;
+    border-color: black;
 }
 
 .ct-series-b .ct-line {
     /* Set the colour of this series line */
-    stroke: #2196F3;
+    stroke: #E91E63;
 }
 .ct-legend .ct-series-1:before {
-    background-color: #2196F3;
-    border-color: #2196F3;
+    background-color: #E91E63;
+    border-color: #E91E63;
 }
 
 .ct-series-c .ct-line {
     /* Set the colour of this series line */
-    stroke: #009688;
+    stroke: #2196F3;
 }
 .ct-legend .ct-series-2:before {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+.ct-series-d .ct-line {
+    /* Set the colour of this series line */
+    stroke: #009688;
+}
+.ct-legend .ct-series-3:before {
     background-color: #009688;
     border-color: #009688;
 }
