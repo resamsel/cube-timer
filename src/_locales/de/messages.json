@@ -64,99 +64,99 @@
         "description": "The name of the button to export results."
     },
 
-    "stat_best_short": {
+    "best_short": {
         "message": "best",
         "description": "The short name of the stat label for: best."
     },
-    "stat_best5_short": {
+    "best5_short": {
         "message": "best 5",
         "description": "The short name of the stat label for: best5."
     },
-    "stat_best12_short": {
+    "best12_short": {
         "message": "best 12",
         "description": "The short name of the stat label for: best12."
     },
-    "stat_worst_short": {
+    "worst_short": {
         "message": "worst",
         "description": "The short name of the stat label for: worst."
     },
-    "stat_worst5_short": {
+    "worst5_short": {
         "message": "worst 5",
         "description": "The short name of the stat label for: worst5."
     },
-    "stat_worst12_short": {
+    "worst12_short": {
         "message": "worst 12",
         "description": "The short name of the stat label for: worst12."
     },
-    "stat_best80_short": {
+    "best80_short": {
         "message": "best 80%",
         "description": "The short name of the stat label for: best80."
     },
-    "stat_best3of5_short": {
+    "best3of5_short": {
         "message": "best 3/5",
         "description": "The short name of the stat label for: best3of5."
     },
-    "stat_best10of12_short": {
+    "best10of12_short": {
         "message": "best 10/12",
         "description": "The short name of the stat label for: best10of12."
     },
-    "stat_stddev_short": {
+    "stddev_short": {
         "message": "stddev",
         "description": "The short name of the stat label for: stddev."
     },
-    "stat_stddev5_short": {
+    "stddev5_short": {
         "message": "stddev 5",
         "description": "The short name of the stat label for: stddev5."
     },
-    "stat_stddev12_short": {
+    "stddev12_short": {
         "message": "stddev 12",
         "description": "The short name of the stat label for: stddev12."
     },
-    "stat_average_short": {
+    "average_short": {
         "message": "avg",
         "description": "The short name of the stat label for: average."
     },
-    "stat_average5_short": {
+    "average5_short": {
         "message": "avg 5",
         "description": "The short name of the stat label for: average5."
     },
-    "stat_average12_short": {
+    "average12_short": {
         "message": "avg 12",
         "description": "The short name of the stat label for: average12."
     },
-    "stat_average80_short": {
+    "average80_short": {
         "message": "avg 80%",
         "description": "The short name of the stat label for: average80."
     },
-    "stat_average3of5_short": {
+    "average3of5_short": {
         "message": "avg 3/5",
         "description": "The short name of the stat label for: average3of5."
     },
-    "stat_average10of12_short": {
+    "average10of12_short": {
         "message": "avg 10/12",
         "description": "The short name of the stat label for: average10of12."
     },
-    "stat_median_short": {
+    "median_short": {
         "message": "median",
         "description": "The short name of the stat label for: median."
     },
-    "stat_median5_short": {
+    "median5_short": {
         "message": "median 5",
         "description": "The short name of the stat label for: median5."
     },
-    "stat_median12_short": {
+    "median12_short": {
         "message": "median 12",
         "description": "The short name of the stat label for: median12."
     },
-    "stat_median80_short": {
+    "median80_short": {
         "message": "median 80%",
         "description": "The short name of the stat label for: median80."
     },
-    "stat_median3of5_short": {
+    "median3of5_short": {
         "message": "median 3/5",
         "description": "The short name of the stat label for: median3of5."
     },
-    "stat_median10of12_short": {
+    "median10of12_short": {
         "message": "median 10/12",
         "description": "The short name of the stat label for: median10of12."
     },

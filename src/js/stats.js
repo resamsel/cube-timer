@@ -55,7 +55,15 @@ function standardDeviation(data, mapper) {
 function movingAverage(data, size) {
     var avg = [];
     for (var i = 0; i < data.length; i++) {
-        avg.push(average(data.slice(Math.max(i - size, 0), i)));
+        avg.push(average(data.slice(Math.max(i - size, 0), i+1)));
     }
     return avg;
+}
+
+function movingMinimum(data) {
+    var minimum = [];
+    for (var i = 0; i < data.length; i++) {
+        minimum.push(Math.min(minimum.last(999999999), data[i]));
+    }
+    return minimum;
 }

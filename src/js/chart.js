@@ -1,13 +1,15 @@
 function statsChart(results) {
     var values = results.map(scoreValue);
     var averages5 = movingAverage(values, 5);
-    var averages10 = movingAverage(values, 25);
+    var averages12 = movingAverage(values, 12);
+    var averages50 = movingAverage(values, 50);
+    var best = movingMinimum(values);
     var data = {
         // A labels array that can contain any sort of values
         labels: results.map(scoreKey),
         // Our series array that contains series objects or in this case series data arrays
         series: [
-            values, averages5, averages10
+            values, averages12, averages50, best
         ]
     };
 
@@ -35,7 +37,12 @@ function statsChart(results) {
         }),
         plugins: [
             Chartist.plugins.legend({
-                legendNames: ['Times', 'Average #5', 'Average #25']
+                legendNames: [
+                    translate('results'),
+                    translate('average12'),
+                    translate('average50'),
+                    translate('best')
+                ]
             })
         ]
     };
