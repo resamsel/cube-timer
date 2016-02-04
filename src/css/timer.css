@@ -150,6 +150,18 @@ body {
     width: calc(100% - 40px);
 }
 
+.label {
+    font-size: 100%;
+}
+
+.sub.list-group-item {
+    display: inline-block;
+    padding: 5px 10px;
+}
+.sub.list-group-item .value {
+    font-weight: bold;
+}
+
 #stats .list-group-item {
     float: left;
     padding: 5px 10px;

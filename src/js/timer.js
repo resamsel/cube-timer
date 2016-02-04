@@ -10,6 +10,15 @@ var config = {
         'average80', 'average3of5', 'average10of12',
         'median', 'median5', 'median12',
         'median80', 'median3of5', 'median10of12',
+    ],
+    subs: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        25, 30, 35, 40, 45, 50, 55, 60,
+        70, 80, 60+30, 100, 110,
+        2*60, 2*60+30, 3*60, 4*60, 5*60,
+        6*60, 7*60, 8*60, 9*60, 10*60,
+        12*60, 15*60, 20*60, 30*60, 40*60, 50*60, 60*60
     ]
 };
 
@@ -76,14 +85,16 @@ function mark(score, text, type_) {
     $('#id-' + score.id + ' > * .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
 }
 
-function subXLabel(value) {
-    var x = Math.floor(value / 1000);
-
-    if (x < 60) {
-        return x - x % 10 + 10;
+function valueToSub(value) {
+    var x = value / 1000, sub;
+    for (var i = 0; i < config.subs.length; i++) {
+        sub = config.subs[i];
+        if (x < sub) {
+            return sub;
+        }
     }
 
-    return x - x % 30 + 30;
+    return -1;
 }
 
 function updateScores() {
@@ -120,7 +131,8 @@ function updateLabelsCallback(scores) {
         var score,
             best = {id: 0, value: 999999999},
             best5 = {id: 0, value: 999999999},
-            best12 = {id: 0, value: 999999999};
+            best12 = {id: 0, value: 999999999},
+            sub;
 
         // Remove first
         $('#times .label').remove();
@@ -137,7 +149,10 @@ function updateLabelsCallback(scores) {
                 best12 = score;
             }
             if(markSubX) {
-                mark(score, 'sub ' + subXLabel(score.value), 'info');
+                sub = valueToSub(score.value);
+                if (sub > 0) {
+                    mark(score, 'sub ' + sub, 'info');
+                }
             }
         }
 
@@ -168,16 +183,44 @@ function updateStats() {
             scores.push({id: 0, value: 0});
         }
 
+        var subs = {};
         var values = scores.map(scoreValue);
         var last5 = values.slice(-5).sort(compareNumbers);
         var last12 = values.slice(-12).sort(compareNumbers);
         var best3of5 = last5.slice(0, 3).sort(compareNumbers);
         var best10of12 = last12.slice(0, 10).sort(compareNumbers);
 
-        console.log(last5);
         values.sort(compareNumbers);
 
-        var avg80 = values.slice(0, Math.max(1, Math.floor(scores.length*0.8)));
+        values.forEach(function(value) {
+            var sub = valueToSub(value);
+            if (!(sub in subs)) {
+                subs[sub] = 0;
+            }
+            subs[sub]++;
+        });
+        var container = $('#subs'), e;
+        container.find('.sub').remove();
+        var s = Object
+            .keys(subs)
+            .sort(compareNumbers)
+            .slice(0, 3)
+            .forEach(function(sub) {
+                e = $('#subs .template').clone();
+                e.removeClass('template');
+
+                e.attr('id', 'subs-' + sub)
+                    .addClass('sub')
+                    .find('.label')
+                    .html('sub ' + sub);
+                e.find('.value').html(subs[sub]);
+                container.append(e);
+            });
+
+        var avg80 = values.slice(
+            0,
+            Math.max(1, Math.floor(scores.length*0.8))
+        );
 
         updateStat('best', values[0]);
         updateStat('best5', last5[0]);
