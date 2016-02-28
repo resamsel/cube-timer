@@ -167,6 +167,12 @@ body {
     padding: 5px 10px;
     width: 33.333%;
 }
+#stats .stat {
+    display: none;
+}
+#stats .stat.highlight {
+    display: block;
+}
 #stats .highlight .value {
     font-weight: bold;
 }

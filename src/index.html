@@ -29,14 +29,15 @@
 				<ul class="nav navbar-nav">
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown" style="display: none">
-						<a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
-							3x3x3
+					<li class="dropdown">
+						<a id="active-game" href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="material-icons">games</i>
+							<span class="text">3x3x3</span>
 							<b class="caret"></b>
 							<div class="ripple-container"></div>
 						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">3x3x3</a></li>
+						<ul id="game-list" class="dropdown-menu">
+							<li class="template"><a href="#">3x3x3</a></li>
 						</ul>
 					</li>
 					<li>
@@ -213,7 +214,7 @@
 							</div>
 							<div id="statsHighlights" class="form-group">
 								<div class="col-form-4 control-label">
-									Highlight
+									<span i18n-key="statsShow">Show</span>
 								</div>
 								<div class="col-form-8 stats-content">
 									<div class="template checkbox">

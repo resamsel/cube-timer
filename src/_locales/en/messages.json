@@ -64,6 +64,10 @@
         "description": "The name of the button to export results."
     },
 
+    "statsShow": {
+        "message": "Show",
+        "description": "The name of the statistics label."
+    },
     "best": {
         "message": "Best",
         "description": "The name of the stat label for: best."

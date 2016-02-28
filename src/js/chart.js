@@ -4,6 +4,10 @@ function statsChart(results) {
     var averages12 = movingAverage(values, 12);
     var averages50 = movingAverage(values, 50);
     var best = movingMinimum(values);
+    console.log(
+        'values=%s, averages12=%s, averages50=%s, best=%s',
+        values, averages12, averages50, best
+    );
     var data = {
         // A labels array that can contain any sort of values
         labels: results.map(scoreKey),
@@ -53,8 +57,15 @@ function statsChart(results) {
     var container = $('#ct-stats');
     var chart = container.data('chartist');
     if(chart) {
-        chart.update(data, options);
-    } else {
-        container.data('chartist', new Chartist.Line('#ct-stats', data, options));
+        console.log('Updating chart with data');
+        //chart.update(data, options);
+        chart.detach();
+        $('#ct-stats *').remove();
+    }
+    if(values.length > 0) {
+        container.data(
+            'chartist',
+            new Chartist.Line('#ct-stats', data, options)
+        );
     }
 }

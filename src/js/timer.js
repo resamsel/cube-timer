@@ -1,6 +1,7 @@
 var timerSound;
 var startSound;
 var config = {
+    activeGame: '3x3x3',
     stats: [
         'best', 'best5', 'best12',
         'worst', 'worst5', 'worst12',
@@ -70,7 +71,11 @@ function showScore(score) {
     row.removeClass('template');
     row.find('.value').text(defaultFormatMilliseconds(score.value));
     row.find('.date').text(toDate(score.id)).data('date', score.id);
-    row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
+    row
+        .find('.btn-remove')
+        .data('game', config.activeGame)
+        .data('scoreId', score.id)
+        .bind('click', removeScore);
 
     $('#times .times-content').prepend(row);
 }
@@ -78,7 +83,7 @@ function showScore(score) {
 function submitScore(elapsed) {
     var score = {id: new Date().getTime(), value: elapsed};
     showScore(score);
-    storeScore(score, update);
+    storeScore(config.activeGame, score, update);
 }
 
 function mark(score, text, type_) {
@@ -98,8 +103,9 @@ function valueToSub(value) {
 }
 
 function updateScores() {
+    console.log('updateScores(): activeGame: ' + config.activeGame);
     $('#times .times-content > *').remove();
-    retrieveScores(function(scores) {
+    retrieveScores(config.activeGame, function(scores) {
         for (var i = 0; i < scores.length; i++) {
             showScore(scores[i]);
         }
@@ -123,7 +129,7 @@ function updateDates() {
 }
 
 function updateLabels() {
-    retrieveScores(updateLabelsCallback);
+    retrieveScores(config.activeGame, updateLabelsCallback);
 }
 
 function updateLabelsCallback(scores) {
@@ -176,10 +182,12 @@ function compareNumbers(a, b) {
 }
 
 function updateStats() {
-    retrieveScores(function(scores) {
+    console.log('Active game: ' + config.activeGame);
+    retrieveScores(config.activeGame, function(scores) {
         statsChart(scores);
 
-        if (scores.length < 1) {
+        var empty = scores.length < 1;
+        if (empty) {
             scores.push({id: 0, value: 0});
         }
 
@@ -201,21 +209,23 @@ function updateStats() {
         });
         var container = $('#subs'), e;
         container.find('.sub').remove();
-        var s = Object
-            .keys(subs)
-            .sort(compareNumbers)
-            .slice(0, 3)
-            .forEach(function(sub) {
-                e = $('#subs .template').clone();
-                e.removeClass('template');
-
-                e.attr('id', 'subs-' + sub)
-                    .addClass('sub')
-                    .find('.label')
-                    .html('sub ' + sub);
-                e.find('.value').html(subs[sub]);
-                container.append(e);
-            });
+        if(!empty) {
+            Object
+                .keys(subs)
+                .sort(compareNumbers)
+                .slice(0, 3)
+                .forEach(function(sub) {
+                    e = $('#subs .template').clone();
+                    e.removeClass('template');
+    
+                    e.attr('id', 'subs-' + sub)
+                        .addClass('sub')
+                        .find('.label')
+                        .html('sub ' + sub);
+                    e.find('.value').html(subs[sub]);
+                    container.append(e);
+                });
+        }
 
         var avg80 = values.slice(
             0,
@@ -352,7 +362,7 @@ function stop() {
         submitScore(elapsed);
     }
     $('body').removeClass('started').addClass('stopped');
-    scramble();
+    scramble(config.activeGame);
 }
 
 function toggle() {
@@ -361,15 +371,6 @@ function toggle() {
     } else {
         start();
     }
-}
-
-function scramble() {
-    var i, scrambled = cube.scramble(), len = scrambled.length, result = "";
-    for (i = 0; i < len; i += 5) {
-        // Only allow a line break every 5 moves
-        result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
-    }
-    $('#scramble').html(result);
 }
 
 function onspacedown(e) {
@@ -415,11 +416,11 @@ function handleImport(replace) {
 
     if(!replace) {
         // Appending scores
-        retrieveScores(function(s) {
-            storeScores(scores.concat(s), updateScores);
+        retrieveScores(config.activeGame, function(s) {
+            storeScores(config.activeGame, scores.concat(s), updateScores);
         });
     } else {
-        storeScores(scores, updateScores);
+        storeScores(config.activeGame, scores, updateScores);
     }
 }
 
@@ -490,6 +491,9 @@ function handleFileSelect()
 }
 
 $(document).ready(function() {
+    // Migrate database, if necessary
+    migrate();
+
     i18n();
 
     getConfig('hintVisible', true, function(hintVisible) {
@@ -502,11 +506,20 @@ $(document).ready(function() {
     });
 
     cube.reset();
-    scramble();
     $('body').bind('keydown', onspacedown);
     $('body').bind('keyup', onspaceup);
     $('button.start-stop').bind('click', toggle);
-    updateScores();
+
+    retrieveActiveGame(function(activeGame) {
+        config.activeGame = activeGame;
+        scramble(config.activeGame);
+        updateScores();
+    });
+    
+    /*
+     * Header
+     */
+    populateGames();
 
     /*
      * Dialogs
@@ -525,7 +538,7 @@ $(document).ready(function() {
         // window.clipboardData.setData("Text", $(this).val());
     });
     $('#export').bind('click', function() {
-        retrieveScores(function(scores) {
+        retrieveScores(config.activeGame, function(scores) {
             $('#export-content').val(toCsv(scores));
         });
         // Show dialog
