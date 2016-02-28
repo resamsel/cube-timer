@@ -64,6 +64,10 @@
         "description": "The name of the button to export results."
     },
 
+    "statsShow": {
+        "message": "Anzeige",
+        "description": "The name of the statistics label."
+    },
     "best_short": {
         "message": "best",
         "description": "The short name of the stat label for: best."

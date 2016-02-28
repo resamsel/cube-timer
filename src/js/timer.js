@@ -1,6 +1,7 @@
 var timerSound;
 var startSound;
 var config = {
+    activeGame: '3x3x3',
     stats: [
         'best', 'best5', 'best12',
         'worst', 'worst5', 'worst12',
@@ -10,6 +11,15 @@ var config = {
         'average80', 'average3of5', 'average10of12',
         'median', 'median5', 'median12',
         'median80', 'median3of5', 'median10of12',
+    ],
+    subs: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        25, 30, 35, 40, 45, 50, 55, 60,
+        70, 80, 60+30, 100, 110,
+        2*60, 2*60+30, 3*60, 4*60, 5*60,
+        6*60, 7*60, 8*60, 9*60, 10*60,
+        12*60, 15*60, 20*60, 30*60, 40*60, 50*60, 60*60
     ]
 };
 
@@ -61,7 +71,11 @@ function showScore(score) {
     row.removeClass('template');
     row.find('.value').text(defaultFormatMilliseconds(score.value));
     row.find('.date').text(toDate(score.id)).data('date', score.id);
-    row.find('.btn-remove').data('scoreId', score.id).bind('click', removeScore);
+    row
+        .find('.btn-remove')
+        .data('game', config.activeGame)
+        .data('scoreId', score.id)
+        .bind('click', removeScore);
 
     $('#times .times-content').prepend(row);
 }
@@ -69,26 +83,29 @@ function showScore(score) {
 function submitScore(elapsed) {
     var score = {id: new Date().getTime(), value: elapsed};
     showScore(score);
-    storeScore(score, update);
+    storeScore(config.activeGame, score, update);
 }
 
 function mark(score, text, type_) {
     $('#id-' + score.id + ' > * .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
 }
 
-function subXLabel(value) {
-    var x = Math.floor(value / 1000);
-
-    if (x < 60) {
-        return x - x % 10 + 10;
+function valueToSub(value) {
+    var x = value / 1000, sub;
+    for (var i = 0; i < config.subs.length; i++) {
+        sub = config.subs[i];
+        if (x < sub) {
+            return sub;
+        }
     }
 
-    return x - x % 30 + 30;
+    return -1;
 }
 
 function updateScores() {
+    console.log('updateScores(): activeGame: ' + config.activeGame);
     $('#times .times-content > *').remove();
-    retrieveScores(function(scores) {
+    retrieveScores(config.activeGame, function(scores) {
         for (var i = 0; i < scores.length; i++) {
             showScore(scores[i]);
         }
@@ -112,7 +129,7 @@ function updateDates() {
 }
 
 function updateLabels() {
-    retrieveScores(updateLabelsCallback);
+    retrieveScores(config.activeGame, updateLabelsCallback);
 }
 
 function updateLabelsCallback(scores) {
@@ -120,7 +137,8 @@ function updateLabelsCallback(scores) {
         var score,
             best = {id: 0, value: 999999999},
             best5 = {id: 0, value: 999999999},
-            best12 = {id: 0, value: 999999999};
+            best12 = {id: 0, value: 999999999},
+            sub;
 
         // Remove first
         $('#times .label').remove();
@@ -137,7 +155,10 @@ function updateLabelsCallback(scores) {
                 best12 = score;
             }
             if(markSubX) {
-                mark(score, 'sub ' + subXLabel(score.value), 'info');
+                sub = valueToSub(score.value);
+                if (sub > 0) {
+                    mark(score, 'sub ' + sub, 'info');
+                }
             }
         }
 
@@ -161,23 +182,55 @@ function compareNumbers(a, b) {
 }
 
 function updateStats() {
-    retrieveScores(function(scores) {
+    console.log('Active game: ' + config.activeGame);
+    retrieveScores(config.activeGame, function(scores) {
         statsChart(scores);
 
-        if (scores.length < 1) {
+        var empty = scores.length < 1;
+        if (empty) {
             scores.push({id: 0, value: 0});
         }
 
+        var subs = {};
         var values = scores.map(scoreValue);
         var last5 = values.slice(-5).sort(compareNumbers);
         var last12 = values.slice(-12).sort(compareNumbers);
         var best3of5 = last5.slice(0, 3).sort(compareNumbers);
         var best10of12 = last12.slice(0, 10).sort(compareNumbers);
 
-        console.log(last5);
         values.sort(compareNumbers);
 
-        var avg80 = values.slice(0, Math.max(1, Math.floor(scores.length*0.8)));
+        values.forEach(function(value) {
+            var sub = valueToSub(value);
+            if (!(sub in subs)) {
+                subs[sub] = 0;
+            }
+            subs[sub]++;
+        });
+        var container = $('#subs'), e;
+        container.find('.sub').remove();
+        if(!empty) {
+            Object
+                .keys(subs)
+                .sort(compareNumbers)
+                .slice(0, 3)
+                .forEach(function(sub) {
+                    e = $('#subs .template').clone();
+                    e.removeClass('template');
+    
+                    e.attr('id', 'subs-' + sub)
+                        .addClass('sub')
+                        .find('.label')
+                        .html('sub ' + sub);
+                    e.find('.value').html(subs[sub]);
+                    container.append(e);
+                });
+        }
+
+        var avg80 = values.slice(
+            0,
+            Math.max(1, Math.floor(scores.length*0.8))
+        );
 
         updateStat('best', values[0]);
         updateStat('best5', last5[0]);
@@ -309,7 +362,7 @@ function stop() {
         submitScore(elapsed);
     }
     $('body').removeClass('started').addClass('stopped');
-    scramble();
+    scramble(config.activeGame);
 }
 
 function toggle() {
@@ -318,15 +371,6 @@ function toggle() {
     } else {
         start();
     }
-}
-
-function scramble() {
-    var i, scrambled = cube.scramble(), len = scrambled.length, result = "";
-    for (i = 0; i < len; i += 5) {
-        // Only allow a line break every 5 moves
-        result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
-    }
-    $('#scramble').html(result);
 }
 
 function onspacedown(e) {
@@ -372,11 +416,11 @@ function handleImport(replace) {
 
     if(!replace) {
         // Appending scores
-        retrieveScores(function(s) {
-            storeScores(scores.concat(s), updateScores);
+        retrieveScores(config.activeGame, function(s) {
+            storeScores(config.activeGame, scores.concat(s), updateScores);
         });
     } else {
-        storeScores(scores, updateScores);
+        storeScores(config.activeGame, scores, updateScores);
     }
 }
 
@@ -447,6 +491,9 @@ function handleFileSelect()
 }
 
 $(document).ready(function() {
+    // Migrate database, if necessary
+    migrate();
+
     i18n();
 
     getConfig('hintVisible', true, function(hintVisible) {
@@ -459,11 +506,20 @@ $(document).ready(function() {
     });
 
     cube.reset();
-    scramble();
     $('body').bind('keydown', onspacedown);
     $('body').bind('keyup', onspaceup);
     $('button.start-stop').bind('click', toggle);
-    updateScores();
+
+    retrieveActiveGame(function(activeGame) {
+        config.activeGame = activeGame;
+        scramble(config.activeGame);
+        updateScores();
+    });
+    
+    /*
+     * Header
+     */
+    populateGames();
 
     /*
      * Dialogs
@@ -482,7 +538,7 @@ $(document).ready(function() {
         // window.clipboardData.setData("Text", $(this).val());
     });
     $('#export').bind('click', function() {
-        retrieveScores(function(scores) {
+        retrieveScores(config.activeGame, function(scores) {
             $('#export-content').val(toCsv(scores));
         });
         // Show dialog
