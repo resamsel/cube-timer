@@ -1,4 +1,7 @@
 function statsChart(results) {
+    if(results.length < 1) {
+        results = [{id:0, value:0}];
+    }
     var values = results.map(scoreValue);
     var averages5 = movingAverage(values, 5);
     var averages12 = movingAverage(values, 12);
@@ -19,7 +22,7 @@ function statsChart(results) {
 
     var options = {
         // Don't draw the line chart points
-        showPoint: results.length <= 1,
+        showPoint: results.length == 1 && results[0].value !== 0,
         // X-Axis specific configuration
         axisX: {
             // We can disable the grid for this axis

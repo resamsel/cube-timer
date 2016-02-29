@@ -53,8 +53,12 @@ function populateActiveGame(game) {
 }
 
 function scramble(game) {
-    if (game == '3x3x3') {
-        var i, scrambled = cube.scramble(), len = scrambled.length, result = "";
+    console.log('scramble(game=%s)', game);
+    if (Object.keys(config.scrambles).indexOf(game) > -1) {
+        var i,
+            scrambled = cube.scramble(),
+            len = Math.min(config.scrambles[game].len, scrambled.length),
+            result = "";
         for (i = 0; i < len; i += 5) {
             // Only allow a line break every 5 moves
             result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
