@@ -45,7 +45,7 @@ function statsChart(results) {
         plugins: [
             Chartist.plugins.legend({
                 legendNames: [
-                    translate('results'),
+                    translate('latest'),
                     translate('average12'),
                     translate('average50'),
                     translate('best')

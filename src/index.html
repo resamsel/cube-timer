@@ -170,25 +170,25 @@
 	</div>
 
 	<div class="modal fade config-dialog" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<i class="material-icons">close</i>
 					</button>
-					<h4 class="modal-title">Configuration</h4>
+					<h4 class="modal-title" i18n-key="configuration">Configuration</h4>
 				</div>
 				<div class="modal-body">
 						<form id="config" class="form-horizontal">
 							<div class="form-group">
-								<label for="inspectionTime" class="col-form-4 control-label">Inspection time</label>
+								<label for="inspectionTime" class="col-form-4 control-label" i18n-key="inspectionTime">Inspection time</label>
 								<div class="col-form-8">
 									<select id="inspectionTime" class="form-control">
-										<option value="0">None</option>
-										<option value="3">3 seconds</option>
-										<option value="5">5 seconds</option>
-										<option value="10">10 seconds</option>
-										<option value="15">15 seconds</option>
+										<option value="0" i18n-key="inspectionTimeNone">None</option>
+										<option value="3" i18n-key="inspectionTime3Seconds">3 seconds</option>
+										<option value="5" i18n-key="inspectionTime5Seconds">5 seconds</option>
+										<option value="10" i18n-key="inspectionTime10Seconds">10 seconds</option>
+										<option value="15" i18n-key="inspectionTime15Seconds">15 seconds</option>
 									</select>
 								</div>
 								<div class="col-form-offset-4 col-form-8">
@@ -196,7 +196,7 @@
 										<label>
 											<input id="soundAfterInspection" type="checkbox" />
 											<span class="checkbox-material"><span class="check"></span></span>
-											Play sound after inspection
+											<span i18n-key="inspectionSound">Play sound after inspection</span>
 										</label>
 									</div>
 								</div>
@@ -207,7 +207,7 @@
 										<label>
 											<input id="subtext" type="checkbox" />
 											<span class="checkbox-material"><span class="check"></span></span>
-											Show <span class="label label-info">sub X</span> labels
+											<span i18n-key="showCategoryLabels">Show <span class="label label-info">sub X</span> labels</span>
 										</label>
 									</div>
 								</div>
