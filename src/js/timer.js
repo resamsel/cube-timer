@@ -364,10 +364,10 @@ function handleFileSelect()
     var input = document.getElementById('import-file');
     var files = input.files;
     if (!files) {
-        alert(chrome.i18n.getMessage("importFilesUnsupported"));
+        alert(translate("importFilesUnsupported"));
     }
     else if (!files[0]) {
-        alert(chrome.i18n.getMessage("importFilesEmpty"));
+        alert(translate("importFilesEmpty"));
     }
     else {
         var file = new Blob([files[0]], {type: 'text/plain'});
@@ -448,7 +448,6 @@ $(document).ready(function() {
     $('#import-from-file').bind('click', function() {
         $('#import-file').click();
     });
-    $('#import-from-drive').bind('click', handlePickerClick);
     $('#import-append').bind('click', handleImportAppend);
     $('#import-replace').bind('click', handleImportReplace);
 
