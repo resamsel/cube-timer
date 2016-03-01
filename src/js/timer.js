@@ -1,31 +1,5 @@
 var timerSound;
 var startSound;
-var config = {
-    activeGame: '3x3x3',
-    stats: [
-        'best', 'best5', 'best12',
-        'worst', 'worst5', 'worst12',
-        'best80', 'best3of5', 'best10of12',
-        'stddev', 'stddev5', 'stddev12',
-        'average', 'average5', 'average12',
-        'average80', 'average3of5', 'average10of12',
-        'median', 'median5', 'median12',
-        'median80', 'median3of5', 'median10of12',
-    ],
-    subs: [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        25, 30, 35, 40, 45, 50, 55, 60,
-        70, 80, 60+30, 100, 110,
-        2*60, 2*60+30, 3*60, 4*60, 5*60,
-        6*60, 7*60, 8*60, 9*60, 10*60,
-        12*60, 15*60, 20*60, 30*60, 40*60, 50*60, 60*60
-    ],
-    scrambles: {
-        '2x2x2': { len: 15 },
-        '3x3x3': { len: 25 }
-    }
-};
 
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
@@ -95,11 +69,11 @@ function mark(score, text, type_) {
 }
 
 function valueToSub(value) {
-    var x = value / 1000, sub;
-    for (var i = 0; i < config.subs.length; i++) {
-        sub = config.subs[i];
-        if (x < sub) {
-            return sub;
+    var x = value / 1000, category;
+    for (var i = 0; i < config.categories.length; i++) {
+        category = config.categories[i];
+        if (x < category) {
+            return category;
         }
     }
 
@@ -183,92 +157,6 @@ function scoreValue(score) {
 
 function compareNumbers(a, b) {
     return a - b;
-}
-
-function updateStats() {
-    console.log('Active game: ' + config.activeGame);
-    retrieveScores(config.activeGame, function(scores) {
-        statsChart(scores);
-
-        var empty = scores.length < 1;
-        if (empty) {
-            scores.push({id: 0, value: 0});
-        }
-
-        var subs = {};
-        var values = scores.map(scoreValue);
-        var last5 = values.slice(-5).sort(compareNumbers);
-        var last12 = values.slice(-12).sort(compareNumbers);
-        var best3of5 = last5.slice(0, 3).sort(compareNumbers);
-        var best10of12 = last12.slice(0, 10).sort(compareNumbers);
-
-        values.sort(compareNumbers);
-
-        values.forEach(function(value) {
-            var sub = valueToSub(value);
-            if (!(sub in subs)) {
-                subs[sub] = 0;
-            }
-            subs[sub]++;
-        });
-        var container = $('#subs'), e;
-        container.find('.sub').remove();
-        if(!empty) {
-            Object
-                .keys(subs)
-                .sort(compareNumbers)
-                .slice(0, 3)
-                .forEach(function(sub) {
-                    e = $('#subs .template').clone();
-                    e.removeClass('template');
-    
-                    e.attr('id', 'subs-' + sub)
-                        .addClass('sub')
-                        .find('.label')
-                        .html('sub ' + sub);
-                    e.find('.value').html(subs[sub]);
-                    container.append(e);
-                });
-        }
-
-        var avg80 = values.slice(
-            0,
-            Math.max(1, Math.floor(scores.length*0.8))
-        );
-
-        updateStat('best', values[0]);
-        updateStat('best5', last5[0]);
-        updateStat('best12', last12[0]);
-        updateStat('best80', avg80[0]);
-        updateStat('best3of5', best3of5[0]);
-        updateStat('best10of12', best10of12[0]);
-        updateStat('worst', values.last(0));
-        updateStat('worst5', last5.last(0));
-        updateStat('worst12', last12.last(0));
-        updateStat('stddev', standardDeviation(scores, scoreValue));
-        updateStat('stddev5', standardDeviation(last5));
-        updateStat('stddev12', standardDeviation(last12));
-        updateStat('stddev80', standardDeviation(avg80));
-        updateStat('stddev3of5', standardDeviation(best3of5));
-        updateStat('stddev10of12', standardDeviation(best10of12));
-        updateStat('average', average(scores, scoreValue));
-        updateStat('average5', average(last5));
-        updateStat('average12', average(last12));
-        updateStat('average80', average(avg80));
-        updateStat('average3of5', average(best3of5));
-        updateStat('average10of12', average(best10of12));
-        updateStat('median', median(scores, scoreValue));
-        updateStat('median5', median(last5));
-        updateStat('median12', median(last12));
-        updateStat('median80', median(avg80));
-        updateStat('median3of5', median(best3of5));
-        updateStat('median10of12', median(best10of12));
-    });
-}
-
-function updateStat(key, value) {
-    $('#stats-' + key + ' .value')
-        .text(defaultFormatMilliseconds(value));
 }
 
 function updateHighlights() {
@@ -476,10 +364,10 @@ function handleFileSelect()
     var input = document.getElementById('import-file');
     var files = input.files;
     if (!files) {
-        alert(chrome.i18n.getMessage("importFilesUnsupported"));
+        alert(translate("importFilesUnsupported"));
     }
     else if (!files[0]) {
-        alert(chrome.i18n.getMessage("importFilesEmpty"));
+        alert(translate("importFilesEmpty"));
     }
     else {
         var file = new Blob([files[0]], {type: 'text/plain'});
@@ -560,7 +448,6 @@ $(document).ready(function() {
     $('#import-from-file').bind('click', function() {
         $('#import-file').click();
     });
-    $('#import-from-drive').bind('click', handlePickerClick);
     $('#import-append').bind('click', handleImportAppend);
     $('#import-replace').bind('click', handleImportReplace);
 
@@ -596,9 +483,11 @@ $(document).ready(function() {
         );
     });
 
-    var container = $('#stats'), stat, e;
-    for(var i = 0; i < config.stats.length; i++) {
-        stat = config.stats[i];
+    var container = $('#stats'),
+        stats = Object.keys(config.stats),
+        stat, e;
+    for(var i = 0; i < stats.length; i++) {
+        stat = stats[i];
         e = $('#stats .template').clone();
         e.removeClass('template');
 
@@ -611,8 +500,8 @@ $(document).ready(function() {
         var container = $('#statsHighlights .stats-content'),
             highlight, stat;
 
-        for(var i = 0; i < config.stats.length; i++) {
-            highlight = config.stats[i];
+        for(var i = 0; i < stats.length; i++) {
+            highlight = stats[i];
             stat = $('#statsHighlights .template').clone();
             stat.removeClass('template');
 

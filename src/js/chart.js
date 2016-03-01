@@ -1,8 +1,5 @@
-function statsChart(results) {
-    if(results.length < 1) {
-        results = [{id:0, value:0}];
-    }
-    var values = results.map(scoreValue);
+function updateChart(stats) {
+    var values = stats.scores.map(scoreValue);
     var averages5 = movingAverage(values, 5);
     var averages12 = movingAverage(values, 12);
     var averages50 = movingAverage(values, 50);
@@ -13,7 +10,7 @@ function statsChart(results) {
     );
     var data = {
         // A labels array that can contain any sort of values
-        labels: results.map(scoreKey),
+        labels: stats.scores.map(scoreKey),
         // Our series array that contains series objects or in this case series data arrays
         series: [
             values, averages12, averages50, best
@@ -22,7 +19,7 @@ function statsChart(results) {
 
     var options = {
         // Don't draw the line chart points
-        showPoint: results.length == 1 && results[0].value !== 0,
+        showPoint: stats.scores.length == 1 && stats.scores[0].value !== 0,
         // X-Axis specific configuration
         axisX: {
             // We can disable the grid for this axis
@@ -45,7 +42,7 @@ function statsChart(results) {
         plugins: [
             Chartist.plugins.legend({
                 legendNames: [
-                    translate('results'),
+                    translate('latest'),
                     translate('average12'),
                     translate('average50'),
                     translate('best')

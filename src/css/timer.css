@@ -186,6 +186,9 @@ body {
 #statsHighlights .checkbox {
     width: 33%;
 }
+.checkbox > label {
+    white-space: nowrap;
+}
 .stat.highlight .label.label-success {
     background-color: #4caf50;
 }

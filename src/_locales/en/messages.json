@@ -8,7 +8,7 @@
         "description": "The short name of the application."
     },
     "appDescription": {
-        "message": "This app allows you to record and manage your cube records.",
+        "message": "Times your cube solves and displays detailed statistic about it.",
         "description": "The description of the application, displayed in the web store."
     },
 
@@ -64,9 +64,50 @@
         "description": "The name of the button to export results."
     },
 
+    "inspectionTime": {
+        "message": "Inspection Time",
+        "description": "The label for the inspection time."
+    },
+    "inspectionTimeNone": {
+        "message": "None",
+        "description": "The value for the inspection time: None."
+    },
+    "inspectionTime3Seconds": {
+        "message": "3 seconds",
+        "description": "The value for the inspection time: 3 seconds."
+    },
+    "inspectionTime5Seconds": {
+        "message": "5 seconds",
+        "description": "The value for the inspection time: 5 seconds."
+    },
+    "inspectionTime10Seconds": {
+        "message": "10 seconds",
+        "description": "The value for the inspection time: 10 seconds."
+    },
+    "inspectionTime15Seconds": {
+        "message": "15 seconds",
+        "description": "The value for the inspection time: 15 seconds."
+    },
+    "inspectionSound": {
+        "message": "Play sound after inspection",
+        "description": "The checkbox label for the inspection sound."
+    },
+    "showCategoryLabels": {
+        "message": "Show <span class=\"label label-info\">sub X</span> labels",
+        "description": "The checkbox label for the category labels."
+    },
+
     "statsShow": {
         "message": "Show",
         "description": "The name of the statistics label."
+    },
+    "latest": {
+        "message": "Latest",
+        "description": "The name of the stat label for: latest."
+    },
+    "latest_short": {
+        "message": "latest",
+        "description": "The short name of the stat label for: latest."
     },
     "best": {
         "message": "Best",
@@ -119,6 +160,18 @@
     "stddev12_short": {
         "message": "stddev 12",
         "description": "The short name of the stat label for: stddev12."
+    },
+    "stddev80_short": {
+        "message": "stddev 80%",
+        "description": "The short name of the stat label for: stddev80."
+    },
+    "stddev3of5_short": {
+        "message": "stddev 3/5",
+        "description": "The short name of the stat label for: stddev3of5."
+    },
+    "stddev10of12_short": {
+        "message": "stddev 10/12",
+        "description": "The short name of the stat label for: stddev10of12."
     },
     "average_short": {
         "message": "avg",
