@@ -67,3 +67,77 @@ function movingMinimum(data) {
     }
     return minimum;
 }
+
+function createStats(scores) {
+    var stats = {
+        scores: scores
+    };
+
+    stats.values = scores.map(scoreValue);
+    stats.last = stats.values.last();
+    stats.last5 = stats.values.slice(-5).sort(compareNumbers);
+    stats.last12 = stats.values.slice(-12).sort(compareNumbers);
+    stats.best3of5 = stats.last5.slice(0, 3).sort(compareNumbers);
+    stats.best10of12 = stats.last12.slice(0, 10).sort(compareNumbers);
+
+    stats.values.sort(compareNumbers);
+
+    stats.avg80 = stats.values.slice(
+        0,
+        Math.max(1, Math.floor(scores.length*0.8))
+    );
+
+    return stats;
+}
+
+function updateCategories(stats) {
+    var container = $('#subs'), e, categories = {};
+    stats.values.forEach(function(value) {
+        var category = valueToSub(value);
+        if (!(category in categories)) {
+            categories[category] = 0;
+        }
+        categories[category]++;
+    });
+    container.find('.sub').remove();
+    if(stats.scores[0].id !== 0) {
+        Object
+            .keys(categories)
+            .sort(compareNumbers)
+            .slice(0, config.maxCategories)
+            .forEach(function(category) {
+                e = $('#subs .template').clone();
+                e.removeClass('template');
+
+                e.attr('id', 'subs-' + category)
+                    .addClass('sub')
+                    .find('.label')
+                    .html('sub ' + category);
+                e.find('.value').html(categories[category]);
+                container.append(e);
+            });
+    }
+}
+
+function updateStats() {
+    console.log('Active game: ' + config.activeGame);
+    retrieveScores(config.activeGame, function(scores) {
+        if (scores.length < 1) {
+            scores.push({id: 0, value: 0});
+        }
+
+        var stats = createStats(scores);
+
+        updateChart(stats);
+        updateCategories(stats);
+
+        Object.keys(config.stats).forEach(function (stat) {
+            updateStat(stat, config.stats[stat](stats));
+        });
+    });
+}
+
+function updateStat(key, value) {
+    $('#stats-' + key + ' .value')
+        .text(defaultFormatMilliseconds(value));
+}

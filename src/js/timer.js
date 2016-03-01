@@ -69,11 +69,11 @@ function mark(score, text, type_) {
 }
 
 function valueToSub(value) {
-    var x = value / 1000, sub;
-    for (var i = 0; i < config.subs.length; i++) {
-        sub = config.subs[i];
-        if (x < sub) {
-            return sub;
+    var x = value / 1000, category;
+    for (var i = 0; i < config.categories.length; i++) {
+        category = config.categories[i];
+        if (x < category) {
+            return category;
         }
     }
 
@@ -157,94 +157,6 @@ function scoreValue(score) {
 
 function compareNumbers(a, b) {
     return a - b;
-}
-
-function updateStats() {
-    console.log('Active game: ' + config.activeGame);
-    retrieveScores(config.activeGame, function(scores) {
-        statsChart(scores);
-
-        var empty = scores.length < 1;
-        if (empty) {
-            scores.push({id: 0, value: 0});
-        }
-
-        var subs = {};
-        var values = scores.map(scoreValue);
-        var last = values.last();
-        var last5 = values.slice(-5).sort(compareNumbers);
-        var last12 = values.slice(-12).sort(compareNumbers);
-        var best3of5 = last5.slice(0, 3).sort(compareNumbers);
-        var best10of12 = last12.slice(0, 10).sort(compareNumbers);
-
-        values.sort(compareNumbers);
-
-        values.forEach(function(value) {
-            var sub = valueToSub(value);
-            if (!(sub in subs)) {
-                subs[sub] = 0;
-            }
-            subs[sub]++;
-        });
-        var container = $('#subs'), e;
-        container.find('.sub').remove();
-        if(!empty) {
-            Object
-                .keys(subs)
-                .sort(compareNumbers)
-                .slice(0, 3)
-                .forEach(function(sub) {
-                    e = $('#subs .template').clone();
-                    e.removeClass('template');
-    
-                    e.attr('id', 'subs-' + sub)
-                        .addClass('sub')
-                        .find('.label')
-                        .html('sub ' + sub);
-                    e.find('.value').html(subs[sub]);
-                    container.append(e);
-                });
-        }
-
-        var avg80 = values.slice(
-            0,
-            Math.max(1, Math.floor(scores.length*0.8))
-        );
-
-        updateStat('latest', last);
-        updateStat('best', values[0]);
-        updateStat('best5', last5[0]);
-        updateStat('best12', last12[0]);
-        updateStat('best80', avg80[0]);
-        updateStat('best3of5', best3of5[0]);
-        updateStat('best10of12', best10of12[0]);
-        updateStat('worst', values.last(0));
-        updateStat('worst5', last5.last(0));
-        updateStat('worst12', last12.last(0));
-        updateStat('stddev', standardDeviation(scores, scoreValue));
-        updateStat('stddev5', standardDeviation(last5));
-        updateStat('stddev12', standardDeviation(last12));
-        updateStat('stddev80', standardDeviation(avg80));
-        updateStat('stddev3of5', standardDeviation(best3of5));
-        updateStat('stddev10of12', standardDeviation(best10of12));
-        updateStat('average', average(scores, scoreValue));
-        updateStat('average5', average(last5));
-        updateStat('average12', average(last12));
-        updateStat('average80', average(avg80));
-        updateStat('average3of5', average(best3of5));
-        updateStat('average10of12', average(best10of12));
-        updateStat('median', median(scores, scoreValue));
-        updateStat('median5', median(last5));
-        updateStat('median12', median(last12));
-        updateStat('median80', median(avg80));
-        updateStat('median3of5', median(best3of5));
-        updateStat('median10of12', median(best10of12));
-    });
-}
-
-function updateStat(key, value) {
-    $('#stats-' + key + ' .value')
-        .text(defaultFormatMilliseconds(value));
 }
 
 function updateHighlights() {
@@ -572,9 +484,11 @@ $(document).ready(function() {
         );
     });
 
-    var container = $('#stats'), stat, e;
-    for(var i = 0; i < config.stats.length; i++) {
-        stat = config.stats[i];
+    var container = $('#stats'),
+        stats = Object.keys(config.stats),
+        stat, e;
+    for(var i = 0; i < stats.length; i++) {
+        stat = stats[i];
         e = $('#stats .template').clone();
         e.removeClass('template');
 
@@ -587,8 +501,8 @@ $(document).ready(function() {
         var container = $('#statsHighlights .stats-content'),
             highlight, stat;
 
-        for(var i = 0; i < config.stats.length; i++) {
-            highlight = config.stats[i];
+        for(var i = 0; i < stats.length; i++) {
+            highlight = stats[i];
             stat = $('#statsHighlights .template').clone();
             stat.removeClass('template');
 

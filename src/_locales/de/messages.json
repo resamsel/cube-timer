@@ -161,6 +161,18 @@
         "message": "Std.Dev. 12",
         "description": "The short name of the stat label for: stddev12."
     },
+    "stddev80_short": {
+        "message": "Std.Dev. 80%",
+        "description": "The short name of the stat label for: stddev80."
+    },
+    "stddev3of5_short": {
+        "message": "Std.Dev. 3/5",
+        "description": "The short name of the stat label for: stddev3of5."
+    },
+    "stddev10of12_short": {
+        "message": "Std.Dev. 10/12",
+        "description": "The short name of the stat label for: stddev10of12."
+    },
     "average_short": {
         "message": "Mittel",
         "description": "The short name of the stat label for: average."
