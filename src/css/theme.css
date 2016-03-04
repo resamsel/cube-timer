@@ -1,0 +1,52 @@
+body {
+    background-color: #fafafa;
+}
+
+/*
+ * Navigation bar
+ */
+.material .navbar,
+.material .navbar.navbar-default {
+    /*background-color: #3F51B5;
+    color: rgba(255,255,255,0.84);*/
+    background-color: transparent;
+    color: rgba(0,0,0,0.87);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.material .navbar .dropdown-menu .active>a,
+.material .navbar.navbar-default .dropdown-menu .active>a {
+    background-color: #3F51B5;
+    color: rgba(255,255,255,.84);
+}
+
+#active-game > span,
+#results-button > span,
+#config-button > span {
+    display: none;
+}
+
+.material .panel-stats > .panel-heading,
+.material .panel.panel-timer > .panel-heading {
+    background-color: #283593;
+    color: rgba(255,255,255,0.84);
+}
+
+#ct-stats .ct-legend {
+    background: #1A237E;
+    color: rgba(255,255,255,0.84);
+}
+
+.stat.highlight .label.label-success {
+    background-color: #4caf50;
+}
+.stat .label.label-success {
+    background-color: #cecece;
+}
+
+/* Buttons */
+.material .btn:not(.btn-raised).btn-primary,
+.material .input-group-btn .btn:not(.btn-raised).btn-primary {
+    color: #5C6BC0;
+}

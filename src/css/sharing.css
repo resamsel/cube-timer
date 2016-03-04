@@ -1,0 +1,11 @@
+.share .btn-share {
+    display: inline-block;
+}
+
+.btn.btn-fab.btn-share {
+    display: none;
+    position: absolute;
+    bottom: -28px;
+    right: 15px;
+    /*box-shadow: 0 3px 4.5px 0 rgba(0, 0, 0, 0.12), 0 10px 10px 0 rgba(0, 0, 0, 0.24);*/
+}

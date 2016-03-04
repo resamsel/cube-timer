@@ -70,7 +70,8 @@ function movingMinimum(data) {
 
 function createStats(scores) {
     var stats = {
-        scores: scores
+        scores: scores,
+        categories: {}
     };
 
     stats.values = scores.map(scoreValue);
@@ -87,22 +88,23 @@ function createStats(scores) {
         Math.max(1, Math.floor(scores.length*0.8))
     );
 
+    stats.values.forEach(function(value) {
+        var category = valueToSub(value);
+        if (!(category in stats.categories)) {
+            stats.categories[category] = 0;
+        }
+        stats.categories[category]++;
+    });
+
     return stats;
 }
 
 function updateCategories(stats) {
-    var container = $('#subs'), e, categories = {};
-    stats.values.forEach(function(value) {
-        var category = valueToSub(value);
-        if (!(category in categories)) {
-            categories[category] = 0;
-        }
-        categories[category]++;
-    });
+    var container = $('#subs'), e;
     container.find('.sub').remove();
     if(stats.scores[0].id !== 0) {
         Object
-            .keys(categories)
+            .keys(stats.categories)
             .sort(compareNumbers)
             .slice(0, config.maxCategories)
             .forEach(function(category) {
@@ -113,7 +115,7 @@ function updateCategories(stats) {
                     .addClass('sub')
                     .find('.label')
                     .html('sub ' + category);
-                e.find('.value').html(categories[category]);
+                e.find('.value').html(stats.categories[category]);
                 container.append(e);
             });
     }

@@ -1,0 +1,29 @@
+.burst-12 {
+    text-align: center;
+}
+.burst-12,
+.burst-12:before,
+.burst-12:after {
+    background-color: #E91E63;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+}
+.burst-12:before,
+.burst-12:after {
+    content: "";
+    top: 0;
+    left: 0;
+}
+.burst-12:before {
+    -webkit-transform: rotate(30deg);
+       -moz-transform: rotate(30deg);
+        -ms-transform: rotate(30deg);
+         -o-transform: rotate(30deg);
+}
+.burst-12:after {
+    -webkit-transform: rotate(60deg);
+       -moz-transform: rotate(60deg);
+        -ms-transform: rotate(60deg);
+         -o-transform: rotate(60deg);
+}
