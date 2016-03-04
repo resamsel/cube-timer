@@ -50,6 +50,7 @@ function populateActiveGame(game) {
     $('#game-list .active').removeClass('active');
     $('#game-list .game-' + game).addClass('active');
     $('#active-game .text').text(game);
+    $('.panel-timer .panel-title > span').text(game);
 }
 
 function scramble(game) {
@@ -63,10 +64,8 @@ function scramble(game) {
             // Only allow a line break every 5 moves
             result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
         }
-        $('#scramble')
-            .html(result)
-            .parent().css('visibility', 'visible');
+        $('#scramble').html(translate('scrambleLabel', [result]));
     } else {
-        $('#scramble').parent().css('visibility', 'hidden');
+        $('#scramble').html(translate('scrambleLabelNone'));
     }
 }

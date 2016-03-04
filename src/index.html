@@ -69,8 +69,12 @@
 					</p>
 					<div class="panel panel-default panel-timer">
 						<div class="panel-heading">
-							<span i18n-key="scrambleLabel">Scramble:</span>
-							<span id="scramble"></span>
+							<h3 class="panel-title">
+								<span>3x3x3</span>
+								<small>
+									<span id="scramble"></span>
+								</small>
+							</h3>
 							<a href="javascript:void(0)" class="btn btn-default btn-fab btn-share">
 								<i class="material-icons">share</i>
 							</a>
@@ -103,7 +107,7 @@
 								<div id="ct-categories" class="ct-golden-section"></div>
 							</div>
 							<div id="stats-weekdays">
-								<div id="ct-weekdays" class="ct-double-octave"></div>
+								<div id="ct-weekdays" class="ct-double-octave-off"></div>
 							</div>
 						</div>
 					</div>
@@ -122,7 +126,7 @@
 	</div>
 
 	<div class="modal fade results-dialog" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -132,24 +136,32 @@
 				</div>
 				<div class="modal-body">
 					<div id="times">
-						<div class="template">
-							<div class="entry list-group-item">
-								<div class="index row-action-primary"></div>
-								<div class="row-content">
-									<div class="date least-content"></div>
-									<div class="value list-group-item-heading"></div>
-									<div class="actions action-secondary">
-										<button class="btn btn-default btn-xs btn-remove">
-											<i class="material-icons">remove</i>
-										</button>
-									</div>
-									<div class="tags list-group-item-text"></div>
-								</div>
-							</div>
-							<div class="list-group-separator"></div>
-						</div>
-						<div class="times-content list-group">
-						</div>
+						<table style="display: none">
+							<tr class="template entry">
+								<td class="index"></td>
+								<td class="date"></td>
+								<td class="value"></td>
+								<td class="tags"></td>
+								<td class="actions">
+									<button class="btn btn-default btn-xs btn-remove">
+										<i class="material-icons">remove</i>
+									</button>
+								</td>
+							</tr>
+						</table>
+						<table class="table">
+							<thead>
+							<tr class="entry">
+								<th class="index">#</th>
+								<th class="date" i18n-key="date">Date</th>
+								<th class="value" i18n-key="score">Score</th>
+								<th class="tags" i18n-key="tags">Tags</th>
+								<th class="actions" i18n-key="actions">Actions</th>
+							</tr>
+							</thead>
+							<tbody class="times-content">
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -167,7 +179,7 @@
 	</div>
 
 	<div class="modal fade config-dialog" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">

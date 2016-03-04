@@ -22,21 +22,22 @@ function createScores(stats) {
     var averages12 = movingAverage(values, 12);
     var averages50 = movingAverage(values, 50);
     var best = movingMinimum(values);
+    var windowSize = 50;
     var len = values.length;
-    var offset = Math.max(0, len - 50);
+    var offset = Math.max(0, len - windowSize);
     console.log(
         'values=%s, averages12=%s, averages50=%s, best=%s, offset=%d',
         values, averages12, averages50, best, offset
     );
     var data = {
         // A labels array that can contain any sort of values
-        labels: stats.scores.map(scoreKey).slice(offset, len),
+        labels: stats.scores.map(scoreKey).slice(offset, len).lpad(windowSize, null),
         // Our series array that contains series objects or in this case series data arrays
         series: [
-            values.slice(offset, len),
-            averages12.slice(offset, len),
-            averages50.slice(offset, len),
-            best.slice(offset, len)
+            values.slice(offset, len).lpad(windowSize, null),
+            averages12.slice(offset, len).lpad(windowSize, null),
+            averages50.slice(offset, len).lpad(windowSize, null),
+            best.slice(offset, len).lpad(windowSize, null)
         ]
     };
 
@@ -58,7 +59,7 @@ function createScores(stats) {
             // The label interpolation function enables you to modify the values
             // used for the labels on each axis. Here we are converting the
             // values into million pound.
-            labelInterpolationFnc: defaultFormatMilliseconds
+            labelInterpolationFnc: hourMinuteFormatMilliseconds
         },
         lineSmooth: Chartist.Interpolation.simple({
             divisor: 2

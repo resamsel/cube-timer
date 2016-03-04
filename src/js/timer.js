@@ -1,32 +1,6 @@
 var timerSound;
 var startSound;
 
-// Array Remove - By John Resig (MIT Licensed)
-Array.prototype.remove = function(from, to) {
-  var rest = this.slice((to || from) + 1 || this.length);
-  this.length = from < 0 ? this.length + from : from;
-  return this.push.apply(this, rest);
-};
-
-Array.prototype.unique = function(eq) {
-    var a = this.concat();
-    for(var i=0; i<a.length; ++i) {
-        for(var j=i+1; j<a.length; ++j) {
-            if(eq(a[i], a[j]))
-                a.splice(j--, 1);
-        }
-    }
-
-    return a;
-};
-
-Array.prototype.last = function(defaultValue) {
-    if(this.length > 0) {
-        return this[this.length - 1];
-    }
-    return defaultValue || 0;
-};
-
 function pad2(number) {
     return (number < 10 ? '0' : '') + number;
 }
@@ -40,6 +14,15 @@ function defaultFormatMilliseconds(millis) {
     x /= 60;
     minutes = Math.floor(x % 60);
     return [pad2(minutes), pad2(seconds)].join(':') + '.' + pad2(milliseconds);
+}
+
+function hourMinuteFormatMilliseconds(millis) {
+    var x, seconds, minutes;
+    x = millis / 1000;
+    seconds = Math.floor(x % 60);
+    x /= 60;
+    minutes = Math.floor(x % 60);
+    return [pad2(minutes), pad2(seconds)].join(':');
 }
 
 function showScore(score) {
@@ -65,7 +48,7 @@ function submitScore(elapsed) {
 }
 
 function mark(score, text, type_) {
-    $('#id-' + score.id + ' > * .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
+    $('#id-' + score.id + ' .tags').append(' <span class="label label-' + type_ + '">' + text + '</span>');
 }
 
 function valueToSub(value) {

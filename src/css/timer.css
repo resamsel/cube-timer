@@ -24,9 +24,11 @@ body {
     margin-left: 10px;
 }
 
+.panel .panel-title {
+    font-size: 20px;
+}
 .panel.panel-timer > .panel-heading {
     position: relative;
-    text-align: center;
     padding: 15px;
 }
 .relative {
@@ -187,6 +189,9 @@ body {
 }
 #stats .highlight .value {
     font-weight: bold;
+}
+#statsHighlights {
+    display: none;
 }
 #statsHighlights .checkbox {
     display: inline-block;

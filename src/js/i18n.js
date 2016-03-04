@@ -1,16 +1,12 @@
-function translate(key, defaultValue) {
+function translate(key, params) {
     if(typeof(chrome) !== 'undefined' && typeof(chrome.i18n) !== 'undefined') {
-        var translation = chrome.i18n.getMessage(key);
+        var translation = chrome.i18n.getMessage(key, params);
         if (translation) {
             return translation;
         }
     }
 
-    if (typeof(defaultValue) === 'undefined') {
-        return key;
-    }
-
-    return defaultValue;
+    return key;
 }
 
 function i18n() {

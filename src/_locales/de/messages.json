@@ -39,12 +39,33 @@
         "description": "This hint tells about the spacebar as a short key to start/stop the timer."
     },
     "scrambleLabel": {
-        "message": "Mischen:",
+        "message": "Mischen: $1",
         "description": "The label indicating how to scramble the cube before solving it."
     },
+    "scrambleLabelNone": {
+        "message": "Mischen nicht verfügbar",
+        "description": "The label indicating that no scramble is available."
+    },
+
     "results": {
         "message": "Zeiten",
         "description": "The label of the results/times panel."
+    },
+    "date": {
+        "message": "Datum",
+        "description": "The date of the result."
+    },
+    "score": {
+        "message": "Ergebnis",
+        "description": "The score of the result."
+    },
+    "tags": {
+        "message": "Tags",
+        "description": "The tags of the result."
+    },
+    "actions": {
+        "message": "Aktionen",
+        "description": "The actions that may be applied to the result."
     },
 
     "buttonStart": {

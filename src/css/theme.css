@@ -2,10 +2,29 @@ body {
     background-color: #fafafa;
 }
 
+/*
+ * Navigation bar
+ */
 .material .navbar,
 .material .navbar.navbar-default {
+    /*background-color: #3F51B5;
+    color: rgba(255,255,255,0.84);*/
+    background-color: transparent;
+    color: rgba(0,0,0,0.87);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.material .navbar .dropdown-menu .active>a,
+.material .navbar.navbar-default .dropdown-menu .active>a {
     background-color: #3F51B5;
-    color: rgba(255,255,255,0.84);
+    color: rgba(255,255,255,.84);
+}
+
+#active-game > span,
+#results-button > span,
+#config-button > span {
+    display: none;
 }
 
 .material .panel-stats > .panel-heading,
