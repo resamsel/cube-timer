@@ -12,7 +12,7 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="js/jquery.min.js"></script>
 </head>
-<body><!-- class="started/stopped" -->
+<body class="material"><!-- class="started/stopped" -->
 	<div id="wrapper">
 	<header class="navbar navbar-fixed-top nav" id="top" role="banner">
 		<div class="container">
@@ -68,16 +68,17 @@
 					</span>
 				</p>
 				<div class="panel panel-default panel-timer">
+					<div class="panel-heading">
+						<span i18n-key="scrambleLabel">Scramble:</span>
+						<span id="scramble"></span>
+						<a href="javascript:void(0)" class="btn btn-default btn-fab btn-share">
+							<i class="material-icons">share</i>
+						</a>
+					</div>
 					<div class="panel-body">
-						<div class="text-center">
-							<span i18n-key="scrambleLabel">Scramble:</span>
-							<span id="scramble"></span>
-						</div>
 						<div id="timer-container">
 							<span id="timer" class="text-center">00:00.00</span>
-							<a href="javascript:void(0)" class="btn btn-default btn-fab btn-share">
-								<i class="material-icons">share</i>
-							</a>
+							<div class="achievement burst-12 template"><span>avg -5</span></div>
 						</div>
 					</div>
 					<div class="panel-footer start-stop-container">
@@ -93,20 +94,16 @@
 						</button>
 					</div>
 				</div>
-				<div class="panel panel-default">
-					<div class="panel-body">
+				<div class="panel panel-default panel-stats">
+					<div class="panel-heading">
 						<div id="ct-stats" class="ct-major-twelfth"></div>
-						<div id="subs" class="list-group">
-							<div id="subs-template" class="list-group-item template">
-								<span class="value">0</span>x
-								<span class="label label-info">template</span>
-							</div>
+					</div>
+					<div class="panel-body relative">
+						<div id="stats-categories">
+							<div id="ct-categories" class="ct-golden-section"></div>
 						</div>
-						<div id="stats" class="list-group">
-							<div id="stats-template" class="list-group-item stat template">
-								<span class="value">00:00.00</span>
-								<span class="label label-success">template</span>
-							</div>
+						<div id="stats-weekdays">
+							<div id="ct-weekdays" class="ct-double-octave"></div>
 						</div>
 					</div>
 				</div>

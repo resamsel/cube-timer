@@ -3,9 +3,6 @@ body {
     overflow-y: visible;
     height: 100%;
 }
-body {
-    background-color: #fafafa;
-}
 
 #wrapper {
     padding-top: 85px; /* navbar-fixed-top */
@@ -27,6 +24,15 @@ body {
     margin-left: 10px;
 }
 
+.panel.panel-timer > .panel-heading {
+    position: relative;
+    text-align: center;
+    padding: 15px;
+}
+.relative {
+    position: relative;
+}
+
 #timer-container {
     margin-top: -10px;
     text-align: center;
@@ -35,14 +41,20 @@ body {
     font-size: 96px;
 }
 
-.btn.btn-fab.btn-share {
-    vertical-align: super;
-    margin-left: 16px;
-    display: none;
+.achievement {
+    display: inline-block;
+    margin-left: -30px;
+    bottom: 12px;
+}
+.achievement > span {
+    z-index: 9999;
 }
 
 .start-stop-container {
     text-align: center;
+}
+.start-stop-container > button {
+    margin: 0;
 }
 .start-stop {
     display: block;
@@ -189,13 +201,6 @@ body {
 .checkbox > label {
     white-space: nowrap;
 }
-.stat.highlight .label.label-success {
-    background-color: #4caf50;
-}
-.stat .label.label-success {
-    background-color: #cecece;
-}
-
 .picker.picker-dialog {
     z-index: 9999;
 }

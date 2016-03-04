@@ -325,17 +325,22 @@ function handleStatChange(event) {
     );
 }
 
-function toCsv(scores) {
-    var result = 'Date;Duration\n';
+function toCsv(game, scores) {
+    var result = ['Game;Date;Duration'];
 
     for (var i = 0; i < scores.length; i++) {
-        result += $.format.date(
+        result.push([
+            game,
+            $.format.date(
                 new Date(scores[i].id),
                 'yyyy-MM-ddTHH:mm:ss.SSSZ'
-            ) + ';' + scores[i].value + '\n';
+            ),
+            scores[i].value]
+            .join(';')
+        );
     }
 
-    return result;
+    return result.join('\n');
 }
 
 function toDate(timestamp) {
@@ -431,7 +436,7 @@ $(document).ready(function() {
     });
     $('#export').bind('click', function() {
         retrieveScores(config.activeGame, function(scores) {
-            $('#export-content').val(toCsv(scores));
+            $('#export-content').val(toCsv(config.activeGame, scores));
         });
         // Show dialog
         $('.export-dialog').modal('show');

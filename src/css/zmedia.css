@@ -16,10 +16,25 @@
     body #wrapper {
         padding-top: 75px;
     }
+    #ct-weekdays .ct-series .ct-bar {
+        stroke-width: 30px;
+    }
+}
+@media (max-width: 991px) {
+    #ct-weekdays .ct-series .ct-bar {
+        stroke-width: 40px;
+    }
 }
 @media (max-width: 768px) {
     body #wrapper {
         padding-top: 65px;
+    }
+    #stats-weekdays {
+        display: block;
+        position: initial;
+    }
+    #stats-categories {
+        display: block;
     }
 }
 @media (max-width: 420px) {
