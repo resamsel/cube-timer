@@ -1,5 +1,9 @@
+.share .btn-share {
+    display: inline-block;
+}
+
 .btn.btn-fab.btn-share {
-    /*display: none;*/
+    display: none;
     position: absolute;
     bottom: -28px;
     right: 15px;
