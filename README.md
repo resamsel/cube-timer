@@ -1,11 +1,15 @@
 # Rubik's Cube Timer
 
+![Promotional Image](https://github.com/resamsel/cube-timer/raw/master/assets/images/promotional-tile-440x280.png "Promotional Image")
+
 The Rubik's Cube Timer allows you to record and manage your cube
 records. It's features and design is strongly influenced by [Cube
 Timer](http://www.cubetimer.com/), but uses a more modern design.
 
 The [Rubik's Cube Timer](https://chrome.google.com/webstore/detail/rubiks-cube-timer/oldnpmfiikmplicapjoijjkigkonkamb)
 chrome app allows you to install and use the timer locally.
+
+![Screenshot](https://github.com/resamsel/cube-timer/raw/master/assets/screenshots/screenshot-1.png "Screenshot")
 
 ## Development
 
