@@ -1,0 +1,274 @@
+{
+    "appName": {
+        "message": "Rubik's Cube Timer",
+        "description": "The title of the application, displayed in the web store."
+    },
+    "appShortName": {
+        "message": "Cube Timer",
+        "description": "The short name of the application."
+    },
+    "appDescription": {
+        "message": "Times your cube solves and displays detailed statistic about it.",
+        "description": "The description of the application, displayed in the web store."
+    },
+
+    "importFilesUnsupported": {
+        "message": "This browser doesn't seem to support the `files` property of file inputs.",
+        "description": "The message when the browser doesn't support the files feature of input elements."
+    },
+    "importFilesEmpty": {
+        "message": "Please select a file before clicking 'Load'",
+        "description": "The message when the user hasn't selected anything in the file input dialog."
+    },
+    "importServerError": {
+        "message": "Server error while exporting selected file: $message$",
+        "placeholders": {
+            "message": {
+                "content": "$1",
+                "example": ""
+            }
+        }
+    },
+
+    "configuration": {
+        "message": "Configuration",
+        "description": "The name of the link that opens the configuration dialog."
+    },
+    "hintSpacebar": {
+        "message": "Hint: To start/stop the timer press <span class=\"label label-default\">space bar</span>.",
+        "description": "This hint tells about the spacebar as a short key to start/stop the timer."
+    },
+    "scrambleLabel": {
+        "message": "Scramble: $1",
+        "description": "The label indicating how to scramble the cube before solving it."
+    },
+    "scrambleLabelNone": {
+        "message": "No scramble available",
+        "description": "The label indicating that no scramble is available."
+    },
+
+    "results": {
+        "message": "Times",
+        "description": "The label of the results/times panel."
+    },
+    "date": {
+        "message": "Date",
+        "description": "The date of the result."
+    },
+    "score": {
+        "message": "Score",
+        "description": "The score of the result."
+    },
+    "tags": {
+        "message": "Tags",
+        "description": "The tags of the result."
+    },
+    "actions": {
+        "message": "Actions",
+        "description": "The actions that may be applied to the result."
+    },
+
+    "buttonStart": {
+        "message": "Start",
+        "description": "The name of the button to start the timer."
+    },
+    "buttonStop": {
+        "message": "Stop",
+        "description": "The name of the button to stop the timer."
+    },
+    "buttonImport": {
+        "message": "Import",
+        "description": "The name of the button to import results."
+    },
+    "buttonExport": {
+        "message": "Export",
+        "description": "The name of the button to export results."
+    },
+
+    "inspectionTime": {
+        "message": "Inspection Time",
+        "description": "The label for the inspection time."
+    },
+    "inspectionTimeNone": {
+        "message": "None",
+        "description": "The value for the inspection time: None."
+    },
+    "inspectionTime3Seconds": {
+        "message": "3 seconds",
+        "description": "The value for the inspection time: 3 seconds."
+    },
+    "inspectionTime5Seconds": {
+        "message": "5 seconds",
+        "description": "The value for the inspection time: 5 seconds."
+    },
+    "inspectionTime10Seconds": {
+        "message": "10 seconds",
+        "description": "The value for the inspection time: 10 seconds."
+    },
+    "inspectionTime15Seconds": {
+        "message": "15 seconds",
+        "description": "The value for the inspection time: 15 seconds."
+    },
+    "inspectionSound": {
+        "message": "Play sound after inspection",
+        "description": "The checkbox label for the inspection sound."
+    },
+    "showCategoryLabels": {
+        "message": "Show <span class=\"label label-info\">sub X</span> labels",
+        "description": "The checkbox label for the category labels."
+    },
+
+    "statsShow": {
+        "message": "Show",
+        "description": "The name of the statistics label."
+    },
+    "latest": {
+        "message": "Latest",
+        "description": "The name of the stat label for: latest."
+    },
+    "latest_short": {
+        "message": "latest",
+        "description": "The short name of the stat label for: latest."
+    },
+    "best": {
+        "message": "Best",
+        "description": "The name of the stat label for: best."
+    },
+    "best_short": {
+        "message": "best",
+        "description": "The short name of the stat label for: best."
+    },
+    "best5_short": {
+        "message": "best 5",
+        "description": "The short name of the stat label for: best5."
+    },
+    "best12_short": {
+        "message": "best 12",
+        "description": "The short name of the stat label for: best12."
+    },
+    "worst_short": {
+        "message": "worst",
+        "description": "The short name of the stat label for: worst."
+    },
+    "worst5_short": {
+        "message": "worst 5",
+        "description": "The short name of the stat label for: worst5."
+    },
+    "worst12_short": {
+        "message": "worst 12",
+        "description": "The short name of the stat label for: worst12."
+    },
+    "best80_short": {
+        "message": "best 80%",
+        "description": "The short name of the stat label for: best80."
+    },
+    "best3of5_short": {
+        "message": "best 3/5",
+        "description": "The short name of the stat label for: best3of5."
+    },
+    "best10of12_short": {
+        "message": "best 10/12",
+        "description": "The short name of the stat label for: best10of12."
+    },
+    "stddev_short": {
+        "message": "stddev",
+        "description": "The short name of the stat label for: stddev."
+    },
+    "stddev5_short": {
+        "message": "stddev 5",
+        "description": "The short name of the stat label for: stddev5."
+    },
+    "stddev12_short": {
+        "message": "stddev 12",
+        "description": "The short name of the stat label for: stddev12."
+    },
+    "stddev80_short": {
+        "message": "stddev 80%",
+        "description": "The short name of the stat label for: stddev80."
+    },
+    "stddev3of5_short": {
+        "message": "stddev 3/5",
+        "description": "The short name of the stat label for: stddev3of5."
+    },
+    "stddev10of12_short": {
+        "message": "stddev 10/12",
+        "description": "The short name of the stat label for: stddev10of12."
+    },
+    "average_short": {
+        "message": "avg",
+        "description": "The short name of the stat label for: average."
+    },
+    "average5": {
+        "message": "Average #5",
+        "description": "The name of the stat label for: average5."
+    },
+    "average5_short": {
+        "message": "avg 5",
+        "description": "The short name of the stat label for: average5."
+    },
+    "average12": {
+        "message": "Average #12",
+        "description": "The name of the stat label for: average12."
+    },
+    "average12_short": {
+        "message": "avg 12",
+        "description": "The short name of the stat label for: average12."
+    },
+    "average25": {
+        "message": "Average #25",
+        "description": "The short name of the stat label for: average25."
+    },
+    "average25_short": {
+        "message": "avg 25",
+        "description": "The name of the stat label for: average25."
+    },
+    "average50": {
+        "message": "Average #50",
+        "description": "The short name of the stat label for: average50."
+    },
+    "average50_short": {
+        "message": "avg 50",
+        "description": "The name of the stat label for: average50."
+    },
+    "average80_short": {
+        "message": "avg 80%",
+        "description": "The short name of the stat label for: average80."
+    },
+    "average3of5_short": {
+        "message": "avg 3/5",
+        "description": "The short name of the stat label for: average3of5."
+    },
+    "average10of12_short": {
+        "message": "avg 10/12",
+        "description": "The short name of the stat label for: average10of12."
+    },
+    "median_short": {
+        "message": "median",
+        "description": "The short name of the stat label for: median."
+    },
+    "median5_short": {
+        "message": "median 5",
+        "description": "The short name of the stat label for: median5."
+    },
+    "median12_short": {
+        "message": "median 12",
+        "description": "The short name of the stat label for: median12."
+    },
+    "median80_short": {
+        "message": "median 80%",
+        "description": "The short name of the stat label for: median80."
+    },
+    "median3of5_short": {
+        "message": "median 3/5",
+        "description": "The short name of the stat label for: median3of5."
+    },
+    "median10of12_short": {
+        "message": "median 10/12",
+        "description": "The short name of the stat label for: median10of12."
+    },
+
+    "footer": {
+        "message": "Designed and built by <a href=\"https://twitter.com/resamsel\" target=\"_blank\">@resamsel</a>. <a href=\"https://github.com/resamsel/cube-timer\" target=\"_blank\">GitHub</a>. Code licensed <a rel=\"license\" href=\"https://github.com/resamsel/cube-timer/blob/master/LICENSE\" target=\"_blank\">GPLv2</a>.",
+        "description": "The footer message."
+    }
+}
