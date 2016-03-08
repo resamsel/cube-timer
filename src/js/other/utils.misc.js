@@ -22,18 +22,6 @@ function hourMinuteFormatMilliseconds(millis) {
     return [pad2(minutes), pad2(seconds)].join(':');
 }
 
-function valueToSub(value) {
-    var x = value / 1000, category;
-    for (var i = 0; i < config.categories.length; i++) {
-        category = config.categories[i];
-        if (x < category) {
-            return category;
-        }
-    }
-
-    return -1;
-}
-
 function scoreKey(score) {
     return score.id;
 }
@@ -67,4 +55,15 @@ function toCsv(game, scores) {
 function toDate(timestamp) {
     var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
     return jintervals(interval, "{G.} ago");
+}
+
+function defaultCallback(key, defaultValue, callback) {
+    return function (value) {
+        if(value === null || typeof(value) === 'undefined') {
+            value = defaultValue;
+        }
+        if(callback) {
+            callback(value);
+        }
+    };
 }

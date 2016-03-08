@@ -10,8 +10,10 @@ Core.register(
                 // window.clipboardData.setData("Text", $(this).val());
             });
             $('#export').bind('click', function() {
-                retrieveScores(config.activeGame, function(scores) {
-                    $('#export-content').val(toCsv(config.activeGame, scores));
+                var game = sandbox.activeGame();
+                console.log('Game: %s', game);
+                retrieveScores(game, function(results) {
+                    $('#export-content').val(toCsv(game, results));
                 });
                 // Show dialog
                 $('.export-dialog').modal('show');

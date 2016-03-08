@@ -41,7 +41,7 @@ Core.register(
         module.handleImport = function(replace) {
             var content = $('#import-content').val().split('\n'),
                 scores = [],
-                game = config.activeGame,
+                game = sandbox.activeGame(),
                 line, date, value;
 
             for(var i = 0; i < content.length; i++) {

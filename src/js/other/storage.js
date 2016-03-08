@@ -75,17 +75,6 @@ if(typeof(Storage) !== 'undefined' && typeof(localStorage) !== 'undefined') {
     dao = defaultDAO;
 }
 
-function defaultCallback(key, defaultValue, callback) {
-    return function (value) {
-        if(value === null || typeof(value) === 'undefined') {
-            value = defaultValue;
-        }
-        if(callback) {
-            callback(value);
-        }
-    };
-}
-
 function storeConfig(key, value, callback) {
     dao.set(key, value, callback);
 }
@@ -141,7 +130,6 @@ function retrieveActiveGame(callback) {
 
 function storeActiveGame(game, callback) {
     console.log('storeActiveGame(game=%s, callback)', game);
-    config.activeGame = game;
     dao.set('activeGame', game, callback);
 }
 

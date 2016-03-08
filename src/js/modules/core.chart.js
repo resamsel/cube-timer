@@ -2,6 +2,7 @@ Core.register(
     'chart',
     function (sandbox) {
         var module = {};
+        var maxCategories = 5;
 
         module.init = function() {
             sandbox.listen(
@@ -41,7 +42,7 @@ Core.register(
                 chart.detach();
                 container.children().remove();
             }
-        }
+        };
 
         module.createScores = function(stats) {
             var values = stats.scores.map(scoreValue);
@@ -108,7 +109,9 @@ Core.register(
         };
 
         module.createCategories = function(stats) {
-            var series = Object.keys(stats.categories).slice(0, 5);
+            var series = Object
+                .keys(stats.categories)
+                .slice(0, maxCategories);
             var data = {
                 series: series
                     .map(function(key) {
@@ -189,7 +192,7 @@ Core.register(
             );
 
             stats.values.forEach(function(value) {
-                var category = valueToSub(value);
+                var category = Category.fromValue(value);
                 if (!(category in stats.categories)) {
                     stats.categories[category] = 0;
                 }

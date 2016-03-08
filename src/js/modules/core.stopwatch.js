@@ -59,12 +59,12 @@ Core.register(
             if(elapsed > 0) {
                 // Only use values when stopwatch actually started
                 storeScore(
-                    config.activeGame,
+                    sandbox.activeGame(),
                     { id: new Date().getTime(), value: elapsed },
                     function() {
                         sandbox.notify({
                             type: 'results-changed',
-                            data: config.activeGame
+                            data: sandbox.activeGame()
                         });
                     }
                 );

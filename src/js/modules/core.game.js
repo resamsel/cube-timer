@@ -29,45 +29,36 @@ Core.register(
          */
         module.populateGames = function() {
             retrieveGames(function(games) {
-                retrieveActiveGame(function(activeGame) {
-                    config.activeGame = activeGame;
-                    sandbox.notify({
-                        type: 'game-changed',
-                        data: activeGame
-                    });
-                    
-                    var gameList = $('#game-list');
-                    var template = gameList.find('.template'),
-                        clone,
-                        game;
+                var activeGame = sandbox.activeGame();
+                var gameList = $('#game-list');
+                var template = gameList.find('.template'),
+                    clone,
+                    game;
 
-                    for(var i = 0; i < games.length; i++) {
-                        game = games[i];
+                for(var i = 0; i < games.length; i++) {
+                    game = games[i];
 
-                        // 1. Clone template
-                        clone = template.clone();
+                    // 1. Clone template
+                    clone = template.clone();
 
-                        // 2. Update clone
-                        clone.removeClass('template').addClass('game-' + game);
-                        clone.find('a').text(game);
-                        clone.bind('click', module.activateGame(game));
+                    // 2. Update clone
+                    clone.removeClass('template').addClass('game-' + game);
+                    clone.find('a').text(game);
+                    clone.bind('click', module.activateGame(game));
 
-                        if(game == activeGame) {
-                            clone.addClass('active');
-                        }
-
-                        // 3. Add it to the game list
-                        gameList.append(clone);
+                    if(game == activeGame) {
+                        clone.addClass('active');
                     }
-                });
+
+                    // 3. Add it to the game list
+                    gameList.append(clone);
+                }
             });
         };
 
         module.activateGame = function(game) {
             return function() {
-                storeActiveGame(game, function() {
-                    sandbox.notify({type: 'game-changed', data: game});
-                });
+                sandbox.activeGame(game);
             };
         };
 

@@ -6,11 +6,15 @@ var Sandbox = function(core) {
     this.listen = function(types, handler, module) {
         core.listen(types, handler, module);
     };
+    this.activeGame = function(game) {
+        return core.activeGame(game);
+    };
 };
 
 var Core = function() {
     var moduleData = {};
     var handlers = {};
+    var game = '3x3x3';
 
     return {
         register: function(id, creator) {
@@ -42,9 +46,18 @@ var Core = function() {
             // Migrate database, if necessary
             this.migrate();
 
+            retrieveActiveGame(function(game_){
+                game = game_;
+            });
+
             for(var moduleId in moduleData) {
                 this.start(moduleId);
             }
+
+            this.notify({
+                type: 'game-changed',
+                data: this.activeGame()
+            });
         },
 
         stopAll: function() {
@@ -79,7 +92,7 @@ var Core = function() {
 
         notify: function(event) {
             console.log(
-                'Sandbox.notify(event=%s)',
+                'Core.notify(event=%s)',
                 JSON.stringify(event)
             );
             if(!handlers.hasOwnProperty(event.type)) {
@@ -97,7 +110,7 @@ var Core = function() {
 
         listen: function(types, handler, module) {
             console.log(
-                'Sandbox.listen(types=%s, handler=%s, module=%s)',
+                'Core.listen(types=%s, handler=%s, module=%s)',
                 JSON.stringify(types),
                 typeof handler,
                 module.id
@@ -113,6 +126,20 @@ var Core = function() {
                 }
                 handlers[type].push(handler);
             }
+        },
+
+        activeGame: function(game_) {
+            if(typeof game_ !== 'undefined') {
+                game = game_;
+                storeActiveGame(game, function() {
+                    Core.notify({
+                        type: 'game-changed',
+                        data: game
+                    });
+                });
+            }
+
+            return game;
         }
     };
 }();

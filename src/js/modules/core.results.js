@@ -22,7 +22,7 @@ Core.register(
                     $('.results-dialog').modal('show');
                 });
 
-            module.updateResults(config.activeGame);
+            module.updateResults(sandbox.activeGame());
         };
 
         module.handleResultsChanged = function(event) {
@@ -42,7 +42,7 @@ Core.register(
                 .text(toDate(result.id)).data('date', result.id);
             row
                 .find('.btn-remove')
-                .data('game', config.activeGame)
+                .data('game', sandbox.activeGame())
                 .data('resultId', result.id)
                 .bind('click', function(event) {
                     module.removeResult(this);
@@ -140,7 +140,7 @@ Core.register(
                         best12 = result;
                     }
                     if(markSubX) {
-                        sub = valueToSub(result.value);
+                        sub = Category.fromValue(result.value);
                         if (sub > 0) {
                             module.mark(result, 'sub ' + sub, 'info');
                         }
