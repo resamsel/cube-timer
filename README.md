@@ -1,4 +1,9 @@
+![Promotional Image](https://github.com/resamsel/cube-timer/raw/master/assets/images/promotional-tile-440x280.png "Promotional Image")
+
 # Rubik's Cube Timer
+
+[![Dependency Status](https://david-dm.org/resamsel/cube-timer.svg?style=flat)](https://david-dm.org/resamsel/cube-timer)
+[![devDependency Status](https://david-dm.org/resamsel/cube-timer/dev-status.svg?style=flat)](https://david-dm.org/resamsel/cube-timer#info=devDependencies)
 
 The Rubik's Cube Timer allows you to record and manage your cube
 records. It's features and design is strongly influenced by [Cube
@@ -7,25 +12,24 @@ Timer](http://www.cubetimer.com/), but uses a more modern design.
 The [Rubik's Cube Timer](https://chrome.google.com/webstore/detail/rubiks-cube-timer/oldnpmfiikmplicapjoijjkigkonkamb)
 chrome app allows you to install and use the timer locally.
 
+![Screenshot](https://github.com/resamsel/cube-timer/raw/master/assets/screenshots/screenshot-1.png "Screenshot")
+
 ## Development
 
 Cube Timer uses [Grunt](http://gruntjs.com/) as build system, which
 must be installed using npm. Node.js packages the command npm, so it
 needs to be installed as well. On Mac you could use
-[Homebrew](http://brew.sh/) to do that. At last we need
-[Bower](http://bower.io/) to load additional requirements.
+[Homebrew](http://brew.sh/) to do that.
 
 ```
 brew install nodejs
-npm install -g grunt-cli bower
-npm install grunt
+npm install -g grunt grunt-cli
 ```
 
-As soon as `bower` and `grunt` are available as commands the build can
+As soon as `grunt` is available as command the build can
 be initialised.
 
 ```
-bower install
 npm install
 ```
 

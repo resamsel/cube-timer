@@ -1,3 +1,5 @@
+// TODO: Move to Core
+
 var defaultDAO = {
     get: function(key, callback) {
         if(callback) {
@@ -73,17 +75,6 @@ if(typeof(Storage) !== 'undefined' && typeof(localStorage) !== 'undefined') {
     dao = defaultDAO;
 }
 
-function defaultCallback(key, defaultValue, callback) {
-    return function (value) {
-        if(value === null || typeof(value) === 'undefined') {
-            value = defaultValue;
-        }
-        if(callback) {
-            callback(value);
-        }
-    };
-}
-
 function storeConfig(key, value, callback) {
     dao.set(key, value, callback);
 }
@@ -117,64 +108,16 @@ function retrieveScores(game, callback) {
     );
 }
 
-function removeScore(e) {
-    var element = $(this);
-    var game = element.data('game');
-    var id = element.data('scoreId');
+function removeScore(game, resultId, callback) {
+    console.log('removeScore(game=%s, resultId=%s, callback)', game, resultId);
     retrieveScores(game, function(scores) {
         for (var i = 0; i < scores.length; i++) {
-            if(scores[i].id == id) {
+            if(scores[i].id == resultId) {
                 scores.remove(i);
-                storeScores(game, scores, removeScoreHandler(element, id));
+                storeScores(game, scores, callback);
                 return;
             }
         }
-    });
-}
-
-function removeScoreHandler(element, id) {
-    return function() {
-        $('#id-' + id).fadeOut({
-            complete: function() {
-                element.remove();
-                update();
-            }
-        });
-    };
-}
-
-function retrieveHighlights(callback) {
-    dao.get(
-        'statsHighlights',
-        defaultCallback(
-            'statsHighlights',
-            ['best'],
-            callback
-        )
-    );
-}
-
-function storeHighlights(highlights, callback) {
-    dao.set('statsHighlights', highlights, callback);
-}
-
-function storeHighlight(stat, checked, callback) {
-    retrieveHighlights(function(highlights) {
-        var index = highlights.indexOf(stat);
-        if(index > -1) {
-            // Stat exists
-            if(!checked) {
-                // ...but shouldn't
-                highlights.remove(index);
-            }
-        } else {
-            // Stat doesn't exist
-            if(checked) {
-                // ...but should
-                highlights.push(stat);
-            }
-        }
-        storeHighlights(highlights, callback);
     });
 }
 
@@ -187,7 +130,6 @@ function retrieveActiveGame(callback) {
 
 function storeActiveGame(game, callback) {
     console.log('storeActiveGame(game=%s, callback)', game);
-    handleGameActivated(game);
     dao.set('activeGame', game, callback);
 }
 

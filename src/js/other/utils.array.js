@@ -31,3 +31,9 @@ Array.prototype.lpad = function(size, element) {
     return this;
 };
 
+Array.prototype.rpad = function(size, element) {
+    while(this.length < size) {
+        this.push(element);
+    }
+    return this;
+};

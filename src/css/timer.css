@@ -184,25 +184,6 @@ body {
 #stats .stat {
     display: none;
 }
-#stats .stat.highlight {
-    display: block;
-}
-#stats .highlight .value {
-    font-weight: bold;
-}
-#statsHighlights {
-    display: none;
-}
-#statsHighlights .checkbox {
-    display: inline-block;
-    padding-right: 9px;
-}
-#statsHighlights .checkbox.template {
-    display: none;
-}
-#statsHighlights .checkbox {
-    width: 33%;
-}
 .checkbox > label {
     white-space: nowrap;
 }

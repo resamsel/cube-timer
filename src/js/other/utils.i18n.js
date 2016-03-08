@@ -8,14 +8,3 @@ function translate(key, params) {
 
     return key;
 }
-
-function i18n() {
-    if(typeof(chrome) === 'undefined' || typeof(chrome.i18n) === 'undefined') {
-        return;
-    }
-
-    $("*[i18n-key]").each(function() {
-        var that = $(this);
-        that.html(translate(that.attr('i18n-key')));
-    });
-}

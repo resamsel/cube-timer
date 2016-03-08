@@ -1,0 +1,22 @@
+Core.register(
+    'template',
+    function(sandbox) {
+        var module = {};
+
+        module.init = function() {
+            sandbox.listen(
+                ['event-name'],
+                module.handle,
+                module
+            );
+        };
+
+        module.handle = function() {
+            sandbox.notify({
+                type: 'event-name2'
+            });
+        };
+
+        return module;
+    }
+);

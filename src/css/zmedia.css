@@ -29,6 +29,16 @@
     body #wrapper {
         padding-top: 65px;
     }
+    .material .navbar,
+    .material .navbar.navbar-default {
+        background-color: #3F51B5;
+        color: rgba(255,255,255,0.84);
+    }
+    #active-game > span,
+    #results-button > span,
+    #config-button > span {
+        display: inline;
+    }
     #stats-weekdays {
         display: block;
         position: initial;
