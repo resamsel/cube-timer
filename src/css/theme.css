@@ -38,9 +38,6 @@ body {
     color: rgba(255,255,255,0.84);
 }
 
-.stat.highlight .label.label-success {
-    background-color: #4caf50;
-}
 .stat .label.label-success {
     background-color: #cecece;
 }
