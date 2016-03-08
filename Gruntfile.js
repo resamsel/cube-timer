@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                 expand: true,
                 flatten: true,
                 src: [
-                    'bower_components/jquery/dist/jquery.min.js'
+                    'node_modules/jquery/dist/jquery.min.js'
                 ],
                 dest: 'dist/<%= pkg.name %>/js'
             },
@@ -63,20 +63,24 @@ module.exports = function(grunt) {
             js: {
                 // the files to concatenate
                 src: [
-                    'bower_components/bootstrap/dist/js/bootstrap.min.js',
-                    'bower_components/jquery-migrate/jquery-migrate.min.js',
-                    'bower_components/chartist/dist/chartist.min.js',
-                    'src/js/**/*.js'
+                    'node_modules/bootstrap/dist/js/bootstrap.min.js',
+                    'node_modules/jquery-migrate/jquery-migrate.min.js',
+                    'node_modules/chartist/dist/chartist.min.js',
+                    'src/js/config.js',
+                    'src/js/core.js',
+                    'src/js/modules/*.js',
+                    'src/js/other/*.js',
+                    'src/js/external/*.js'
                 ],
                 dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
             },
             css: {
                 // the files to concatenate
                 src: [
-                    'bower_components/bootstrap/dist/css/bootstrap.min.css',
-                    'bower_components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
-                    'bower_components/bootstrap-material-design/dist/css/ripples.min.css',
-                    'bower_components/chartist/dist/chartist.min.css',
+                    'node_modules/bootstrap/dist/css/bootstrap.min.css',
+                    'node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
+                    'node_modules/bootstrap-material-design/dist/css/ripples.min.css',
+                    'node_modules/chartist/dist/chartist.min.css',
                     'src/css/*.css'
                 ],
                 dest: 'dist/<%= pkg.name %>/css/<%= pkg.name %>.css'
