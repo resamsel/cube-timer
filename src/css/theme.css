@@ -5,15 +5,18 @@ body {
 /*
  * Navigation bar
  */
-.material .navbar,
-.material .navbar.navbar-default {
+.material nav {
     /*background-color: #3F51B5;
     color: rgba(255,255,255,0.84);*/
-    background-color: transparent;
-    color: rgba(0,0,0,0.87);
     padding-top: 5px;
     padding-bottom: 5px;
+    box-shadow: none;
 }
+.material nav .brand-logo,
+.material nav ul a {
+    color: rgba(255,255,255,.84);
+}
+
 
 .material .navbar .dropdown-menu .active>a,
 .material .navbar.navbar-default .dropdown-menu .active>a {
@@ -27,10 +30,15 @@ body {
     display: none;
 }
 
-.material .panel-stats > .panel-heading,
-.material .panel.panel-timer > .panel-heading {
+.material .card-stats .card-image,
+.material .card-timer .card-image {
     background-color: #283593;
     color: rgba(255,255,255,0.84);
+}
+
+.material .card-stats .card-title,
+.material .card-timer .card-title {
+    position: initial;
 }
 
 #ct-stats .ct-legend {

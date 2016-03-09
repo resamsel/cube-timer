@@ -15,12 +15,7 @@ Core.register(
                 module
             );
 
-            $('#results-button')
-                .css('display', 'block')
-                .bind('click', function() {
-                    // Show dialog
-                    $('.results-dialog').modal('show');
-                });
+            $('#results-button').css('display', 'block');
 
             module.updateResults(sandbox.activeGame());
         };

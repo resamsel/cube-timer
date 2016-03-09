@@ -43,12 +43,7 @@ Core.register(
                 );
             });
 
-            $('#config-button')
-                .css('display', 'block')
-                .bind('click', function() {
-                    // Show dialog
-                    $('.config-dialog').modal('show');
-                });
+            $('#config-button').css('display', 'block');
         };
 
         module.handleConfigStored = function(key, value) {

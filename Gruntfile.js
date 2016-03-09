@@ -25,6 +25,15 @@ module.exports = function(grunt) {
                 src: 'src/img/*',
                 dest: 'dist/<%= pkg.name %>/img'
             },
+            font: {
+                expand: true,
+                cwd: 'node_modules/materialize-css/dist/font/',
+                src: [
+                    'material-design-icons/*',
+                    'roboto/*'
+                ],
+                dest: 'dist/<%= pkg.name %>/font'
+            },
             audio: {
                 expand: true,
                 flatten: true,
@@ -63,8 +72,9 @@ module.exports = function(grunt) {
             js: {
                 // the files to concatenate
                 src: [
-                    'node_modules/bootstrap/dist/js/bootstrap.min.js',
+                    //'node_modules/bootstrap/dist/js/bootstrap.min.js',
                     'node_modules/jquery-migrate/jquery-migrate.min.js',
+                    'node_modules/materialize-css/dist/js/materialize.min.js',
                     'node_modules/chartist/dist/chartist.min.js',
                     'src/js/config.js',
                     'src/js/core.js',
@@ -77,9 +87,10 @@ module.exports = function(grunt) {
             css: {
                 // the files to concatenate
                 src: [
-                    'node_modules/bootstrap/dist/css/bootstrap.min.css',
-                    'node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
-                    'node_modules/bootstrap-material-design/dist/css/ripples.min.css',
+                    //'node_modules/bootstrap/dist/css/bootstrap.min.css',
+                    //'node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
+                    //'node_modules/bootstrap-material-design/dist/css/ripples.min.css',
+                    'node_modules/materialize-css/dist/css/materialize.min.css',
                     'node_modules/chartist/dist/chartist.min.css',
                     'src/css/*.css'
                 ],

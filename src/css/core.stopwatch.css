@@ -1,0 +1,8 @@
+button:focus {
+    background-color: #eee;
+}
+.waves-effect.waves-indigo .waves-ripple {
+    /* The alpha value allows the text and background color
+    of the button to still show through. */
+    background-color: rgba(63, 81, 181, 0.65);
+}

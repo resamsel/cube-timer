@@ -1,21 +1,23 @@
+@media only screen and (min-width: 993px) {
+    .material nav {
+        background-color: transparent !important;
+        color: rgba(0,0,0,0.87);
+    }
+    .material nav .brand-logo,
+    .material nav ul a {
+        color: rgba(0,0,0,0.87);
+    }
+}
+
 @media (min-width: 768px) {
-    .navbar .navbar-brand {
+    .material nav .brand-logo {
         padding-left: 30px;
     }
     #hint {
         display: block;
     }
-    #footer {
-        text-align: left;
-    }
 }
 @media (max-width: 1199px) {
-    .navbar .navbar-brand {
-        padding: 10px 15px 10px 30px;
-    }
-    body #wrapper {
-        padding-top: 75px;
-    }
     #ct-weekdays .ct-series .ct-bar {
         stroke-width: 30px;
     }
@@ -26,11 +28,7 @@
     }
 }
 @media (max-width: 768px) {
-    body #wrapper {
-        padding-top: 65px;
-    }
-    .material .navbar,
-    .material .navbar.navbar-default {
+    .material nav {
         background-color: #3F51B5;
         color: rgba(255,255,255,0.84);
     }

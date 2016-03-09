@@ -2,10 +2,10 @@
   "name": "cube-timer",
   "version": "0.7.0",
   "dependencies": {
-    "bootstrap-material-design": "^0.5.9",
     "chartist": "^0.9.7",
     "jquery": "^2.2.1",
-    "jquery-migrate": "^1.4.0"
+    "jquery-migrate": "^1.4.0",
+    "materialize-css": "^0.97.5"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

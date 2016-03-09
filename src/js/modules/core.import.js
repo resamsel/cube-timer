@@ -14,11 +14,9 @@ Core.register(
             });
             $('#import').bind('click', function() {
                 // Reset input field
-                $('#import-content').val('');
+                $('#import-content').val('').trigger('autoresize');
                 // Hide previous errors
                 $('#import-error').hide();
-                // Show dialog
-                $('.import-dialog').modal('show');
             });
             $('#import-file').change(module.handleFileSelect);
             $('#import-from-file').bind('click', function() {
@@ -88,7 +86,7 @@ Core.register(
 
         module.showImportData = function(text) {
             $('#import-content').val(text);
-            $('.import-dialog').modal('show');
+            $('#import-content').trigger('autoresize');
         };
 
         module.receivedText = function() {

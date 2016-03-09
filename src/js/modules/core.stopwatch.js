@@ -7,16 +7,25 @@ Core.register(
         var startSound;
 
         module.init = function() {
+            sandbox.listen(
+                ['game-changed'],
+                module.handleGameChanged,
+                module
+            );
             $('body')
                 .bind('keydown', module.handleSpaceDown)
                 .bind('keyup', module.handleSpaceUp);
-            $('button.start-stop').bind('click', module.handleStart);
+            $('button.start-stop').bind('click', module.toggleTimer);
 
             // pre-load sound
             timerSound = new Audio('audio/timer.mp3');
             startSound = new Audio('audio/start.mp3');
             timerSound.load();
             startSound.load();
+        };
+
+        module.handleGameChanged = function(event) {
+            $('.card-timer .card-title > span').text(event.data);
         };
 
         /*

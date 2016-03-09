@@ -14,9 +14,8 @@ Core.register(
                 console.log('Game: %s', game);
                 retrieveScores(game, function(results) {
                     $('#export-content').val(toCsv(game, results));
+                    $('#export-content').trigger('autoresize');
                 });
-                // Show dialog
-                $('.export-dialog').modal('show');
             });
         };
 

@@ -267,8 +267,16 @@
         "description": "The short name of the stat label for: median10of12."
     },
 
-    "footer": {
-        "message": "Designt und gebaut von <a href=\"https://twitter.com/resamsel\" target=\"_blank\">@resamsel</a>. <a href=\"https://github.com/resamsel/cube-timer\" target=\"_blank\">GitHub</a>. Code lizensiert <a rel=\"license\" href=\"https://github.com/resamsel/cube-timer/blob/master/LICENSE\" target=\"_blank\">GPLv2</a>.",
-        "description": "The footer message."
+    "aboutTitle": {
+        "message": "Über",
+        "description": "The text of the about header."
+    },
+    "about": {
+        "message": "Entworfen und gebaut von <a href=\"https://twitter.com/resamsel\" target=\"_blank\">@resamsel</a>. Quellcode lizensiert als <a rel=\"license\" href=\"https://github.com/resamsel/cube-timer/blob/master/LICENSE\" target=\"_blank\">GPLv2</a>.",
+        "description": "The about message."
+    },
+    "linksTitle": {
+        "message": "Links",
+        "description": "The text of the links header."
     }
 }

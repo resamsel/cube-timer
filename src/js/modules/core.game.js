@@ -21,7 +21,6 @@ Core.register(
             $('#game-list .active').removeClass('active');
             $('#game-list .game-' + game).addClass('active');
             $('#active-game .text').text(game);
-            $('.panel-timer .panel-title > span').text(game);
         };
 
         /*
