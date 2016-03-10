@@ -1,3 +1,4 @@
-#results-button {
+.main-nav .results-button > span,
+.main-nav .results-button {
     display: none;
 }

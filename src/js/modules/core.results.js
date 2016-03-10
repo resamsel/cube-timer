@@ -15,7 +15,7 @@ Core.register(
                 module
             );
 
-            $('#results-button')
+            $('.results-button')
                 .css('display', 'block')
                 .on('click', module.updateDates);
 

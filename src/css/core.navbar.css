@@ -1,0 +1,18 @@
+/*
+ * Navigation bar
+ */
+.material nav {
+    /*background-color: #3F51B5;
+    color: rgba(255,255,255,0.84);*/
+}
+.material nav .brand-logo {
+    font-size: 18px;
+}
+.material nav.main-nav .brand-logo,
+.material nav.main-nav ul a {
+    color: rgba(255,255,255,.84);
+}
+
+.side-nav li {
+    padding: 0;
+}

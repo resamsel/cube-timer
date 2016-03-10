@@ -13,7 +13,7 @@
 </head>
 <body class="material"><!-- class="started/stopped" -->
 	<div class="navbar-fixed">
-		<ul id="game-list" class="dropdown-content">
+		<ul id="game-list" class="game-list dropdown-content">
 			<li class="template"><a href="#">3x3x3</a></li>
 		</ul>
 		<nav class="indigo" role="navigation">
@@ -21,29 +21,29 @@
 				<a id="logo-container" href="#" class="brand-logo" i18n-key="appShortName">
 					Cube Timer
 				</a>
-				<ul class="right hide-on-med-and-down">
+				<ul class="main-nav right hide-on-med-and-down">
 					<li>
-						<a id="active-game" class="dropdown-button" href="#!game" data-activates="game-list">
+						<a class="active-game dropdown-button" href="#!game" data-activates="game-list">
 							<i class="material-icons left">games</i>
 							<span class="text">3x3x3</span>
+							&nbsp;
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
 					</li>
 					<li>
-						<a id="results-button" class="modal-trigger waves-effect waves-light" href="#results-dialog">
-							<i class="material-icons">assessment</i>
+						<a class="results-button modal-trigger waves-effect waves-light" href="#results-dialog">
+							<i class="material-icons left">assessment</i>
 							<span i18n-key="results">Results</span>
 						</a>
 					</li>
 					<li>
-						<a id="config-button" class="modal-trigger waves-effect waves-light" href="#config-dialog">
-							<i class="material-icons">settings</i>
+						<a class="config-button modal-trigger waves-effect waves-light" href="#config-dialog">
+							<i class="material-icons left">settings</i>
 							<span i18n-key="configuration">Configuration</span>
 						</a>
 					</li>
 				</ul>
-				<ul id="nav-mobile" class="side-nav" style="left: -250px;">
-					<li><a href="#">Navbar Link</a></li>
+				<ul id="nav-mobile" class="side-nav text-black text-lighten-2" style="left: -250px;">
 				</ul>
 				<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 			</div>

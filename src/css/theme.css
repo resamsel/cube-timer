@@ -7,28 +7,6 @@ body {
     background-color: #eceff1;
 }
 
-/*
- * Navigation bar
- */
-.material nav {
-    /*background-color: #3F51B5;
-    color: rgba(255,255,255,0.84);*/
-    padding-top: 5px;
-    padding-bottom: 5px;
-    box-shadow: none;
-}
-.material nav .brand-logo,
-.material nav ul a {
-    color: rgba(255,255,255,.84);
-}
-
-
-#active-game > span,
-#results-button > span,
-#config-button > span {
-    display: none;
-}
-
 .material .card-stats .card-image,
 .material .card-timer .card-image {
     background-color: #283593;

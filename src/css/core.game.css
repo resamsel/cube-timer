@@ -1,3 +1,4 @@
-#active-game {
+.main-nav .active-game > span,
+.main-nav .active-game {
     display: none;
 }
