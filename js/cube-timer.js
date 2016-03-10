@@ -1011,7 +1011,7 @@ Core.register(
             $('body')
                 .bind('keydown', module.handleSpaceDown)
                 .bind('keyup', module.handleSpaceUp);
-            $('button.start-stop').bind('click', module.handleStart);
+            $('button.start-stop').bind('click', module.toggleTimer);
 
             // pre-load sound
             timerSound = new Audio('audio/timer.mp3');
