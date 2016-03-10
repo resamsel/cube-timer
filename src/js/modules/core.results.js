@@ -1,5 +1,5 @@
 Core.register(
-    "results",
+    'Results',
     function(sandbox) {
         var module = {};
 
@@ -15,7 +15,9 @@ Core.register(
                 module
             );
 
-            $('#results-button').css('display', 'block');
+            $('#results-button')
+                .css('display', 'block')
+                .on('click', module.updateDates);
 
             module.updateResults(sandbox.activeGame());
         };
@@ -39,7 +41,7 @@ Core.register(
                 .find('.btn-remove')
                 .data('game', sandbox.activeGame())
                 .data('resultId', result.id)
-                .bind('click', function(event) {
+                .on('click', function(event) {
                     module.removeResult(this);
                 });
 

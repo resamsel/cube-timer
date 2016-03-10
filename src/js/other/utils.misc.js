@@ -1,3 +1,9 @@
+if(typeof console === 'undefined') {
+    var console = {
+        log: function() {}
+    };
+}
+
 function pad2(number) {
     return (number < 10 ? '0' : '') + number;
 }

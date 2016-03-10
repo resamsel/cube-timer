@@ -1,5 +1,5 @@
 Core.register(
-    "game",
+    'Game',
     function(sandbox) {
         var module = {};
 
@@ -43,7 +43,7 @@ Core.register(
                     // 2. Update clone
                     clone.removeClass('template').addClass('game-' + game);
                     clone.find('a').text(game);
-                    clone.bind('click', module.activateGame(game));
+                    clone.on('click', module.activateGame(game));
 
                     if(game == activeGame) {
                         clone.addClass('active');

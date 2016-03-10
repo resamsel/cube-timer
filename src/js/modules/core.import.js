@@ -1,5 +1,5 @@
 Core.register(
-    'import',
+    'Import',
     function(sandbox) {
         var module = {};
         var fr = new FileReader();
@@ -7,25 +7,25 @@ Core.register(
         module.init = function() {
             fr.onload = module.receivedText;
 
-            $('#import-content').bind('click', function() {
+            $('#import-content').on('click', function() {
                 this.setSelectionRange(0, this.value.length);
                 // Does not work on Chrome...
                 // window.clipboardData.setData("Text", $(this).val());
             });
-            $('#import').bind('click', function() {
+            $('#import').on('click', function() {
                 // Reset input field
                 $('#import-content').val('').trigger('autoresize');
                 // Hide previous errors
                 $('#import-error').hide();
             });
             $('#import-file').change(module.handleFileSelect);
-            $('#import-from-file').bind('click', function() {
+            $('#import-from-file').on('click', function() {
                 $('#import-file').click();
             });
             $('#import-append')
-                .bind('click', module.handleImportAppend);
+                .on('click', module.handleImportAppend);
             $('#import-replace')
-                .bind('click', module.handleImportReplace);
+                .on('click', module.handleImportReplace);
         };
 
         module.handleImportAppend = function() {
@@ -102,10 +102,10 @@ Core.register(
             var input = document.getElementById('import-file');
             var files = input.files;
             if (!files) {
-                alert(translate("importFilesUnsupported"));
+                alert(I18n.translate("importFilesUnsupported"));
             }
             else if (!files[0]) {
-                alert(translate("importFilesEmpty"));
+                alert(I18n.translate("importFilesEmpty"));
             }
             else {
                 var file = new Blob([files[0]], {type: 'text/plain'});

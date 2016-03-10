@@ -1,5 +1,5 @@
 Core.register(
-    "scramble",
+    'Scramble',
     function(sandbox) {
         var module = {};
         var scrambles = {
@@ -16,6 +16,11 @@ Core.register(
             sandbox.listen(
                 ['result-created'],
                 module.handleResultCreated,
+                module
+            );
+            sandbox.listen(
+                ['i18n-started'],
+                module.handleI18nStarted,
                 module
             );
 
@@ -42,10 +47,14 @@ Core.register(
                     // Only allow a line break every 5 moves
                     result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
                 }
-                $('#scramble').html(translate('scrambleLabel', [result]));
+                $('#scramble').html(I18n.translate('scrambleLabel', [result]));
             } else {
-                $('#scramble').html(translate('scrambleLabelNone'));
+                $('#scramble').html(I18n.translate('scrambleLabelNone'));
             }
+        };
+
+        module.handleI18nStarted = function(event) {
+            module.scramble(sandbox.activeGame());
         };
 
         return module;

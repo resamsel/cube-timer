@@ -1,5 +1,10 @@
+html,
+body {
+    font-family: "Roboto-Light", sans-serif;
+}
 body {
     background-color: #fafafa;
+    background-color: #eceff1;
 }
 
 /*
@@ -17,12 +22,6 @@ body {
     color: rgba(255,255,255,.84);
 }
 
-
-.material .navbar .dropdown-menu .active>a,
-.material .navbar.navbar-default .dropdown-menu .active>a {
-    background-color: #3F51B5;
-    color: rgba(255,255,255,.84);
-}
 
 #active-game > span,
 #results-button > span,

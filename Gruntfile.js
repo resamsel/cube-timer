@@ -29,7 +29,6 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: 'node_modules/materialize-css/dist/font/',
                 src: [
-                    'material-design-icons/*',
                     'roboto/*'
                 ],
                 dest: 'dist/<%= pkg.name %>/font'
@@ -62,7 +61,7 @@ module.exports = function(grunt) {
                 },
                 {
                     url: 'https://fonts.gstatic.com/s/materialicons/v11/2fcrYFNaTjcS6g4U3t-Y5UEw0lE80llgEseQY3FEmqw.woff2',
-                    dest: 'dist/<%= pkg.name %>/fonts',
+                    dest: 'dist/<%= pkg.name %>/font',
                     name: 'material-icons.woff2'
                 }
             ]

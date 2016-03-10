@@ -8,6 +8,7 @@
 
 .ct-label {
     color: rgba(0,0,0,.87);
+    font-size: 0.8rem;
 }
 
 #ct-stats .ct-series-a .ct-line {

@@ -1,5 +1,5 @@
 Core.register(
-    "stopwatch",
+    'Stopwatch',
     function(sandbox) {
         var count, counter, beep;
         var module = {};
@@ -13,9 +13,9 @@ Core.register(
                 module
             );
             $('body')
-                .bind('keydown', module.handleSpaceDown)
-                .bind('keyup', module.handleSpaceUp);
-            $('button.start-stop').bind('click', module.toggleTimer);
+                .on('keydown', module.handleSpaceDown)
+                .on('keyup', module.handleSpaceUp);
+            $('button.start-stop').on('click', module.toggleTimer);
 
             // pre-load sound
             timerSound = new Audio('audio/timer.mp3');
