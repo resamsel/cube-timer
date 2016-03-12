@@ -26,7 +26,7 @@ Core.register(
 
         module.loadMessages = function(locale) {
             $.ajax({
-                url: '_locales/' + locale + '/messages.json',
+                url: 'locales/' + locale + '/messages.json',
                 dataType: 'json'
             }).done(function (data) {
                 I18n.messages = data;
