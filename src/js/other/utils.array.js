@@ -17,6 +17,13 @@ Array.prototype.unique = function(eq) {
     return a;
 };
 
+Array.prototype.first = function(defaultValue) {
+    if(this.length > 0) {
+        return this[0];
+    }
+    return defaultValue || 0;
+};
+
 Array.prototype.last = function(defaultValue) {
     if(this.length > 0) {
         return this[this.length - 1];
@@ -36,4 +43,12 @@ Array.prototype.rpad = function(size, element) {
         this.push(element);
     }
     return this;
+};
+
+Array.prototype.avg = function() {
+    var sum = function(a, b) { return a + b; };
+    if(this.length > 0) {
+        return this.reduce(sum, 0) / this.length;
+    }
+    return 0;
 };
