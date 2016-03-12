@@ -38,49 +38,78 @@ Core.register(
 
         module.handleImport = function(replace) {
             var content = $('#import-content').val().split('\n'),
-                scores = [],
-                game = sandbox.activeGame(),
-                line, date, value;
+                scores = {},
+                activeGame = sandbox.activeGame(),
+                line, date, value, i;
 
-            for(var i = 0; i < content.length; i++) {
+            for(i = 0; i < content.length; i++) {
                 line = content[i].split(';');
 
-                if(line.length != 2 || line[0] == 'Date' || line[1] == 'Duration') {
+                switch(line.length) {
+                case 2:
+                    if(line[0] == 'Date' || line[1] == 'Duration') {
+                        continue;
+                    }
+                    game = activeGame;
+                    date = new Date(line[0]);
+                    value = Number(line[1]);
+                    break;
+                case 3:
+                    if(line[0] == 'Game' || line[1] == 'Date' || line[2] == 'Duration') {
+                        continue;
+                    }
+                    game = line[0];
+                    date = new Date(line[1]);
+                    value = Number(line[2]);
+                    break;
+                default:
                     continue;
                 }
 
-                date = new Date(line[0]);
-                value = Number(line[1]);
                 if(date !== null && value !== null) {
-                    scores.push({id: date.getTime(), value: value});
+                    if(typeof scores[game] === 'undefined') {
+                        scores[game] = [];
+                    }
+                    scores[game].push({id: date.getTime(), value: value});
                 }
             }
 
-            if(!replace) {
-                // Appending scores
-                retrieveScores(game, function(s) {
+            // TODO: Refactor and simplify this code
+            var callback = function(game, applier) {
+                return function(s) {
                     storeScores(
                         game,
-                        scores.concat(s),
+                        applier(s, scores[game]),
                         function() {
-                            sandbox.notify({
-                                type: 'results-changed',
-                                data: game
-                            });
+                            if(game == activeGame) {
+                                sandbox.notify({
+                                    type: 'results-changed',
+                                    data: game
+                                });
+                            }
                         }
                     );
-                });
+                };
+            };
+            var applier;
+            var games = Object.keys(scores);
+            if(!replace) {
+                // Appending scores
+                applier = function(a, b) {
+                    return b.concat(a);
+                };
+                for(i = 0; i < games.length; i++) {
+                    game = games[i];
+                    retrieveScores(game, callback(game, applier));
+                }
             } else {
-                storeScores(
-                    game,
-                    scores,
-                    function() {
-                        sandbox.notify({
-                            type: 'results-changed',
-                            data: game
-                        });
-                    }
-                );
+                applier = function(a, b) {
+                    return b;
+                };
+                for(i = 0; i < games.length; i++) {
+                    game = games[i];
+                    callback(game, applier)(scores[game]);
+                }
             }
         };
 

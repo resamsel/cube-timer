@@ -3,8 +3,8 @@ Core.register(
     function(sandbox) {
         var module = {};
         var scrambles = {
-            '2x2x2': { len: 15 },
-            '3x3x3': { len: 25 }
+            '2x2x2': { cube: Cube['3x3x3'], len: 15 },
+            '3x3x3': { cube: Cube['3x3x3'], len: 25 }
         };
 
         module.init = function() {
@@ -24,7 +24,7 @@ Core.register(
                 module
             );
 
-            cube.reset();
+            Cube['3x3x3'].reset();
 
             module.scramble(sandbox.activeGame());
         };
@@ -39,9 +39,10 @@ Core.register(
 
         module.scramble = function(game) {
             if (Object.keys(scrambles).indexOf(game) > -1) {
+                var scramble = scrambles[game];
                 var i,
-                    scrambled = cube.scramble(),
-                    len = Math.min(scrambles[game].len, scrambled.length),
+                    scrambled = scramble.cube.scramble(),
+                    len = Math.min(scramble.len, scrambled.length),
                     result = "";
                 for (i = 0; i < len; i += 5) {
                     // Only allow a line break every 5 moves

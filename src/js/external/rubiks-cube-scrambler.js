@@ -17,7 +17,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE.
 */    
-var cube = {
+var Cube = {};
+Cube['3x3x3'] = {
     // Define the six faces of the cube
     faces: "DLBURF",
     // This will contain a history of all the states to make sure we don't repeat a state
@@ -33,11 +34,11 @@ var cube = {
     },
     // Sets the cube to the solved state
     reset: function () {
-        cube.states = ["yyyyyyyyoooooooobbbbbbbbwwwwwwwwrrrrrrrrgggggggg"];
+        Cube['3x3x3'].states = ["yyyyyyyyoooooooobbbbbbbbwwwwwwwwrrrrrrrrgggggggg"];
     },
     // Twist the cube according to a move in WCA notation
     twist: function (state, move) {
-        var i, k, prevState, face = move.charAt(0), faceIndex = cube.faces.indexOf(move.charAt(0)),
+        var i, k, prevState, face = move.charAt(0), faceIndex = Cube['3x3x3'].faces.indexOf(move.charAt(0)),
             turns = move.length > 1 ? (move.charAt(1) === "2" ? 2 : 3) : 1;
         state = state.split("");
         for (i = 0; i < turns; i++) {
@@ -45,29 +46,29 @@ var cube = {
             // Rotate the stickers on the face itself
             for (k = 0; k < 8; k++) { state[(faceIndex * 8) + k] = prevState[(faceIndex * 8) + ((k + 6) % 8)]; }
             // Rotate the adjacent stickers that are part of the same layer
-            for (k = 0; k < 12; k++) { state[cube.edges[face][k]] = prevState[cube.edges[face][(k + 9) % 12]]; }
+            for (k = 0; k < 12; k++) { state[Cube['3x3x3'].edges[face][k]] = prevState[Cube['3x3x3'].edges[face][(k + 9) % 12]]; }
         }
         return state.join("");
     },
     // Scramble the cube
     scramble: function () {
-        var count = 0, total = 25, state, prevState = cube.states[cube.states.length - 1],
+        var count = 0, total = 25, state, prevState = Cube['3x3x3'].states[Cube['3x3x3'].states.length - 1],
             move, moves = [], modifiers = ["", "'", "2"];
         while (count < total) {
             // Generate a random move
-            move = cube.faces[Math.floor(Math.random() * 6)] + modifiers[Math.floor(Math.random() * 3)];
+            move = Cube['3x3x3'].faces[Math.floor(Math.random() * 6)] + modifiers[Math.floor(Math.random() * 3)];
             // Don't move the same face twice in a row
             if (count > 0 && move.charAt(0) === moves[count - 1].charAt(0)) { continue; }
             // Avoid move sequences like "R L R", which is the same as "R2 L"
             if (count > 1 && move.charAt(0) === moves[count - 2].charAt(0) &&
-                    moves[count - 1].charAt(0) === cube.faces.charAt((cube.faces.indexOf(move.charAt(0)) + 3) % 6)) {
+                    moves[count - 1].charAt(0) === Cube['3x3x3'].faces.charAt((Cube['3x3x3'].faces.indexOf(move.charAt(0)) + 3) % 6)) {
                 continue;
             }
-            state = cube.twist(prevState, move);
-            if (cube.states.indexOf(state) === -1) {
+            state = Cube['3x3x3'].twist(prevState, move);
+            if (Cube['3x3x3'].states.indexOf(state) === -1) {
                 // If this state hasn't yet been encountered, save it and move on
                 moves[count] = move;
-                cube.states[count] = state;
+                Cube['3x3x3'].states[count] = state;
                 count++;
                 prevState = state;
             }

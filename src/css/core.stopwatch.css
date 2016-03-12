@@ -6,3 +6,6 @@ button:focus {
     of the button to still show through. */
     background-color: rgba(63, 81, 181, 0.65);
 }
+.card-timer .card-content {
+    padding: 0;
+}
