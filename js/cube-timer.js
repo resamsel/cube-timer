@@ -29,6 +29,43 @@ var Sandbox = function(core) {
     this.activeGame = function(game) {
         return core.activeGame(game);
     };
+    this.createStats = function(scores) {
+        var stats = {
+            scores: scores,
+            categories: {}
+        };
+
+        if(stats.scores.length < 1) {
+            stats.scores = [{id: 0, value: 0}];
+        }
+
+        stats.values = scores.map(scoreValue);
+        stats.latest = stats.values.last();
+        stats.latest5 = stats.values.slice(-5).sort(compareNumbers);
+        stats.latest12 = stats.values.slice(-12).sort(compareNumbers);
+        stats.latest50 = stats.values.slice(-50).sort(compareNumbers);
+        stats.best3of5 = stats.latest5.slice(0, 3).sort(compareNumbers);
+        stats.best10of12 = stats.latest12.slice(0, 10).sort(compareNumbers);
+
+        stats.values.sort(compareNumbers);
+
+        stats.best = stats.values.first();
+        stats.avg = stats.values.avg();
+        stats.avg80 = stats.values.slice(
+            0,
+            Math.max(1, Math.floor(scores.length*0.8))
+        );
+
+        stats.values.forEach(function(value) {
+            var category = Category.fromValue(value);
+            if (!(category in stats.categories)) {
+                stats.categories[category] = 0;
+            }
+            stats.categories[category]++;
+        });
+
+        return stats;
+    };
 };
 
 var Core = function() {
@@ -181,6 +218,68 @@ $(document).ready(function() {
 });
 
 Core.register(
+    'Achievement',
+    function(sandbox) {
+        var module = {};
+        var defaultTimeout = 4000;
+
+        module.init = function() {
+            sandbox.listen(
+                ['result-created'],
+                module.handleResultCreated,
+                module
+            );
+        };
+
+        module.handleResultCreated = function(event) {
+            var result = event.data;
+            retrieveScores(sandbox.activeGame(), function(results) {
+                var stats = sandbox.createStats(results);
+                if(result.value <= stats.best) {
+                    Materialize.toast('New best!', defaultTimeout);
+                    return;
+                }
+                stats.latest50.sort(compareNumbers);
+                if(result.value <= stats.latest50.first()) {
+                    Materialize.toast('Best of last 50!', defaultTimeout);
+                    return;
+                }
+                stats.latest12.sort(compareNumbers);
+                if(result.value <= stats.latest12.first()) {
+                    Materialize.toast('Best of last 12!', defaultTimeout);
+                    return;
+                }
+                stats.latest5.sort(compareNumbers);
+                if(result.value <= stats.latest5.first()) {
+                    Materialize.toast('Best of last 5!', defaultTimeout);
+                    return;
+                }
+                if(result.value < stats.avg80.avg()) {
+                    Materialize.toast(
+                        'Better than average of best 80%',
+                        defaultTimeout
+                    );
+                    return;
+                }
+                if(result.value < stats.latest50.avg()) {
+                    Materialize.toast(
+                        'Better than average of last 50',
+                        defaultTimeout
+                    );
+                    return;
+                }
+                if(result.value < stats.avg) {
+                    Materialize.toast('Better than average', defaultTimeout);
+                    return;
+                }
+            });
+        };
+
+        return module;
+    }
+);
+
+Core.register(
     'Chart',
     function (sandbox) {
         var module = {};
@@ -201,7 +300,7 @@ Core.register(
 
         module.handleResultsChanged = function(event) {
             retrieveScores(event.data, function(results) {
-                module.updateChart(module.createStats(results));
+                module.updateChart(sandbox.createStats(results));
             });
         };
 
@@ -356,41 +455,6 @@ Core.register(
             };
 
             return new Chartist.Bar('#ct-weekdays', data, options);
-        };
-
-        module.createStats = function(scores) {
-            var stats = {
-                scores: scores,
-                categories: {}
-            };
-
-            if(stats.scores.length < 1) {
-                stats.scores = [{id: 0, value: 0}];
-            }
-
-            stats.values = scores.map(scoreValue);
-            stats.last = stats.values.last();
-            stats.last5 = stats.values.slice(-5).sort(compareNumbers);
-            stats.last12 = stats.values.slice(-12).sort(compareNumbers);
-            stats.best3of5 = stats.last5.slice(0, 3).sort(compareNumbers);
-            stats.best10of12 = stats.last12.slice(0, 10).sort(compareNumbers);
-
-            stats.values.sort(compareNumbers);
-
-            stats.avg80 = stats.values.slice(
-                0,
-                Math.max(1, Math.floor(scores.length*0.8))
-            );
-
-            stats.values.forEach(function(value) {
-                var category = Category.fromValue(value);
-                if (!(category in stats.categories)) {
-                    stats.categories[category] = 0;
-                }
-                stats.categories[category]++;
-            });
-
-            return stats;
         };
 
         return module;
@@ -1108,10 +1172,15 @@ Core.register(
             elapsed = sw.data('stopwatch').elapsed;
             if(elapsed > 0) {
                 // Only use values when stopwatch actually started
+                var result ={ id: new Date().getTime(), value: elapsed };
                 storeScore(
                     sandbox.activeGame(),
-                    { id: new Date().getTime(), value: elapsed },
+                    result,
                     function() {
+                        sandbox.notify({
+                            type: 'result-created',
+                            data: result
+                        });
                         sandbox.notify({
                             type: 'results-changed',
                             data: sandbox.activeGame()
@@ -1356,6 +1425,13 @@ Array.prototype.unique = function(eq) {
     return a;
 };
 
+Array.prototype.first = function(defaultValue) {
+    if(this.length > 0) {
+        return this[0];
+    }
+    return defaultValue || 0;
+};
+
 Array.prototype.last = function(defaultValue) {
     if(this.length > 0) {
         return this[this.length - 1];
@@ -1375,6 +1451,14 @@ Array.prototype.rpad = function(size, element) {
         this.push(element);
     }
     return this;
+};
+
+Array.prototype.avg = function() {
+    var sum = function(a, b) { return a + b; };
+    if(this.length > 0) {
+        return this.reduce(sum, 0) / this.length;
+    }
+    return 0;
 };
 
 var Category = function() {
