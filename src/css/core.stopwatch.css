@@ -9,3 +9,7 @@ button:focus {
 .card-timer .card-content {
     padding: 0;
 }
+.start-stop-container .start span,
+.start-stop-container .stop span {
+    font-size: 18px;
+}

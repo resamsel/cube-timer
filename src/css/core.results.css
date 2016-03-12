@@ -2,3 +2,6 @@
 .main-nav .results-button {
     display: none;
 }
+.table-condensed td {
+    padding: 0 5px;
+}
