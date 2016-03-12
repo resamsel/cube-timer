@@ -418,14 +418,6 @@ Core.register(
                     }
                 );
             });
-            getConfig('hintVisible', true, function(hintVisible) {
-                if(hintVisible) {
-                    $('#hint').show();
-                    $('#hint .close').on('click', function() {
-                        storeConfig('hintVisible', false);
-                    });
-                }
-            });
             getConfig('inspectionTime', 0, function(inspectionTime) {
                 $('#inspectionTime')
                     .val(inspectionTime)
@@ -553,6 +545,34 @@ Core.register(
 );
 
 Core.register(
+    'Hint',
+    function(sandbox) {
+        var module = {};
+
+        module.init = function() {
+            getConfig('hintVisible', true, function(hintVisible) {
+                if(hintVisible) {
+                    $('#hint-spacebar').show();
+                }
+            });
+
+            $('#hint-spacebar .btn-close').on(
+                'click',
+                module.handleSpacebarClose
+            );
+        };
+
+        module.handleSpacebarClose = function() {
+            storeConfig('hintVisible', false, function() {
+                $('#hint-spacebar').css('display', 'none');
+            });
+        };
+
+        return module;
+    }
+);
+
+Core.register(
     'I18n',
     function(sandbox) {
         var module = {};
@@ -632,49 +652,78 @@ Core.register(
 
         module.handleImport = function(replace) {
             var content = $('#import-content').val().split('\n'),
-                scores = [],
-                game = sandbox.activeGame(),
-                line, date, value;
+                scores = {},
+                activeGame = sandbox.activeGame(),
+                line, date, value, i;
 
-            for(var i = 0; i < content.length; i++) {
+            for(i = 0; i < content.length; i++) {
                 line = content[i].split(';');
 
-                if(line.length != 2 || line[0] == 'Date' || line[1] == 'Duration') {
+                switch(line.length) {
+                case 2:
+                    if(line[0] == 'Date' || line[1] == 'Duration') {
+                        continue;
+                    }
+                    game = activeGame;
+                    date = new Date(line[0]);
+                    value = Number(line[1]);
+                    break;
+                case 3:
+                    if(line[0] == 'Game' || line[1] == 'Date' || line[2] == 'Duration') {
+                        continue;
+                    }
+                    game = line[0];
+                    date = new Date(line[1]);
+                    value = Number(line[2]);
+                    break;
+                default:
                     continue;
                 }
 
-                date = new Date(line[0]);
-                value = Number(line[1]);
                 if(date !== null && value !== null) {
-                    scores.push({id: date.getTime(), value: value});
+                    if(typeof scores[game] === 'undefined') {
+                        scores[game] = [];
+                    }
+                    scores[game].push({id: date.getTime(), value: value});
                 }
             }
 
-            if(!replace) {
-                // Appending scores
-                retrieveScores(game, function(s) {
+            // TODO: Refactor and simplify this code
+            var callback = function(game, applier) {
+                return function(s) {
                     storeScores(
                         game,
-                        scores.concat(s),
+                        applier(s, scores[game]),
                         function() {
-                            sandbox.notify({
-                                type: 'results-changed',
-                                data: game
-                            });
+                            if(game == activeGame) {
+                                sandbox.notify({
+                                    type: 'results-changed',
+                                    data: game
+                                });
+                            }
                         }
                     );
-                });
+                };
+            };
+            var applier;
+            var games = Object.keys(scores);
+            if(!replace) {
+                // Appending scores
+                applier = function(a, b) {
+                    return b.concat(a);
+                };
+                for(i = 0; i < games.length; i++) {
+                    game = games[i];
+                    retrieveScores(game, callback(game, applier));
+                }
             } else {
-                storeScores(
-                    game,
-                    scores,
-                    function() {
-                        sandbox.notify({
-                            type: 'results-changed',
-                            data: game
-                        });
-                    }
-                );
+                applier = function(a, b) {
+                    return b;
+                };
+                for(i = 0; i < games.length; i++) {
+                    game = games[i];
+                    callback(game, applier)(scores[game]);
+                }
             }
         };
 
@@ -745,8 +794,9 @@ Core.register(
                 .removeClass('dropdown-content');
             gameList.find('li').each(function() {
                 var game = $(this).attr('class').replace('game-', '').replace('active', '').trim();
-                console.log('Activate game: %s', game);
-                $(this).on('click', function () { sandbox.activeGame(game); });
+                $(this).on('click', function () {
+                    sandbox.activeGame(game);
+                });
             });
 
             sideNav
@@ -780,6 +830,10 @@ Core.register(
                 module.handleResultsChanged,
                 module
             );
+
+            if(window.location.hash == '#results-dialog') {
+                $('#results-dialog').openModal();
+            }
 
             $('.results-button')
                 .css('display', 'block')
@@ -926,8 +980,8 @@ Core.register(
     function(sandbox) {
         var module = {};
         var scrambles = {
-            '2x2x2': { len: 15 },
-            '3x3x3': { len: 25 }
+            '2x2x2': { cube: Cube['3x3x3'], len: 15 },
+            '3x3x3': { cube: Cube['3x3x3'], len: 25 }
         };
 
         module.init = function() {
@@ -947,7 +1001,7 @@ Core.register(
                 module
             );
 
-            cube.reset();
+            Cube['3x3x3'].reset();
 
             module.scramble(sandbox.activeGame());
         };
@@ -962,9 +1016,10 @@ Core.register(
 
         module.scramble = function(game) {
             if (Object.keys(scrambles).indexOf(game) > -1) {
+                var scramble = scrambles[game];
                 var i,
-                    scrambled = cube.scramble(),
-                    len = Math.min(scrambles[game].len, scrambled.length),
+                    scrambled = scramble.cube.scramble(),
+                    len = Math.min(scramble.len, scrambled.length),
                     result = "";
                 for (i = 0; i < len; i += 5) {
                     // Only allow a line break every 5 moves
@@ -2191,7 +2246,8 @@ var DateFormat={};!function(a){var b=["Sunday","Monday","Tuesday","Wednesday","T
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE.
 */    
-var cube = {
+var Cube = {};
+Cube['3x3x3'] = {
     // Define the six faces of the cube
     faces: "DLBURF",
     // This will contain a history of all the states to make sure we don't repeat a state
@@ -2207,11 +2263,11 @@ var cube = {
     },
     // Sets the cube to the solved state
     reset: function () {
-        cube.states = ["yyyyyyyyoooooooobbbbbbbbwwwwwwwwrrrrrrrrgggggggg"];
+        Cube['3x3x3'].states = ["yyyyyyyyoooooooobbbbbbbbwwwwwwwwrrrrrrrrgggggggg"];
     },
     // Twist the cube according to a move in WCA notation
     twist: function (state, move) {
-        var i, k, prevState, face = move.charAt(0), faceIndex = cube.faces.indexOf(move.charAt(0)),
+        var i, k, prevState, face = move.charAt(0), faceIndex = Cube['3x3x3'].faces.indexOf(move.charAt(0)),
             turns = move.length > 1 ? (move.charAt(1) === "2" ? 2 : 3) : 1;
         state = state.split("");
         for (i = 0; i < turns; i++) {
@@ -2219,29 +2275,29 @@ var cube = {
             // Rotate the stickers on the face itself
             for (k = 0; k < 8; k++) { state[(faceIndex * 8) + k] = prevState[(faceIndex * 8) + ((k + 6) % 8)]; }
             // Rotate the adjacent stickers that are part of the same layer
-            for (k = 0; k < 12; k++) { state[cube.edges[face][k]] = prevState[cube.edges[face][(k + 9) % 12]]; }
+            for (k = 0; k < 12; k++) { state[Cube['3x3x3'].edges[face][k]] = prevState[Cube['3x3x3'].edges[face][(k + 9) % 12]]; }
         }
         return state.join("");
     },
     // Scramble the cube
     scramble: function () {
-        var count = 0, total = 25, state, prevState = cube.states[cube.states.length - 1],
+        var count = 0, total = 25, state, prevState = Cube['3x3x3'].states[Cube['3x3x3'].states.length - 1],
             move, moves = [], modifiers = ["", "'", "2"];
         while (count < total) {
             // Generate a random move
-            move = cube.faces[Math.floor(Math.random() * 6)] + modifiers[Math.floor(Math.random() * 3)];
+            move = Cube['3x3x3'].faces[Math.floor(Math.random() * 6)] + modifiers[Math.floor(Math.random() * 3)];
             // Don't move the same face twice in a row
             if (count > 0 && move.charAt(0) === moves[count - 1].charAt(0)) { continue; }
             // Avoid move sequences like "R L R", which is the same as "R2 L"
             if (count > 1 && move.charAt(0) === moves[count - 2].charAt(0) &&
-                    moves[count - 1].charAt(0) === cube.faces.charAt((cube.faces.indexOf(move.charAt(0)) + 3) % 6)) {
+                    moves[count - 1].charAt(0) === Cube['3x3x3'].faces.charAt((Cube['3x3x3'].faces.indexOf(move.charAt(0)) + 3) % 6)) {
                 continue;
             }
-            state = cube.twist(prevState, move);
-            if (cube.states.indexOf(state) === -1) {
+            state = Cube['3x3x3'].twist(prevState, move);
+            if (Cube['3x3x3'].states.indexOf(state) === -1) {
                 // If this state hasn't yet been encountered, save it and move on
                 moves[count] = move;
-                cube.states[count] = state;
+                Cube['3x3x3'].states[count] = state;
                 count++;
                 prevState = state;
             }
