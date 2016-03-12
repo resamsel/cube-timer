@@ -29,3 +29,15 @@ select.form-control {
     max-width: -webkit-calc(100%);
     max-width: calc(100%);
 }
+
+.dropdown-button i.material-icons.right {
+    margin-left: 0;
+}
+
+.card-timer .card-image,
+.card-stats .card-image {
+    border-radius: 2px 2px 0 0;
+}
+.card-stats .card-image {
+    padding: 10px 15px;
+}

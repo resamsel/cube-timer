@@ -4,32 +4,19 @@ body {
     height: 100%;
 }
 
-#wrapper {
-    padding-top: 85px; /* navbar-fixed-top */
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -60px;
-}
-#wrapper > .container {
-    padding-bottom: 60px;
-}
 .container .credit {
     margin: 20px 0;
 }
 
-.navbar .navbar-brand {
+nav .brand-logo {
     background: url(../img/icon-128.png) no-repeat left center;
     background-size: 28px;
-    margin-left: 10px;
+    margin-left: 15px;
+    padding-left: 33px;
 }
 
-.panel .panel-title {
+.card .card-title {
     font-size: 20px;
-}
-.panel.panel-timer > .panel-heading {
-    position: relative;
-    padding: 15px;
 }
 .relative {
     position: relative;
@@ -112,7 +99,7 @@ body {
     overflow-y: scroll;
 }
 
-.panel-heading .btn-group {
+.card-image .btn-group {
     margin: -2px 1px 0 1px;
 }
 

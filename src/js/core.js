@@ -14,6 +14,8 @@ var Sandbox = function(core) {
 var Core = function() {
     var moduleData = {};
     var handlers = {};
+    var eventQueue = [];
+    var started = false;
     var game = '3x3x3';
 
     return {
@@ -52,6 +54,12 @@ var Core = function() {
 
             for(var moduleId in moduleData) {
                 this.start(moduleId);
+            }
+
+            started = true;
+
+            while(eventQueue.length > 0) {
+                this.notify(eventQueue.pop());
             }
 
             this.notify({
@@ -95,6 +103,10 @@ var Core = function() {
                 'Core.notify(event=%s)',
                 JSON.stringify(event)
             );
+            if(!started) {
+                eventQueue.push(event);
+                return;
+            }
             if(!handlers.hasOwnProperty(event.type)) {
                 console.log(
                     'No handler found for type %s (%s)',

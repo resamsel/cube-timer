@@ -1,5 +1,5 @@
 Core.register(
-    'import',
+    'Import',
     function(sandbox) {
         var module = {};
         var fr = new FileReader();
@@ -7,27 +7,25 @@ Core.register(
         module.init = function() {
             fr.onload = module.receivedText;
 
-            $('#import-content').bind('click', function() {
+            $('#import-content').on('click', function() {
                 this.setSelectionRange(0, this.value.length);
                 // Does not work on Chrome...
                 // window.clipboardData.setData("Text", $(this).val());
             });
-            $('#import').bind('click', function() {
+            $('#import').on('click', function() {
                 // Reset input field
-                $('#import-content').val('');
+                $('#import-content').val('').trigger('autoresize');
                 // Hide previous errors
                 $('#import-error').hide();
-                // Show dialog
-                $('.import-dialog').modal('show');
             });
             $('#import-file').change(module.handleFileSelect);
-            $('#import-from-file').bind('click', function() {
+            $('#import-from-file').on('click', function() {
                 $('#import-file').click();
             });
             $('#import-append')
-                .bind('click', module.handleImportAppend);
+                .on('click', module.handleImportAppend);
             $('#import-replace')
-                .bind('click', module.handleImportReplace);
+                .on('click', module.handleImportReplace);
         };
 
         module.handleImportAppend = function() {
@@ -40,55 +38,84 @@ Core.register(
 
         module.handleImport = function(replace) {
             var content = $('#import-content').val().split('\n'),
-                scores = [],
-                game = sandbox.activeGame(),
-                line, date, value;
+                scores = {},
+                activeGame = sandbox.activeGame(),
+                line, date, value, i;
 
-            for(var i = 0; i < content.length; i++) {
+            for(i = 0; i < content.length; i++) {
                 line = content[i].split(';');
 
-                if(line.length != 2 || line[0] == 'Date' || line[1] == 'Duration') {
+                switch(line.length) {
+                case 2:
+                    if(line[0] == 'Date' || line[1] == 'Duration') {
+                        continue;
+                    }
+                    game = activeGame;
+                    date = new Date(line[0]);
+                    value = Number(line[1]);
+                    break;
+                case 3:
+                    if(line[0] == 'Game' || line[1] == 'Date' || line[2] == 'Duration') {
+                        continue;
+                    }
+                    game = line[0];
+                    date = new Date(line[1]);
+                    value = Number(line[2]);
+                    break;
+                default:
                     continue;
                 }
 
-                date = new Date(line[0]);
-                value = Number(line[1]);
                 if(date !== null && value !== null) {
-                    scores.push({id: date.getTime(), value: value});
+                    if(typeof scores[game] === 'undefined') {
+                        scores[game] = [];
+                    }
+                    scores[game].push({id: date.getTime(), value: value});
                 }
             }
 
-            if(!replace) {
-                // Appending scores
-                retrieveScores(game, function(s) {
+            // TODO: Refactor and simplify this code
+            var callback = function(game, applier) {
+                return function(s) {
                     storeScores(
                         game,
-                        scores.concat(s),
+                        applier(s, scores[game]),
                         function() {
-                            sandbox.notify({
-                                type: 'results-changed',
-                                data: game
-                            });
+                            if(game == activeGame) {
+                                sandbox.notify({
+                                    type: 'results-changed',
+                                    data: game
+                                });
+                            }
                         }
                     );
-                });
+                };
+            };
+            var applier;
+            var games = Object.keys(scores);
+            if(!replace) {
+                // Appending scores
+                applier = function(a, b) {
+                    return b.concat(a);
+                };
+                for(i = 0; i < games.length; i++) {
+                    game = games[i];
+                    retrieveScores(game, callback(game, applier));
+                }
             } else {
-                storeScores(
-                    game,
-                    scores,
-                    function() {
-                        sandbox.notify({
-                            type: 'results-changed',
-                            data: game
-                        });
-                    }
-                );
+                applier = function(a, b) {
+                    return b;
+                };
+                for(i = 0; i < games.length; i++) {
+                    game = games[i];
+                    callback(game, applier)(scores[game]);
+                }
             }
         };
 
         module.showImportData = function(text) {
             $('#import-content').val(text);
-            $('.import-dialog').modal('show');
+            $('#import-content').trigger('autoresize');
         };
 
         module.receivedText = function() {
@@ -104,10 +131,10 @@ Core.register(
             var input = document.getElementById('import-file');
             var files = input.files;
             if (!files) {
-                alert(translate("importFilesUnsupported"));
+                alert(I18n.translate("importFilesUnsupported"));
             }
             else if (!files[0]) {
-                alert(translate("importFilesEmpty"));
+                alert(I18n.translate("importFilesEmpty"));
             }
             else {
                 var file = new Blob([files[0]], {type: 'text/plain'});

@@ -1,5 +1,5 @@
 Core.register(
-    'chart',
+    'Chart',
     function (sandbox) {
         var module = {};
         var maxCategories = 5;
@@ -10,12 +10,21 @@ Core.register(
                 module.handleResultsChanged,
                 module
             );
+            sandbox.listen(
+                ['i18n-started'],
+                module.handleI18nStarted,
+                module
+            );
         };
 
         module.handleResultsChanged = function(event) {
             retrieveScores(event.data, function(results) {
                 module.updateChart(module.createStats(results));
             });
+        };
+
+        module.handleI18nStarted = function(event) {
+            module.handleResultsChanged({data: sandbox.activeGame()});
         };
 
         module.updateChart = function(stats) {
@@ -95,10 +104,10 @@ Core.register(
                 plugins: [
                     Chartist.plugins.legend({
                         legendNames: [
-                            translate('latest'),
-                            translate('average12'),
-                            translate('average50'),
-                            translate('best')
+                            I18n.translate('latest'),
+                            I18n.translate('average12'),
+                            I18n.translate('average50'),
+                            I18n.translate('best')
                         ],
                         clickable: false
                     })
