@@ -1,18 +1,19 @@
 html,
 body {
-    overflow-y: visible;
-    height: 100%;
 }
 
 .container .credit {
     margin: 20px 0;
 }
 
-nav .brand-logo {
-    background: url(../img/icon-128.png) no-repeat left center;
-    background-size: 28px;
-    margin-left: 15px;
-    padding-left: 33px;
+.btn-small {
+    line-height: 20px;
+    height: 20px;
+    padding: 0 1.5rem;
+}
+.condensed th,
+.condensed td {
+    padding: 3px 5px;
 }
 
 .card .card-title {
@@ -20,14 +21,6 @@ nav .brand-logo {
 }
 .relative {
     position: relative;
-}
-
-#timer-container {
-    margin-top: -10px;
-    text-align: center;
-}
-#timer {
-    font-size: 96px;
 }
 
 .achievement {
@@ -64,16 +57,9 @@ nav .brand-logo {
     display: inline-block;
 }
 
-#times button.btn-remove {
-    margin: 0;
-}
 .template {
     display: none;
 }
-#times .date {
-    white-space: nowrap;
-}
-
 .results-dialog .modal-dialog,
 .results-dialog .modal-content {
     height: calc(100% - 60px);
@@ -96,7 +82,6 @@ nav .brand-logo {
     /* 100% = dialog height, 110px = header + footer */
     max-height: calc(100% - 110px);
     padding-bottom: 0;
-    overflow-y: scroll;
 }
 
 .card-image .btn-group {
@@ -120,13 +105,6 @@ nav .brand-logo {
     margin-left: 33.333333333%;
 }
 
-.index.row-action-primary {
-    float: left;
-    margin-top: 6px;
-    color: #777;
-    min-width: 40px;
-    text-align: right;
-}
 .list-group .list-group-item {
     padding: 0;
 }
@@ -153,6 +131,14 @@ nav .brand-logo {
 
 .label {
     font-size: 100%;
+    background: #304ffe;
+    color: #f5f5f5;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 2px;
+}
+.label-success {
+    background: #00c853;
 }
 
 .sub.list-group-item {

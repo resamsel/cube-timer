@@ -19,14 +19,6 @@ Core.register(
                     }
                 );
             });
-            getConfig('hintVisible', true, function(hintVisible) {
-                if(hintVisible) {
-                    $('#hint').show();
-                    $('#hint .close').on('click', function() {
-                        storeConfig('hintVisible', false);
-                    });
-                }
-            });
             getConfig('inspectionTime', 0, function(inspectionTime) {
                 $('#inspectionTime')
                     .val(inspectionTime)

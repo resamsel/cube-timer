@@ -15,6 +15,10 @@ Core.register(
                 module
             );
 
+            if(window.location.hash == '#results-dialog') {
+                $('#results-dialog').openModal();
+            }
+
             $('.results-button')
                 .css('display', 'block')
                 .on('click', module.updateDates);

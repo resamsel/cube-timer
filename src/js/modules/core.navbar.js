@@ -25,8 +25,9 @@ Core.register(
                 .removeClass('dropdown-content');
             gameList.find('li').each(function() {
                 var game = $(this).attr('class').replace('game-', '').replace('active', '').trim();
-                console.log('Activate game: %s', game);
-                $(this).on('click', function () { sandbox.activeGame(game); });
+                $(this).on('click', function () {
+                    sandbox.activeGame(game);
+                });
             });
 
             sideNav

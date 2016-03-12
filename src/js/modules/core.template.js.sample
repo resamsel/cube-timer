@@ -1,5 +1,5 @@
 Core.register(
-    'template',
+    'Template',
     function(sandbox) {
         var module = {};
 
