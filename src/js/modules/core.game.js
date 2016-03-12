@@ -1,5 +1,5 @@
 Core.register(
-    "game",
+    'Game',
     function(sandbox) {
         var module = {};
 
@@ -10,7 +10,7 @@ Core.register(
                 module
             );
 
-            $('#active-game').css('display', 'block');
+            $('.active-game').css('display', 'block');
 
             module.populateGames();
         };
@@ -18,10 +18,9 @@ Core.register(
         module.handleGameChanged = function(event) {
             var game = event.data;
 
-            $('#game-list .active').removeClass('active');
-            $('#game-list .game-' + game).addClass('active');
-            $('#active-game .text').text(game);
-            $('.panel-timer .panel-title > span').text(game);
+            $('.game-list .active').removeClass('active');
+            $('.game-list .game-' + game).addClass('active');
+            $('.active-game .text').text(game);
         };
 
         /*
@@ -30,7 +29,7 @@ Core.register(
         module.populateGames = function() {
             retrieveGames(function(games) {
                 var activeGame = sandbox.activeGame();
-                var gameList = $('#game-list');
+                var gameList = $('.game-list');
                 var template = gameList.find('.template'),
                     clone,
                     game;
@@ -44,7 +43,7 @@ Core.register(
                     // 2. Update clone
                     clone.removeClass('template').addClass('game-' + game);
                     clone.find('a').text(game);
-                    clone.bind('click', module.activateGame(game));
+                    clone.on('click', module.activateGame(game));
 
                     if(game == activeGame) {
                         clone.addClass('active');
@@ -53,6 +52,8 @@ Core.register(
                     // 3. Add it to the game list
                     gameList.append(clone);
                 }
+
+                sandbox.notify({type: 'game-list-created'});
             });
         };
 

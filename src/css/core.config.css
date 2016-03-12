@@ -1,3 +1,4 @@
-#config-button {
+.main-nav .config-button > span,
+.main-nav .config-button {
     display: none;
 }

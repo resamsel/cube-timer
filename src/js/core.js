@@ -9,11 +9,50 @@ var Sandbox = function(core) {
     this.activeGame = function(game) {
         return core.activeGame(game);
     };
+    this.createStats = function(scores) {
+        var stats = {
+            scores: scores,
+            categories: {}
+        };
+
+        if(stats.scores.length < 1) {
+            stats.scores = [{id: 0, value: 0}];
+        }
+
+        stats.values = scores.map(scoreValue);
+        stats.latest = stats.values.last();
+        stats.latest5 = stats.values.slice(-5).sort(compareNumbers);
+        stats.latest12 = stats.values.slice(-12).sort(compareNumbers);
+        stats.latest50 = stats.values.slice(-50).sort(compareNumbers);
+        stats.best3of5 = stats.latest5.slice(0, 3).sort(compareNumbers);
+        stats.best10of12 = stats.latest12.slice(0, 10).sort(compareNumbers);
+
+        stats.values.sort(compareNumbers);
+
+        stats.best = stats.values.first();
+        stats.avg = stats.values.avg();
+        stats.avg80 = stats.values.slice(
+            0,
+            Math.max(1, Math.floor(scores.length*0.8))
+        );
+
+        stats.values.forEach(function(value) {
+            var category = Category.fromValue(value);
+            if (!(category in stats.categories)) {
+                stats.categories[category] = 0;
+            }
+            stats.categories[category]++;
+        });
+
+        return stats;
+    };
 };
 
 var Core = function() {
     var moduleData = {};
     var handlers = {};
+    var eventQueue = [];
+    var started = false;
     var game = '3x3x3';
 
     return {
@@ -52,6 +91,12 @@ var Core = function() {
 
             for(var moduleId in moduleData) {
                 this.start(moduleId);
+            }
+
+            started = true;
+
+            while(eventQueue.length > 0) {
+                this.notify(eventQueue.pop());
             }
 
             this.notify({
@@ -95,6 +140,10 @@ var Core = function() {
                 'Core.notify(event=%s)',
                 JSON.stringify(event)
             );
+            if(!started) {
+                eventQueue.push(event);
+                return;
+            }
             if(!handlers.hasOwnProperty(event.type)) {
                 console.log(
                     'No handler found for type %s (%s)',

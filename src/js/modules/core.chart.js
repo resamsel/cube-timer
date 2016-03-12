@@ -1,5 +1,5 @@
 Core.register(
-    'chart',
+    'Chart',
     function (sandbox) {
         var module = {};
         var maxCategories = 5;
@@ -10,12 +10,21 @@ Core.register(
                 module.handleResultsChanged,
                 module
             );
+            sandbox.listen(
+                ['i18n-started'],
+                module.handleI18nStarted,
+                module
+            );
         };
 
         module.handleResultsChanged = function(event) {
             retrieveScores(event.data, function(results) {
-                module.updateChart(module.createStats(results));
+                module.updateChart(sandbox.createStats(results));
             });
+        };
+
+        module.handleI18nStarted = function(event) {
+            module.handleResultsChanged({data: sandbox.activeGame()});
         };
 
         module.updateChart = function(stats) {
@@ -95,10 +104,10 @@ Core.register(
                 plugins: [
                     Chartist.plugins.legend({
                         legendNames: [
-                            translate('latest'),
-                            translate('average12'),
-                            translate('average50'),
-                            translate('best')
+                            I18n.translate('latest'),
+                            I18n.translate('average12'),
+                            I18n.translate('average50'),
+                            I18n.translate('best')
                         ],
                         clickable: false
                     })
@@ -165,41 +174,6 @@ Core.register(
             };
 
             return new Chartist.Bar('#ct-weekdays', data, options);
-        };
-
-        module.createStats = function(scores) {
-            var stats = {
-                scores: scores,
-                categories: {}
-            };
-
-            if(stats.scores.length < 1) {
-                stats.scores = [{id: 0, value: 0}];
-            }
-
-            stats.values = scores.map(scoreValue);
-            stats.last = stats.values.last();
-            stats.last5 = stats.values.slice(-5).sort(compareNumbers);
-            stats.last12 = stats.values.slice(-12).sort(compareNumbers);
-            stats.best3of5 = stats.last5.slice(0, 3).sort(compareNumbers);
-            stats.best10of12 = stats.last12.slice(0, 10).sort(compareNumbers);
-
-            stats.values.sort(compareNumbers);
-
-            stats.avg80 = stats.values.slice(
-                0,
-                Math.max(1, Math.floor(scores.length*0.8))
-            );
-
-            stats.values.forEach(function(value) {
-                var category = Category.fromValue(value);
-                if (!(category in stats.categories)) {
-                    stats.categories[category] = 0;
-                }
-                stats.categories[category]++;
-            });
-
-            return stats;
         };
 
         return module;

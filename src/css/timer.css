@@ -1,46 +1,26 @@
 html,
 body {
-    overflow-y: visible;
-    height: 100%;
 }
 
-#wrapper {
-    padding-top: 85px; /* navbar-fixed-top */
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -60px;
-}
-#wrapper > .container {
-    padding-bottom: 60px;
-}
 .container .credit {
     margin: 20px 0;
 }
 
-.navbar .navbar-brand {
-    background: url(../img/icon-128.png) no-repeat left center;
-    background-size: 28px;
-    margin-left: 10px;
+.btn-small {
+    line-height: 20px;
+    height: 20px;
+    padding: 0 1.5rem;
+}
+.condensed th,
+.condensed td {
+    padding: 3px 5px;
 }
 
-.panel .panel-title {
+.card .card-title {
     font-size: 20px;
-}
-.panel.panel-timer > .panel-heading {
-    position: relative;
-    padding: 15px;
 }
 .relative {
     position: relative;
-}
-
-#timer-container {
-    margin-top: -10px;
-    text-align: center;
-}
-#timer {
-    font-size: 96px;
 }
 
 .achievement {
@@ -77,16 +57,9 @@ body {
     display: inline-block;
 }
 
-#times button.btn-remove {
-    margin: 0;
-}
 .template {
     display: none;
 }
-#times .date {
-    white-space: nowrap;
-}
-
 .results-dialog .modal-dialog,
 .results-dialog .modal-content {
     height: calc(100% - 60px);
@@ -109,10 +82,9 @@ body {
     /* 100% = dialog height, 110px = header + footer */
     max-height: calc(100% - 110px);
     padding-bottom: 0;
-    overflow-y: scroll;
 }
 
-.panel-heading .btn-group {
+.card-image .btn-group {
     margin: -2px 1px 0 1px;
 }
 
@@ -133,13 +105,6 @@ body {
     margin-left: 33.333333333%;
 }
 
-.index.row-action-primary {
-    float: left;
-    margin-top: 6px;
-    color: #777;
-    min-width: 40px;
-    text-align: right;
-}
 .list-group .list-group-item {
     padding: 0;
 }
@@ -166,6 +131,14 @@ body {
 
 .label {
     font-size: 100%;
+    background: #304ffe;
+    color: #f5f5f5;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 2px;
+}
+.label-success {
+    background: #00c853;
 }
 
 .sub.list-group-item {

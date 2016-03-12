@@ -1,5 +1,5 @@
 Core.register(
-    "stopwatch",
+    'Stopwatch',
     function(sandbox) {
         var count, counter, beep;
         var module = {};
@@ -7,16 +7,25 @@ Core.register(
         var startSound;
 
         module.init = function() {
+            sandbox.listen(
+                ['game-changed'],
+                module.handleGameChanged,
+                module
+            );
             $('body')
-                .bind('keydown', module.handleSpaceDown)
-                .bind('keyup', module.handleSpaceUp);
-            $('button.start-stop').bind('click', module.handleStart);
+                .on('keydown', module.handleSpaceDown)
+                .on('keyup', module.handleSpaceUp);
+            $('button.start-stop').on('click', module.toggleTimer);
 
             // pre-load sound
             timerSound = new Audio('audio/timer.mp3');
             startSound = new Audio('audio/start.mp3');
             timerSound.load();
             startSound.load();
+        };
+
+        module.handleGameChanged = function(event) {
+            $('.card-timer .card-title > span').text(event.data);
         };
 
         /*
@@ -58,10 +67,15 @@ Core.register(
             elapsed = sw.data('stopwatch').elapsed;
             if(elapsed > 0) {
                 // Only use values when stopwatch actually started
+                var result ={ id: new Date().getTime(), value: elapsed };
                 storeScore(
                     sandbox.activeGame(),
-                    { id: new Date().getTime(), value: elapsed },
+                    result,
                     function() {
+                        sandbox.notify({
+                            type: 'result-created',
+                            data: result
+                        });
                         sandbox.notify({
                             type: 'results-changed',
                             data: sandbox.activeGame()

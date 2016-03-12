@@ -1,5 +1,5 @@
 Core.register(
-    "results",
+    'Results',
     function(sandbox) {
         var module = {};
 
@@ -15,12 +15,13 @@ Core.register(
                 module
             );
 
-            $('#results-button')
+            if(window.location.hash == '#results-dialog') {
+                $('#results-dialog').openModal();
+            }
+
+            $('.results-button')
                 .css('display', 'block')
-                .bind('click', function() {
-                    // Show dialog
-                    $('.results-dialog').modal('show');
-                });
+                .on('click', module.updateDates);
 
             module.updateResults(sandbox.activeGame());
         };
@@ -44,7 +45,7 @@ Core.register(
                 .find('.btn-remove')
                 .data('game', sandbox.activeGame())
                 .data('resultId', result.id)
-                .bind('click', function(event) {
+                .on('click', function(event) {
                     module.removeResult(this);
                 });
 

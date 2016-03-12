@@ -1,0 +1,19 @@
+/*
+ * Navigation bar
+ */
+nav .brand-logo {
+    background: url(../img/icon-128.png) no-repeat left center;
+    background-size: 28px;
+    margin-left: 15px;
+    padding-left: 33px;
+    font-size: 18px;
+}
+
+nav.main-nav .brand-logo,
+nav.main-nav ul a {
+    color: rgba(255,255,255,.84);
+}
+
+.side-nav li {
+    padding: 0;
+}
