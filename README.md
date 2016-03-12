@@ -64,7 +64,8 @@ grunt dist
 ### Caveats
 
 The Google API only works when the app is delivered from http://localhost/. To
-use it, use a webserver that delivers the content of the dist directory.
+use it, use a webserver that delivers the content of the dist/cube-timer
+directory.
 
 ## Sources
 
