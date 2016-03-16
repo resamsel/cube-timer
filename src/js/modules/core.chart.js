@@ -3,6 +3,7 @@ Core.register(
     function (sandbox) {
         var module = {};
         var maxCategories = 5;
+        var windowSize = 50;
 
         module.init = function() {
             sandbox.listen(
@@ -59,7 +60,6 @@ Core.register(
             var averages12 = movingAverage(values, 12);
             var averages50 = movingAverage(values, 50);
             var best = movingMinimum(values);
-            var windowSize = 50;
             var len = values.length;
             var offset = Math.max(0, len - windowSize);
             console.log(
@@ -118,13 +118,17 @@ Core.register(
         };
 
         module.createCategories = function(stats) {
+            var len = stats.scores.length;
+            var offset = Math.max(0, len - windowSize);
+            var values = stats.scores.slice(offset, len).map(scoreValue);
+            var categories = sandbox.createCategories(values);
             var series = Object
-                .keys(stats.categories)
+                .keys(categories)
                 .slice(0, maxCategories);
             var data = {
                 series: series
                     .map(function(key) {
-                        return stats.categories[key];
+                        return categories[key];
                     })
             };
             
@@ -149,12 +153,11 @@ Core.register(
 
         module.createWeekdays = function(stats) {
             var series = [0, 0, 0, 0, 0, 0, 0];
-            stats.scores.map(scoreKey).forEach(function(key) {
-                if(key % 100000 > 1000) {
-                    // Imported data should be ignored, as it would be the same
-                    // Day over and over again
-                    series[new Date(key).getDay()] += 1;
-                }
+            var len = stats.scores.length;
+            var offset = Math.max(0, len - windowSize);
+            var values = stats.scores.slice(offset, len).map(scoreKey);
+            values.forEach(function(key) {
+                series[new Date(key).getDay()] += 1;
             });
             var shifted = series.shift();
             series.push(shifted);

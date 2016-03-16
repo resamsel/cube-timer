@@ -11,8 +11,7 @@ var Sandbox = function(core) {
     };
     this.createStats = function(scores) {
         var stats = {
-            scores: scores,
-            categories: {}
+            scores: scores
         };
 
         if(stats.scores.length < 1) {
@@ -36,15 +35,22 @@ var Sandbox = function(core) {
             Math.max(1, Math.floor(scores.length*0.8))
         );
 
-        stats.values.forEach(function(value) {
-            var category = Category.fromValue(value);
-            if (!(category in stats.categories)) {
-                stats.categories[category] = 0;
-            }
-            stats.categories[category]++;
-        });
+        stats.categories = this.createCategories(stats.values);
 
         return stats;
+    };
+    this.createCategories = function(values) {
+        var categories = {};
+
+        values.forEach(function(value) {
+            var category = Category.fromValue(value);
+            if (!(category in categories)) {
+                categories[category] = 0;
+            }
+            categories[category]++;
+        });
+
+        return categories;
     };
 };
 
