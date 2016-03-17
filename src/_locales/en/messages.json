@@ -48,8 +48,8 @@
     },
 
     "results": {
-        "message": "Times",
-        "description": "The label of the results/times panel."
+        "message": "Results",
+        "description": "The label of the results dialog."
     },
     "date": {
         "message": "Date",
@@ -278,5 +278,34 @@
     "linksTitle": {
         "message": "Links",
         "description": "The text of the links header."
+    },
+
+    "achievement_best_all": {
+        "message": "New personal best. Yes.",
+        "description": "The achievement message for best of all."
+    },
+    "achievement_best_latest50": {
+        "message": "Best of last 50. Great.",
+        "description": "The achievement message for best of latest 50."
+    },
+    "achievement_best_latest12": {
+        "message": "Best of last 12. Good.",
+        "description": "The achievement message for best of latest 12."
+    },
+    "achievement_best_latest5": {
+        "message": "Best of last 5. Keep it going.",
+        "description": "The achievement message for best of latest 5."
+    },
+    "achievement_better_avg50": {
+        "message": "Better than average of last 50.",
+        "description": "The achievement message for better than average of latest 50."
+    },
+    "achievement_better_avg": {
+        "message": "Better than average.",
+        "description": "The achievement message for better than average."
+    },
+    "achievement_better_than": {
+        "message": "Better than $1% of previous results.",
+        "description": "The achievement message for better than X% of previous results."
     }
 }

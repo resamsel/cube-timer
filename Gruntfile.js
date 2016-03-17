@@ -43,7 +43,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: 'src/_locales/',
                 src: ['**'],
-                dest: 'dist/<%= pkg.name %>/locales'
+                dest: 'dist/<%= pkg.name %>/_locales'
             },
             manifest: {
                 expand: true,
@@ -161,12 +161,6 @@ module.exports = function(grunt) {
                         ],
                         cwd: 'dist/',
                         dest: ''
-                    },
-                    {
-                        expand: true,
-                        cwd: 'dist/<%= pkg.name %>/locales',
-                        src: ['**'],
-                        dest: '<%= pkg.name %>/_locales'
                     }
                 ]
             },
@@ -184,10 +178,15 @@ module.exports = function(grunt) {
                             '<%= pkg.name %>/css/**',
                             '<%= pkg.name %>/font/**',
                             '<%= pkg.name %>/img/**',
-                            '<%= pkg.name %>/js/**',
-                            '<%= pkg.name %>/locales/**'
+                            '<%= pkg.name %>/js/**'
                         ],
                         dest: ''
+                    },
+                    {
+                        expand: true,
+                        cwd: 'dist/<%= pkg.name %>/_locales',
+                        src: ['**'],
+                        dest: '<%= pkg.name %>/locales'
                     }
                 ]
             }
