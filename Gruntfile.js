@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             main: {
                 expand: true,
                 cwd: 'src/',
-                src: ['*.html', 'background.js', '_locales/**'],
+                src: ['*.html', 'background.js'],
                 dest: 'dist/<%= pkg.name %>'
             },
             js: {
@@ -38,6 +38,12 @@ module.exports = function(grunt) {
                 flatten: true,
                 src: 'src/audio/*',
                 dest: 'dist/<%= pkg.name %>/audio'
+            },
+            locales: {
+                expand: true,
+                cwd: 'src/_locales/',
+                src: ['**'],
+                dest: 'dist/<%= pkg.name %>/_locales'
             },
             manifest: {
                 expand: true,
@@ -135,16 +141,52 @@ module.exports = function(grunt) {
         },
 
         compress: {
-            main: {
+            chrome_app: {
                 options: {
-                    archive: 'dist/<%= pkg.name %>.zip'
+                    archive: 'dist/<%= pkg.name %>_chrome.zip'
                 },
                 files: [
                     {
                         expand: true,
-                        src: ['<%= pkg.name %>/**'],
+                        src: [
+                            '<%= pkg.name %>/index.html',
+                            '<%= pkg.name %>/background.js',
+                            '<%= pkg.name %>/manifest.json',
+                            '<%= pkg.name %>/audio/*',
+                            '<%= pkg.name %>/css/**',
+                            '<%= pkg.name %>/font/**',
+                            '<%= pkg.name %>/img/**',
+                            '<%= pkg.name %>/js/**',
+                            '<%= pkg.name %>/_locales/**'
+                        ],
                         cwd: 'dist/',
                         dest: ''
+                    }
+                ]
+            },
+            webapp: {
+                options: {
+                    archive: 'dist/<%= pkg.name %>_web.zip'
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'dist/',
+                        src: [
+                            '<%= pkg.name %>/index.html',
+                            '<%= pkg.name %>/audio/*',
+                            '<%= pkg.name %>/css/**',
+                            '<%= pkg.name %>/font/**',
+                            '<%= pkg.name %>/img/**',
+                            '<%= pkg.name %>/js/**'
+                        ],
+                        dest: ''
+                    },
+                    {
+                        expand: true,
+                        cwd: 'dist/<%= pkg.name %>/_locales',
+                        src: ['**'],
+                        dest: '<%= pkg.name %>/locales'
                     }
                 ]
             }

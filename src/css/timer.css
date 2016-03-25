@@ -1,5 +1,7 @@
 html,
 body {
+    overflow-y: visible;
+    height: 100%;
 }
 
 .container .credit {
