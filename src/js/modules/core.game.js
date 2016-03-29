@@ -1,4 +1,8 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var $ = require('jquery');
+
+core.register(
     'Game',
     function(sandbox) {
         var module = {};
@@ -27,7 +31,7 @@ Core.register(
          * Create the list of games in the header bar.
          */
         module.populateGames = function() {
-            retrieveGames(function(games) {
+            dao.retrieveGames(function(games) {
                 var activeGame = sandbox.activeGame();
                 var gameList = $('.game-list');
                 var template = gameList.find('.template'),

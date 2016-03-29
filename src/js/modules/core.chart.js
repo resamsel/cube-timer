@@ -1,4 +1,13 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var I18n = require('../utils/i18n.js');
+var misc = require('../utils/misc.js');
+var stats = require('../utils/stats.js');
+var Chartist = require('chartist');
+var legend = require('../external/chartist-plugin-legend.js');
+var $ = require('jquery');
+
+core.register(
     'Chart',
     function (sandbox) {
         var module = {};
@@ -16,10 +25,12 @@ Core.register(
                 module.handleI18nStarted,
                 module
             );
+
+            $('.card-stats').css('display', 'block');
         };
 
         module.handleResultsChanged = function(event) {
-            retrieveScores(event.data, function(results) {
+            dao.retrieveScores(event.data, function(results) {
                 module.updateChart(sandbox.createStats(results));
             });
         };
@@ -54,12 +65,12 @@ Core.register(
             }
         };
 
-        module.createScores = function(stats) {
-            var values = stats.scores.map(scoreValue);
-            var averages5 = movingAverage(values, 5);
-            var averages12 = movingAverage(values, 12);
-            var averages50 = movingAverage(values, 50);
-            var best = movingMinimum(values);
+        module.createScores = function(statistics) {
+            var values = statistics.scores.map(misc.scoreValue);
+            var averages5 = stats.movingAverage(values, 5);
+            var averages12 = stats.movingAverage(values, 12);
+            var averages50 = stats.movingAverage(values, 50);
+            var best = stats.movingMinimum(values);
             var len = values.length;
             var offset = Math.max(0, len - windowSize);
             console.log(
@@ -68,7 +79,7 @@ Core.register(
             );
             var data = {
                 // A labels array that can contain any sort of values
-                labels: stats.scores.map(scoreKey).slice(offset, len).rpad(windowSize, null),
+                labels: statistics.scores.map(misc.scoreKey).slice(offset, len).rpad(windowSize, null),
                 // Our series array that contains series objects or in this case series data arrays
                 series: [
                     values.slice(offset, len).rpad(windowSize, null),
@@ -80,7 +91,7 @@ Core.register(
 
             var options = {
                 // Don't draw the line chart points
-                showPoint: stats.scores.length == 1 && stats.scores[0].value !== 0,
+                showPoint: statistics.scores.length == 1 && statistics.scores[0].value !== 0,
                 // X-Axis specific configuration
                 axisX: {
                     offset: 0,
@@ -96,7 +107,7 @@ Core.register(
                     // The label interpolation function enables you to modify the values
                     // used for the labels on each axis. Here we are converting the
                     // values into million pound.
-                    labelInterpolationFnc: hourMinuteFormatMilliseconds
+                    labelInterpolationFnc: misc.hourMinuteFormatMilliseconds
                 },
                 lineSmooth: Chartist.Interpolation.simple({
                     divisor: 2
@@ -120,7 +131,7 @@ Core.register(
         module.createCategories = function(stats) {
             var len = stats.scores.length;
             var offset = Math.max(0, len - windowSize);
-            var values = stats.scores.slice(offset, len).map(scoreValue);
+            var values = stats.scores.slice(offset, len).map(misc.scoreValue);
             var categories = sandbox.createCategories(values);
             var series = Object
                 .keys(categories)
@@ -155,7 +166,7 @@ Core.register(
             var series = [0, 0, 0, 0, 0, 0, 0];
             var len = stats.scores.length;
             var offset = Math.max(0, len - windowSize);
-            var values = stats.scores.slice(offset, len).map(scoreKey);
+            var values = stats.scores.slice(offset, len).map(misc.scoreKey);
             values.forEach(function(key) {
                 series[new Date(key).getDay()] += 1;
             });

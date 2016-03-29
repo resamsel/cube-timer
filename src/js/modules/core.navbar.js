@@ -1,4 +1,8 @@
-Core.register(
+var core = require('../core.js');
+var $ = require('jquery');
+var Materialize = require('materialize-css');
+
+core.register(
     'Navbar',
     function(sandbox) {
         var module = {};
@@ -10,7 +14,7 @@ Core.register(
                 module
             );
 
-            $(".button-collapse").sideNav();
+            //$(".button-collapse").sideNav();
         };
 
         module.handleGameListCreated = function(event) {
@@ -38,7 +42,7 @@ Core.register(
                 .parent()
                 .addClass('collapsible')
                 .attr('data-collapsible', 'accordion');
-            $('.collapsible').collapsible();
+            //$('.collapsible').collapsible();
         };
 
         return module;

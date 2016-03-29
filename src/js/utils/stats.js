@@ -1,24 +1,26 @@
-function identity(v) {
+var stats = {};
+
+stats.identity = function(v) {
     return v;
-}
+};
 
-function addition(a, b) {
+stats.addition = function(a, b) {
     return a + b;
-}
+};
 
-function average(data, mapper) {
+stats.average = function(data, mapper) {
     if (typeof(mapper) === 'undefined') {
-        mapper = identity;
+        mapper = stats.identity;
     }
 
-    var sum = data.map(mapper).reduce(addition, 0);
+    var sum = data.map(mapper).reduce(stats.addition, 0);
 
     return sum / data.length;
-}
+};
 
-function median(data, mapper) {
+stats.median = function(data, mapper) {
     if (typeof(mapper) === 'undefined') {
-        mapper = identity;
+        mapper = stats.identity;
     }
 
     // map and sort the resulting array
@@ -32,14 +34,14 @@ function median(data, mapper) {
     } else {
         return (m[middle] + m[middle + 1]) / 2.0;
     }
-}
+};
 
-function standardDeviation(data, mapper) {
+stats.standardDeviation = function(data, mapper) {
     if (typeof(mapper) === 'undefined') {
-        mapper = identity;
+        mapper = stats.identity;
     }
 
-    var avg = average(data, mapper);
+    var avg = stats.average(data, mapper);
 
     var squareDiffs = data.map(mapper).map(function(value) {
         var diff = value - avg;
@@ -47,23 +49,25 @@ function standardDeviation(data, mapper) {
         return sqrDiff;
     });
 
-    var avgSquareDiff = average(squareDiffs);
+    var avgSquareDiff = stats.average(squareDiffs);
 
     return Math.sqrt(avgSquareDiff);
-}
+};
 
-function movingAverage(data, size) {
+stats.movingAverage = function(data, size) {
     var avg = [];
     for (var i = 0; i < data.length; i++) {
-        avg.push(average(data.slice(Math.max(i - size, 0), i+1)));
+        avg.push(stats.average(data.slice(Math.max(i - size, 0), i+1)));
     }
     return avg;
-}
+};
 
-function movingMinimum(data) {
+stats.movingMinimum = function(data) {
     var minimum = [];
     for (var i = 0; i < data.length; i++) {
         minimum.push(Math.min(minimum.last(999999999), data[i]));
     }
     return minimum;
-}
+};
+
+module.exports = stats;

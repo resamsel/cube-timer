@@ -4,11 +4,13 @@ if(typeof console === 'undefined') {
     };
 }
 
-function pad2(number) {
-    return (number < 10 ? '0' : '') + number;
-}
+var misc = {};
 
-function defaultFormatMilliseconds(millis) {
+misc.pad2 = function(number) {
+    return (number < 10 ? '0' : '') + number;
+};
+
+misc.defaultFormatMilliseconds = function(millis) {
     var x, milliseconds, seconds, minutes;
     x = millis / 10;
     milliseconds = Math.floor(x % 100);
@@ -16,31 +18,31 @@ function defaultFormatMilliseconds(millis) {
     seconds = Math.floor(x % 60);
     x /= 60;
     minutes = Math.floor(x % 60);
-    return [pad2(minutes), pad2(seconds)].join(':') + '.' + pad2(milliseconds);
-}
+    return [misc.pad2(minutes), misc.pad2(seconds)].join(':') + '.' + misc.pad2(milliseconds);
+};
 
-function hourMinuteFormatMilliseconds(millis) {
+misc.hourMinuteFormatMilliseconds = function(millis) {
     var x, seconds, minutes;
     x = millis / 1000;
     seconds = Math.floor(x % 60);
     x /= 60;
     minutes = Math.floor(x % 60);
-    return [pad2(minutes), pad2(seconds)].join(':');
-}
+    return [misc.pad2(minutes), misc.pad2(seconds)].join(':');
+};
 
-function scoreKey(score) {
+misc.scoreKey = function(score) {
     return score.id;
-}
+};
 
-function scoreValue(score) {
+misc.scoreValue = function(score) {
     return score.value;
-}
+};
 
-function compareNumbers(a, b) {
+misc.compareNumbers = function(a, b) {
     return a - b;
-}
+};
 
-function toCsv(game, scores) {
+misc.toCsv = function(game, scores) {
     var result = ['Game;Date;Duration'];
 
     for (var i = 0; i < scores.length; i++) {
@@ -56,20 +58,11 @@ function toCsv(game, scores) {
     }
 
     return result.join('\n');
-}
+};
 
-function toDate(timestamp) {
+misc.toDate = function(timestamp) {
     var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
     return jintervals(interval, "{G.} ago");
-}
+};
 
-function defaultCallback(key, defaultValue, callback) {
-    return function (value) {
-        if(value === null || typeof(value) === 'undefined') {
-            value = defaultValue;
-        }
-        if(callback) {
-            callback(value);
-        }
-    };
-}
+module.exports = misc;

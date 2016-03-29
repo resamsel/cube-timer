@@ -1,4 +1,10 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var misc = require('../utils/misc.js');
+var Stopwatch = require('timer-stopwatch');
+var $ = require('jquery');
+
+core.register(
     'Stopwatch',
     function(sandbox) {
         var count, counter, beep;
@@ -16,6 +22,7 @@ Core.register(
                 .on('keydown', module.handleSpaceDown)
                 .on('keyup', module.handleSpaceUp);
             $('button.start-stop').on('click', module.toggleTimer);
+            $('.card-timer').css('display', 'block');
 
             // pre-load sound
             timerSound = new Audio('audio/timer.mp3');
@@ -46,7 +53,7 @@ Core.register(
 
         module.handleStart = function() {
             $('body').removeClass('stopped').addClass('started');
-            getConfig('inspectionTime', 0, function(inspectionTime) {
+            dao.getConfig('inspectionTime', 0, function(inspectionTime) {
                 if(inspectionTime > 0) {
                     module.startCountdown(inspectionTime);
                 } else {
@@ -60,15 +67,14 @@ Core.register(
         };
 
         module.handleStop = function() {
-            var sw, elapsed;
+            var elapsed;
             clearInterval(counter);
-            sw = $('#timer').stopwatch();
-            sw.stopwatch('stop');
-            elapsed = sw.data('stopwatch').elapsed;
+            module.stopwatch.stop();
+            elapsed = module.stopwatch.ms;
             if(elapsed > 0) {
                 // Only use values when stopwatch actually started
                 var result ={ id: new Date().getTime(), value: elapsed };
-                storeScore(
+                dao.storeScore(
                     sandbox.activeGame(),
                     result,
                     function() {
@@ -94,7 +100,6 @@ Core.register(
             }
         };
 
-            // Vars for the countdown timer
         module.countdownTimer = function() {
             count = count-1;
             if (count <= 0)
@@ -109,7 +114,7 @@ Core.register(
             // Code for showing the number of seconds
         module.updateCountdown = function(currentCount) {
             if(count <= 3) {
-                getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+                dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
                     if(soundAfterInspection) {
                         timerSound.load();
                         timerSound.play();
@@ -127,19 +132,24 @@ Core.register(
 
         module.startTimer = function() {
             var timerConfig = {
-                updateInterval: 31, // prime number
-                formatter: defaultFormatMilliseconds
+                refreshRateMS: 31 // prime number
             };
-            getConfig('inspectionTime', 0, function(inspectionTime) {
-                getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+            dao.getConfig('inspectionTime', 0, function(inspectionTime) {
+                dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
                     if(inspectionTime > 0 && soundAfterInspection) {
                         startSound.load();
                         startSound.play();
                     }
-                    $('#timer')
-                        .stopwatch(timerConfig)
-                        .stopwatch('reset')
-                        .stopwatch('start');
+                    if(typeof module.stopwatch !== 'undefined') {
+                        module.stopwatch.stop();
+                    }
+                    module.stopwatch = new Stopwatch(timerConfig);
+                    module.stopwatch
+                        .onTime(function(time) {
+                            $('#timer')
+                                .html(misc.defaultFormatMilliseconds(time.ms));
+                        })
+                        .start();
                 });
             });
         };

@@ -43,6 +43,12 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: 'src/_locales/',
                 src: ['**'],
+                dest: 'dist/<%= pkg.name %>/locales'
+            },
+            _locales: {
+                expand: true,
+                cwd: 'src/_locales/',
+                src: ['**'],
                 dest: 'dist/<%= pkg.name %>/_locales'
             },
             manifest: {
@@ -74,27 +80,25 @@ module.exports = function(grunt) {
         },
 
         concat: {
-            js: {
-                // the files to concatenate
-                src: [
-                    //'node_modules/bootstrap/dist/js/bootstrap.min.js',
-                    'node_modules/jquery-migrate/jquery-migrate.min.js',
-                    'node_modules/materialize-css/dist/js/materialize.min.js',
-                    'node_modules/chartist/dist/chartist.min.js',
-                    'src/js/config.js',
-                    'src/js/core.js',
-                    'src/js/modules/*.js',
-                    'src/js/other/*.js',
-                    'src/js/external/*.js'
-                ],
-                dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
-            },
+//            js: {
+//                // the files to concatenate
+//                src: [
+//                    //'node_modules/bootstrap/dist/js/bootstrap.min.js',
+//                    'node_modules/jquery-migrate/jquery-migrate.min.js',
+//                    'node_modules/materialize-css/dist/js/materialize.min.js',
+//                    'node_modules/chartist/dist/chartist.min.js',
+//                    'node_modules/timer-stopwatch/lib/Stopwatch.js',
+//                    'src/js/config.js',
+//                    'src/js/core.js',
+//                    'src/js/modules/*.js',
+//                    'src/js/other/*.js',
+//                    'src/js/external/*.js'
+//                ],
+//                dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
+//            },
             css: {
                 // the files to concatenate
                 src: [
-                    //'node_modules/bootstrap/dist/css/bootstrap.min.css',
-                    //'node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css',
-                    //'node_modules/bootstrap-material-design/dist/css/ripples.min.css',
                     'node_modules/materialize-css/dist/css/materialize.min.css',
                     'node_modules/chartist/dist/chartist.min.css',
                     'src/css/*.css'
@@ -190,6 +194,15 @@ module.exports = function(grunt) {
                     }
                 ]
             }
+        },
+        browserify: {
+            dist: {
+                files: {
+                    'dist/<%= pkg.name %>/js/<%= pkg.name %>.js': [
+                        'src/js/main.js'
+                    ]
+                }
+            }
         }
     });
 
@@ -200,6 +213,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-downloadfile');
+    grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('default', ['jshint']);
     grunt.registerTask(
@@ -208,6 +222,7 @@ module.exports = function(grunt) {
             'copy',
             'downloadfile',
             'concat',
+            'browserify',
 //            'uglify'
         ]
     );

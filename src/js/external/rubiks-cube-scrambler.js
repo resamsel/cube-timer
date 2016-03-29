@@ -76,3 +76,5 @@ Cube['3x3x3'] = {
         return moves;
     }
 };
+
+module.exports = Cube;

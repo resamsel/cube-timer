@@ -1,4 +1,8 @@
-Core.register(
+var core = require('../core.js');
+var I18n = require('../utils/i18n.js');
+var $ = require('jquery');
+
+core.register(
     'I18n',
     function(sandbox) {
         var module = {};

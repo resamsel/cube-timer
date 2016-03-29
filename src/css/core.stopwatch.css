@@ -1,3 +1,7 @@
+.card-timer {
+    display: none;
+}
+
 button:focus {
     background-color: #eee;
 }
