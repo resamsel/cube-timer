@@ -2,11 +2,21 @@
  * Navigation bar
  */
 nav .brand-logo {
+    /*
     background: url(../img/icon-128.png) no-repeat left center;
     background-size: 28px;
-    margin-left: 15px;
     padding-left: 33px;
-    font-size: 18px;
+    margin-left: 72px;
+    */
+    position: static;
+    font-size: 20px;
+}
+.page-title {
+    border-left: 1px solid rgba(255,255,255,0.2);
+    padding-left: 24px;
+    margin-left: 24px;
+    line-height: 32px;
+    font-size: 16px;
 }
 
 nav.main-nav .brand-logo,
@@ -14,6 +24,85 @@ nav.main-nav ul a {
     color: rgba(255,255,255,.84);
 }
 
+nav a.button-collapse {
+    opacity: 0.75;
+    padding: 16px 20px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    color: #ffffff;
+}
+
+nav a.button-collapse i {
+    height: 20px;
+    line-height: 26px;
+    font-size: 1.8em;
+}
+
+.side-nav {
+    top: 56px;
+}
+
+.side-nav .collapsible-header {
+    margin: 0;
+}
+
+.side-nav .collapsible-body {
+    background-color: transparent;
+}
+
+.side-nav .collapsible-body li a {
+    margin: 0;
+    border-left: 16px solid transparent;
+}
+
 .side-nav li {
     padding: 0;
 }
+
+.side-nav li a {
+    padding: 0 12px 0 20px;
+}
+
+#sidenav-overlay {
+    display: none;
+}
+
+@media only screen and (max-width: 992px) {
+    nav .brand-logo {
+        left: auto;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
+@media only screen and (min-width: 601px) {
+    .page-title {
+        font-size: 20px;
+    }
+    .side-nav {
+        top: 64px;
+    }
+    nav a.button-collapse {
+        padding: 16px 24px;
+    }
+    nav a.button-collapse i {
+        height: 24px;
+        line-height: 32px;
+    }
+}
+@media only screen and (min-width: 993px) {
+    .side-nav {
+        background-color: transparent;
+        padding-top: 16px;
+        height: 100%;
+        height: calc(100%);
+        height: -moz-calc(100%);
+    }
+    .side-nav.collapsible {
+        box-shadow: none;
+        border: 0;
+    }
+    .side-nav .collapsible-body {
+        background-color: #fafafa;
+    }
+ }

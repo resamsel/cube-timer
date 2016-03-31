@@ -2,7 +2,7 @@ var core = require('../core.js');
 var dao = require('../dao.js');
 var misc = require('../utils/misc.js');
 var Stopwatch = require('timer-stopwatch');
-var $ = require('jquery');
+//var $ = require('jquery');
 
 core.register(
     'Stopwatch',
@@ -23,12 +23,19 @@ core.register(
                 .on('keyup', module.handleSpaceUp);
             $('button.start-stop').on('click', module.toggleTimer);
             $('.card-timer').css('display', 'block');
+            $('.timer-button').on('click', function(e) {
+                sandbox.goToPage('timer');
+            });
 
             // pre-load sound
             timerSound = new Audio('audio/timer.mp3');
             startSound = new Audio('audio/start.mp3');
             timerSound.load();
             startSound.load();
+
+            if(window.location.hash == '#timer') {
+                sandbox.goToPage('timer');
+            }
         };
 
         module.handleGameChanged = function(event) {
@@ -67,10 +74,12 @@ core.register(
         };
 
         module.handleStop = function() {
-            var elapsed;
+            var elapsed = 0;
             clearInterval(counter);
-            module.stopwatch.stop();
-            elapsed = module.stopwatch.ms;
+            if(typeof module.stopwatch !== 'undefined') {
+                module.stopwatch.stop();
+                elapsed = module.stopwatch.ms;
+            }
             if(elapsed > 0) {
                 // Only use values when stopwatch actually started
                 var result ={ id: new Date().getTime(), value: elapsed };
@@ -121,7 +130,7 @@ core.register(
                     }
                 });
             }
-            $('#timer').text(count);
+            $('#timer-display').text(count);
         };
 
         module.startCountdown = function(inspectionTime) {
@@ -146,7 +155,7 @@ core.register(
                     module.stopwatch = new Stopwatch(timerConfig);
                     module.stopwatch
                         .onTime(function(time) {
-                            $('#timer')
+                            $('#timer-display')
                                 .html(misc.defaultFormatMilliseconds(time.ms));
                         })
                         .start();

@@ -1,0 +1,9 @@
+.page {
+    display: none;
+}
+.page.page-timer {
+    display: block;
+}
+.page > .row {
+    margin-top: 16px;
+}

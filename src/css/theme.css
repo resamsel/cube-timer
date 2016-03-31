@@ -1,9 +1,13 @@
 html,
 body {
-    font-family: "Roboto-Light", sans-serif;
+    font-family: Roboto,Helvetica,Arial,sans-serif;
+    font-size: 87.5%;
 }
 body {
     background-color: #fafafa;
+}
+#wrapper {
+    min-height: 250px;
 }
 
 .material .card-stats .card-image,

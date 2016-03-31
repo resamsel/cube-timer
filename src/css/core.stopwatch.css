@@ -17,3 +17,13 @@ button:focus {
 .start-stop-container .stop span {
     font-size: 18px;
 }
+#times button.btn-remove {
+    margin: 0;
+}
+#timer-container {
+    margin-top: -17px;
+    text-align: center;
+}
+#timer-display {
+    font-size: 96px;
+}

@@ -1,5 +1,7 @@
 var misc = require('./utils/misc.js');
 var Category = require('./utils/category.js');
+var I18n = require('./utils/i18n.js');
+//var $ = require('jquery');
 
 module.exports = function(core) {
     this.core = core;
@@ -11,6 +13,16 @@ module.exports = function(core) {
     };
     this.activeGame = function(game) {
         return core.activeGame(game);
+    };
+    this.goToPage = function(page) {
+        $('.page:not(.page-' + page + ')').hide();
+        $('.page.page-' + page).show();
+        $('.button-collapse').sideNav('hide');
+        $('.page-title')
+            .attr('i18n-key', page)
+            .html(I18n.translate(page));
+
+        this.notify({type: 'page-changed', data: page});
     };
     this.createStats = function(scores) {
         var stats = {

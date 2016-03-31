@@ -1,6 +1,6 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
-var $ = require('jquery');
+//var $ = require('jquery');
 
 core.register(
     'Config',
@@ -39,7 +39,15 @@ core.register(
                 );
             });
 
-            $('.config-button').css('display', 'block');
+            $('.config-button')
+                .on('click', function(e) {
+                    sandbox.goToPage('config');
+                })
+                .css('display', 'block');
+
+            if(window.location.hash == '#config') {
+                sandbox.goToPage('config');
+            }
         };
 
         module.handleConfigStored = function(key, value) {

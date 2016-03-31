@@ -1,6 +1,6 @@
 var core = require('../core.js');
-var $ = require('jquery');
-var Materialize = require('materialize-css');
+//var $ = require('jquery');
+//var Materialize = require('materialize-css');
 
 core.register(
     'Navbar',
@@ -14,19 +14,12 @@ core.register(
                 module
             );
 
-            //$(".button-collapse").sideNav();
+            $(".button-collapse").sideNav();
         };
 
         module.handleGameListCreated = function(event) {
             var sideNav = $('nav .side-nav');
-            $('nav .main-nav > li').each(function(index) {
-                sideNav.append($(this).clone());
-            });
-            var gameList = sideNav
-                .find('.game-list')
-                .removeAttr('id')
-                .addClass('collapsible-body')
-                .removeClass('dropdown-content');
+            var gameList = sideNav.find('.game-list');
             gameList.find('li').each(function() {
                 var game = $(this).attr('class').replace('game-', '').replace('active', '').trim();
                 $(this).on('click', function () {
@@ -38,11 +31,10 @@ core.register(
                 .find('.active-game')
                 .addClass('collapsible-header')
                 .parent()
-                .append(gameList)
                 .parent()
                 .addClass('collapsible')
                 .attr('data-collapsible', 'accordion');
-            //$('.collapsible').collapsible();
+            $('.collapsible').collapsible();
         };
 
         return module;

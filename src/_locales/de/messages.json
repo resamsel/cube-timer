@@ -30,7 +30,11 @@
         }
     },
 
-    "configuration": {
+    "timer": {
+        "message": "Stoppuhr",
+        "description": "The name of the link that opens the main view."
+    },
+    "config": {
         "message": "Konfiguration",
         "description": "The name of the link that opens the configuration dialog."
     },

@@ -13,46 +13,60 @@
 </head>
 <body class="material"><!-- class="started/stopped" -->
 	<div class="navbar-fixed">
-		<ul id="game-list" class="game-list dropdown-content">
-			<li class="template"><a href="#">3x3x3</a></li>
-		</ul>
 		<nav class="indigo" role="navigation">
 			<div class="nav-wrapper">
+				<a href="#" data-activates="nav-mobile" class="button-collapse show-on-large waves-effect waves-light">
+					<i class="material-icons">menu</i>
+				</a>
 				<a id="logo-container" href="#" class="brand-logo" i18n-key="appShortName">
 					Cube Timer
 				</a>
+				<span class="page-title" i18n-key="timer">Timer</span>
 				<ul class="main-nav right hide-on-med-and-down">
+				</ul>
+				<ul id="nav-mobile"
+						class="side-nav text-black text-lighten-2 collapsible"
+						data-collapsible="accordion" data- style="left: -250px;">
 					<li>
-						<a class="active-game dropdown-button waves-effect waves-light" href="#!game" data-activates="game-list" data-beloworigin="true">
+						<a class="active-game collapsible-header waves-effect waves-light"
+								href="#!game" data-activates="game-list" data-beloworigin="true">
 							<i class="material-icons left">games</i>
 							<span class="text">3x3x3</span>
 							&nbsp;
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
+						<ul id="game-list" class="game-list collapsible-body">
+							<li class="template"><a href="#">3x3x3</a></li>
+						</ul>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a class="timer-button waves-effect waves-light" href="#timer">
+							<i class="material-icons left">timer</i>
+							<span i18n-key="timer">Timer</span>
+						</a>
 					</li>
 					<li>
-						<a class="results-button modal-trigger waves-effect waves-light" href="#results-dialog">
+						<a class="results-button waves-effect waves-light" href="#results">
 							<i class="material-icons left">assessment</i>
 							<span i18n-key="results">Results</span>
 						</a>
 					</li>
 					<li>
-						<a class="config-button modal-trigger waves-effect waves-light" href="#config-dialog">
+						<a class="config-button waves-effect waves-light" href="#config">
 							<i class="material-icons left">settings</i>
-							<span i18n-key="configuration">Configuration</span>
+							<span i18n-key="config">Configuration</span>
 						</a>
 					</li>
 				</ul>
-				<ul id="nav-mobile" class="side-nav text-black text-lighten-2" style="left: -250px;">
-				</ul>
-				<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 			</div>
 		</nav>
 	</div>
 
 	<!-- Content -->
 	<div id="wrapper">
-		<div class="container">
+
+		<div class="container page page-timer">
 			<div id="hint-spacebar" class="row" style="display: none">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
 					<!-- Hint start/stop -->
@@ -86,7 +100,7 @@
 						</div>
 						<div class="card-content">
 							<div id="timer-container">
-								<span id="timer" class="text-center">00:00.00</span>
+								<span id="timer-display" class="text-center">00:00.00</span>
 								<div class="achievement burst-12 template"><span>avg -5</span></div>
 							</div>
 						</div>
@@ -120,8 +134,94 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div><!-- page: main -->
+
+		<div class="container page page-results">
+			<div class="row">
+				<div class="col l8 offset-l2 m10 offset-m1 s12">
+					<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-green btn">
+						<i class="material-icons left">file_upload</i>
+						<span i18n-key="buttonImport">Import</span>
+					</a>
+					<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-green btn">
+						<i class="material-icons left">file_download</i>
+						<span i18n-key="buttonExport">Export</span>
+					</a>
+
+					<div id="times">
+						<table style="display: none">
+							<tr class="template entry">
+								<td class="index"></td>
+								<td class="date"></td>
+								<td class="value"></td>
+								<td class="tags"></td>
+								<td class="actions">
+									<button class="waves-effect waves-indigo btn-flat btn-small btn-remove">
+										<i class="material-icons">remove</i>
+									</button>
+								</td>
+							</tr>
+						</table>
+						<table class="table highlight">
+							<thead>
+							<tr class="entry">
+								<th class="index">#</th>
+								<th class="date" i18n-key="date">Date</th>
+								<th class="value" i18n-key="score">Score</th>
+								<th class="tags" i18n-key="tags">Tags</th>
+								<th class="actions" i18n-key="actions">Actions</th>
+							</tr>
+							</thead>
+							<tbody class="times-content">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div><!-- page: results -->
+
+		<div class="container page page-config">
+			<div class="row">
+				<div class="col l8 offset-l2 m10 offset-m1 s12">
+					<div class="card card-stats">
+						<div class="card-content">
+					<div class="row">
+						<form id="config" class="col s12">
+							<div class="row">
+								<div class="input-field col s4">
+									<label for="inspectionTime" i18n-key="inspectionTime">Inspection time</label>
+								</div>
+								<div class="input-field col s8">
+									<select id="inspectionTime" class="browser-default">
+										<option value="0" i18n-key="inspectionTimeNone">None</option>
+										<option value="3" i18n-key="inspectionTime3Seconds">3 seconds</option>
+										<option value="5" i18n-key="inspectionTime5Seconds">5 seconds</option>
+										<option value="10" i18n-key="inspectionTime10Seconds">10 seconds</option>
+										<option value="15" i18n-key="inspectionTime15Seconds">15 seconds</option>
+									</select>
+								</div>
+								<div class="input-field col offset-s4 s8">
+									<input type="checkbox" class="filled-in" id="soundAfterInspection" />
+									<label for="soundAfterInspection">
+										<span i18n-key="inspectionSound">Play sound after inspection</span>
+									</label>
+								</div>
+								<div class="input-field col offset-s4 s8">
+									<input type="checkbox" class="filled-in" id="subtext" />
+									<label for="subtext">
+										<span i18n-key="showCategoryLabels">Show <span class="label label-info">sub X</span> labels</span>
+									</label>
+								</div>
+							</div>
+						</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!-- page: config -->
 	</div><!-- wrapper -->
+
 	<footer class="page-footer grey lighten-2 grey-text">
 		<div class="container">
 			<div class="row">
@@ -148,86 +248,6 @@
 			</div>
 		</div>
 	</footer>
-
-	<div id="results-dialog" class="modal modal-fixed-footer" tabindex="-1" role="dialog">
-		<div class="modal-content">
-			<h4 i18n-key="results">Times</h4>
-			<div id="times">
-				<table style="display: none">
-					<tr class="template entry">
-						<td class="index"></td>
-						<td class="date"></td>
-						<td class="value"></td>
-						<td class="tags"></td>
-						<td class="actions">
-							<button class="waves-effect waves-indigo btn-flat btn-small btn-remove">
-								<i class="material-icons">remove</i>
-							</button>
-						</td>
-					</tr>
-				</table>
-				<table class="table condensed striped">
-					<thead>
-					<tr class="entry">
-						<th class="index">#</th>
-						<th class="date" i18n-key="date">Date</th>
-						<th class="value" i18n-key="score">Score</th>
-						<th class="tags" i18n-key="tags">Tags</th>
-						<th class="actions" i18n-key="actions">Actions</th>
-					</tr>
-					</thead>
-					<tbody class="times-content">
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="modal-footer">
-			<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-green btn-flat">
-				<i class="material-icons left">file_upload</i>
-				<span i18n-key="buttonImport">Import</span>
-			</a>
-			<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-green btn-flat">
-				<i class="material-icons left">file_download</i>
-				<span i18n-key="buttonExport">Export</span>
-			</a>
-		</div>
-	</div>
-
-	<div id="config-dialog" class="modal" tabindex="-1" role="dialog">
-		<div class="modal-content">
-			<h4 i18n-key="configuration">Configuration</h4>
-			<div class="row">
-				<form id="config" class="col s12">
-					<div class="row">
-						<div class="input-field col s4">
-							<label for="inspectionTime" i18n-key="inspectionTime">Inspection time</label>
-						</div>
-						<div class="input-field col s8">
-							<select id="inspectionTime" class="browser-default">
-								<option value="0" i18n-key="inspectionTimeNone">None</option>
-								<option value="3" i18n-key="inspectionTime3Seconds">3 seconds</option>
-								<option value="5" i18n-key="inspectionTime5Seconds">5 seconds</option>
-								<option value="10" i18n-key="inspectionTime10Seconds">10 seconds</option>
-								<option value="15" i18n-key="inspectionTime15Seconds">15 seconds</option>
-							</select>
-						</div>
-						<div class="input-field col offset-s4 s8">
-							<input type="checkbox" class="filled-in" id="soundAfterInspection" />
-							<label for="soundAfterInspection">
-								<span i18n-key="inspectionSound">Play sound after inspection</span>
-							</label>
-						</div>
-						<div class="input-field col offset-s4 s8">
-							<input type="checkbox" class="filled-in" id="subtext" />
-							<label for="subtext">
-								<span i18n-key="showCategoryLabels">Show <span class="label label-info">sub X</span> labels</span>
-							</label>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
 
 	<div id="export-dialog" class="modal modal-fixed-footer-off" tabindex="-1" role="dialog">
 		<div class="modal-content">
@@ -290,6 +310,10 @@
 	<div style="display: none">
 		<input id="import-file" type="file">
 	</div>
+
+	<script src="js/jquery.min.js"></script>
+
+	<script src="js/cube-timer.pre.js"></script>
 
 	<script src="js/cube-timer.js"></script>
 

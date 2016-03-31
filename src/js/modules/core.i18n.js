@@ -1,6 +1,6 @@
 var core = require('../core.js');
 var I18n = require('../utils/i18n.js');
-var $ = require('jquery');
+//var $ = require('jquery');
 
 core.register(
     'I18n',

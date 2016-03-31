@@ -1,4 +1,8 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var I18n = require('../utils/i18n.js');
+
+core.register(
     'Import',
     function(sandbox) {
         var module = {};
@@ -17,7 +21,7 @@ Core.register(
                 $('#import-content').val('').trigger('autoresize');
                 // Hide previous errors
                 $('#import-error').hide();
-            });
+            }).css('display', 'inline-block');
             $('#import-file').change(module.handleFileSelect);
             $('#import-from-file').on('click', function() {
                 $('#import-file').click();
@@ -77,7 +81,7 @@ Core.register(
             // TODO: Refactor and simplify this code
             var callback = function(game, applier) {
                 return function(s) {
-                    storeScores(
+                    dao.storeScores(
                         game,
                         applier(s, scores[game]),
                         function() {
@@ -100,7 +104,7 @@ Core.register(
                 };
                 for(i = 0; i < games.length; i++) {
                     game = games[i];
-                    retrieveScores(game, callback(game, applier));
+                    dao.retrieveScores(game, callback(game, applier));
                 }
             } else {
                 applier = function(a, b) {

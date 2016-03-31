@@ -1,6 +1,6 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
-var $ = require('jquery');
+//var $ = require('jquery');
 
 core.register(
     'Game',
@@ -56,6 +56,7 @@ core.register(
                     // 3. Add it to the game list
                     gameList.append(clone);
                 }
+                //$('.dropdown-button').dropdown();
 
                 sandbox.notify({type: 'game-list-created'});
             });
@@ -64,6 +65,7 @@ core.register(
         module.activateGame = function(game) {
             return function() {
                 sandbox.activeGame(game);
+                $('.button-collapse').sideNav('hide');
             };
         };
 

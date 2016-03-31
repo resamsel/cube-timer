@@ -12,14 +12,3 @@ th.actions,
 td.actions {
     width: 75px;
 }
-#times button.btn-remove {
-    margin: 0;
-}
-#timer-container {
-    margin-top: -17px;
-    text-align: center;
-}
-#timer {
-    font-size: 96px;
-}
-

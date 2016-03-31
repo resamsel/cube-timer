@@ -5,7 +5,7 @@ var misc = require('../utils/misc.js');
 var stats = require('../utils/stats.js');
 var Chartist = require('chartist');
 var legend = require('../external/chartist-plugin-legend.js');
-var $ = require('jquery');
+//var $ = require('jquery');
 
 core.register(
     'Chart',
@@ -21,8 +21,8 @@ core.register(
                 module
             );
             sandbox.listen(
-                ['i18n-started'],
-                module.handleI18nStarted,
+                ['i18n-started', 'page-changed'],
+                module.handleContentChanged,
                 module
             );
 
@@ -35,7 +35,7 @@ core.register(
             });
         };
 
-        module.handleI18nStarted = function(event) {
+        module.handleContentChanged = function(event) {
             module.handleResultsChanged({data: sandbox.activeGame()});
         };
 

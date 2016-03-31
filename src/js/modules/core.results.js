@@ -1,4 +1,9 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var misc = require('../utils/misc.js');
+var Category = require('../utils/category.js');
+
+core.register(
     'Results',
     function(sandbox) {
         var module = {};
@@ -15,13 +20,16 @@ Core.register(
                 module
             );
 
-            if(window.location.hash == '#results-dialog') {
-                $('#results-dialog').openModal();
+            if(window.location.hash == '#results') {
+                sandbox.goToPage('results');
             }
 
             $('.results-button')
                 .css('display', 'block')
-                .on('click', module.updateDates);
+                .on('click', function(e) {
+                    module.updateDates();
+                    sandbox.goToPage('results');
+                });
 
             module.updateResults(sandbox.activeGame());
         };
@@ -37,10 +45,10 @@ Core.register(
             row.removeClass('template');
             row
                 .find('.value')
-                .text(defaultFormatMilliseconds(result.value));
+                .text(misc.defaultFormatMilliseconds(result.value));
             row
                 .find('.date')
-                .text(toDate(result.id)).data('date', result.id);
+                .text(misc.toDate(result.id)).data('date', result.id);
             row
                 .find('.btn-remove')
                 .data('game', sandbox.activeGame())
@@ -56,7 +64,7 @@ Core.register(
             element = $(element);
             var game = element.data('game');
             var resultId = element.data('resultId');
-            removeScore(
+            dao.removeScore(
                 game,
                 resultId,
                 module.handleRemoveResult(element, game, resultId)
@@ -84,7 +92,7 @@ Core.register(
                 game
             );
             $('#times .times-content > *').remove();
-            retrieveScores(game, function(results) {
+            dao.retrieveScores(game, function(results) {
                 for (var i = 0; i < results.length; i++) {
                     module.showResult(results[i]);
                 }
@@ -109,7 +117,7 @@ Core.register(
         module.updateDates = function() {
             $('#times .times-content > * .date').each(function() {
                 var that = $(this);
-                that.text(toDate(that.data('date')));
+                that.text(misc.toDate(that.data('date')));
             });
         };
 
@@ -119,7 +127,7 @@ Core.register(
         };
 
         module.updateLabels = function(results) {
-            getConfig('subtext', true, function(markSubX) {
+            dao.getConfig('subtext', true, function(markSubX) {
                 var result,
                     best = {id: 0, value: 999999999},
                     best5 = {id: 0, value: 999999999},

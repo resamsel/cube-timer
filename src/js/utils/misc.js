@@ -1,3 +1,6 @@
+var hdate = require("human-date");
+var dateFormat = require("dateformat");
+
 if(typeof console === 'undefined') {
     var console = {
         log: function() {}
@@ -48,9 +51,9 @@ misc.toCsv = function(game, scores) {
     for (var i = 0; i < scores.length; i++) {
         result.push([
             game,
-            $.format.date(
+            dateFormat(
                 new Date(scores[i].id),
-                'yyyy-MM-ddTHH:mm:ss.SSSZ'
+                "yyyy-mm-dd'T'HH:MM:ss.lo"
             ),
             scores[i].value]
             .join(';')
@@ -62,7 +65,7 @@ misc.toCsv = function(game, scores) {
 
 misc.toDate = function(timestamp) {
     var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
-    return jintervals(interval, "{G.} ago");
+    return hdate.relativeTime(-interval);
 };
 
 module.exports = misc;

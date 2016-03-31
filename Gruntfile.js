@@ -29,7 +29,9 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: 'node_modules/materialize-css/dist/font/',
                 src: [
-                    'roboto/Roboto-Light*.woff2'
+                    'roboto/Roboto-Regular*.woff2',
+                    'roboto/Roboto-Light*.woff2',
+                    'roboto/Roboto-Bold*.woff2'
                 ],
                 dest: 'dist/<%= pkg.name %>/font'
             },
@@ -45,7 +47,7 @@ module.exports = function(grunt) {
                 src: ['**'],
                 dest: 'dist/<%= pkg.name %>/locales'
             },
-            _locales: {
+            locales2: {
                 expand: true,
                 cwd: 'src/_locales/',
                 src: ['**'],
@@ -80,22 +82,14 @@ module.exports = function(grunt) {
         },
 
         concat: {
-//            js: {
-//                // the files to concatenate
-//                src: [
-//                    //'node_modules/bootstrap/dist/js/bootstrap.min.js',
-//                    'node_modules/jquery-migrate/jquery-migrate.min.js',
-//                    'node_modules/materialize-css/dist/js/materialize.min.js',
-//                    'node_modules/chartist/dist/chartist.min.js',
-//                    'node_modules/timer-stopwatch/lib/Stopwatch.js',
-//                    'src/js/config.js',
-//                    'src/js/core.js',
-//                    'src/js/modules/*.js',
-//                    'src/js/other/*.js',
-//                    'src/js/external/*.js'
-//                ],
-//                dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.js'
-//            },
+            js: {
+                // the files to concatenate
+                src: [
+                    'node_modules/jquery-migrate/jquery-migrate.min.js',
+                    'node_modules/materialize-css/dist/js/materialize.min.js',
+                ],
+                dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.pre.js'
+            },
             css: {
                 // the files to concatenate
                 src: [
