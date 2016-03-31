@@ -30,7 +30,11 @@
         }
     },
 
-    "configuration": {
+    "timer": {
+        "message": "Stoppuhr",
+        "description": "The name of the link that opens the main view."
+    },
+    "config": {
         "message": "Konfiguration",
         "description": "The name of the link that opens the configuration dialog."
     },
@@ -48,8 +52,8 @@
     },
 
     "results": {
-        "message": "Zeiten",
-        "description": "The label of the results/times panel."
+        "message": "Ergebnisse",
+        "description": "The label of the results dialog."
     },
     "date": {
         "message": "Datum",
@@ -278,5 +282,34 @@
     "linksTitle": {
         "message": "Links",
         "description": "The text of the links header."
+    },
+
+    "achievement_best_all": {
+        "message": "Neue Bestleistung. Wow.",
+        "description": "The achievement message for best of all."
+    },
+    "achievement_best_latest50": {
+        "message": "Bestes der letzten 50. Großartig.",
+        "description": "The achievement message for best of latest 50."
+    },
+    "achievement_best_latest12": {
+        "message": "Bestes der letzten 12. Gut.",
+        "description": "The achievement message for best of latest 12."
+    },
+    "achievement_best_latest5": {
+        "message": "Bestes der letzten 5. Weiter so.",
+        "description": "The achievement message for best of latest 5."
+    },
+    "achievement_better_avg50": {
+        "message": "Besser als der Durchschnitt der letzten 50.",
+        "description": "The achievement message for better than average of latest 50."
+    },
+    "achievement_better_avg": {
+        "message": "Besser als der Durchschnitt.",
+        "description": "The achievement message for better than average."
+    },
+    "achievement_better_than": {
+        "message": "Besser als $1% der bisherigen Ergebnisse.",
+        "description": "The achievement message for better than X% of previous results."
     }
 }
