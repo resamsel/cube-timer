@@ -38,28 +38,6 @@ core.register(
             module.updateResults(event.data);
         };
 
-        module.showResult = function(result) {
-            var row = $('#times .template').clone();
-
-            row.attr('id', 'id-' + result.id);
-            row.removeClass('template');
-            row
-                .find('.value')
-                .text(misc.defaultFormatMilliseconds(result.value));
-            row
-                .find('.date')
-                .text(misc.toDate(result.id)).data('date', result.id);
-            row
-                .find('.btn-remove')
-                .data('game', sandbox.activeGame())
-                .data('resultId', result.id)
-                .on('click', function(event) {
-                    module.removeResult(this);
-                });
-
-            $('#times .times-content').prepend(row);
-        };
-
         module.removeResult = function(element) {
             element = $(element);
             var game = element.data('game');
@@ -85,37 +63,81 @@ core.register(
             };
         };
 
+        module.createContainer = function() {
+            var container = $('#results-content .template.result-container')
+                .clone()
+                .removeClass('template');
+            $('#results-content .times-content').append(container);
+            return container;
+        };
+
+        module.createResult = function(result, index) {
+            var row = $('#results-content .template.result-item').clone();
+
+            row.attr('id', 'id-' + result.id);
+            row.removeClass('template');
+            row
+                .find('.value')
+                .text(misc.defaultFormatMilliseconds(result.value));
+            row
+                .find('.index')
+                .text('#' + index);
+            row
+                .find('.date')
+                .text(misc.toDate(result.id)).data('date', result.id);
+            row
+                .find('.btn-remove')
+                .data('game', sandbox.activeGame())
+                .data('resultId', result.id)
+                .on('click', function(event) {
+                    module.removeResult(this);
+                });
+
+            return row;
+        };
+
+        module.createDate = function(date) {
+            return $('#results-content .template.result-header')
+                .clone()
+                .removeClass('template')
+                .html(date);
+        };
+
         module.updateResults = function(game) {
             console.log(
                 '%s.updateResults(game=%s)',
                 module.id,
                 game
             );
-            $('#times .times-content > *').remove();
+            $('#results-content .times-content > *').remove();
             dao.retrieveScores(game, function(results) {
+                var result;
+                var latestDate = '', date;
+                var parentContainer = $('#results-content .times-content');
+                var container;
                 for (var i = 0; i < results.length; i++) {
-                    module.showResult(results[i]);
+                    result = results[results.length - i - 1];
+                    date = misc.toDate(result.id);
+                    if(date !== latestDate) {
+                        parentContainer.append(module.createDate(date));
+                        container = module.createContainer();
+                        latestDate = date;
+                    }
+                    container.append(
+                        module.createResult(result, results.length - i)
+                    );
                 }
                 module.update(results);
             });
         };
 
         module.update = function(results) {
-            module.updateIndex();
             module.updateDates();
             module.updateLabels(results);
         };
 
-        module.updateIndex = function() {
-            var max = $('#times .times-content > *').length + 1;
-            for(var i = 0; i < max; i++) {
-                $('#times .times-content *:nth-child(' + i + ') .index').
-                    text((max - i) + '.');
-            }
-        };
-
         module.updateDates = function() {
-            $('#times .times-content > * .date').each(function() {
+            $('#results-content .times-content > * .date').each(function() {
                 var that = $(this);
                 that.text(misc.toDate(that.data('date')));
             });
@@ -135,7 +157,7 @@ core.register(
                     sub;
 
                 // Remove first
-                $('#times .label').remove();
+                $('#results-content .label').remove();
 
                 for (var i = 0; i < results.length; i++) {
                     result = results[i];

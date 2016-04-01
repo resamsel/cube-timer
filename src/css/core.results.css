@@ -3,12 +3,49 @@
     display: none;
 }
 
-th.date,
-td.date {
+#results-content .collection .collection-item.avatar {
+    min-height: auto;
+}
+.collection .collection-item.avatar i.circle {
+    top: 9px;
+    left: 22px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+}
+.collection .collection-item.avatar .secondary-content {
+    top: 11px;
+}
+#results-content .index {
+    display: inline-block;
+    width: 50px;
+}
+#results-content .value {
+    display: inline-block;
+    width: 84px;
+    font-weight: bold;
+}
+#results-content li.entry .secondary-content {
+    display: none;
+}
+#results-content li.entry:hover .secondary-content {
+    display: inline-block;
+}
+.result-header {
+    margin: 20px 0 8px;
+    padding: 0 24px;
+        line-height: 24px;
+        color: #616161;
+}
+
+#results-content .date {
     white-space: nowrap;
 }
 
 th.actions,
 td.actions {
     width: 75px;
+}
+#results-content button.btn-remove {
+    margin: 0;
 }

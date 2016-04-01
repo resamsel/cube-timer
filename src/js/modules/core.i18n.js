@@ -26,6 +26,10 @@ core.register(
                 var that = $(this);
                 that.html(I18n.translate(that.attr('i18n-key')));
             });
+            $('*[i18n-title]').each(function() {
+                var that = $(this);
+                that.attr('title', I18n.translate(that.attr('i18n-title')));
+            });
         };
 
         module.loadMessages = function(locale) {

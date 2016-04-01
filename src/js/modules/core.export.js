@@ -8,6 +8,12 @@ core.register(
         var module = {};
 
         module.init = function() {
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+
             $('#export-content').on('click', function() {
                 this.setSelectionRange(0, this.value.length);
                 // Does not work on Chrome...
@@ -20,7 +26,15 @@ core.register(
                     $('#export-content').val(misc.toCsv(game, results));
                     $('#export-content').trigger('autoresize');
                 });
-            }).css('display', 'inline-block');
+            });
+        };
+
+        module.handlePageChanged = function(event) {
+            if(event.data == 'results') {
+                $('#export').css('display', 'inline-block');
+            } else {
+                $('#export').css('display', 'none');
+            }
         };
 
         return module;

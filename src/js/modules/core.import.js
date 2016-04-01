@@ -9,6 +9,12 @@ core.register(
         var fr = new FileReader();
 
         module.init = function() {
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+
             fr.onload = module.receivedText;
 
             $('#import-content').on('click', function() {
@@ -21,7 +27,7 @@ core.register(
                 $('#import-content').val('').trigger('autoresize');
                 // Hide previous errors
                 $('#import-error').hide();
-            }).css('display', 'inline-block');
+            });
             $('#import-file').change(module.handleFileSelect);
             $('#import-from-file').on('click', function() {
                 $('#import-file').click();
@@ -30,6 +36,14 @@ core.register(
                 .on('click', module.handleImportAppend);
             $('#import-replace')
                 .on('click', module.handleImportReplace);
+        };
+
+        module.handlePageChanged = function(event) {
+            if(event.data == 'results') {
+                $('#import').css('display', 'inline-block');
+            } else {
+                $('#import').css('display', 'none');
+            }
         };
 
         module.handleImportAppend = function() {

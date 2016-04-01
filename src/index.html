@@ -9,6 +9,9 @@
 	<title i18n-key="appName">Rubik's Cube Timer</title>
 	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
 
+	<meta name="theme-color" content="#3f51b5">
+	<link rel="icon" sizes="128x128" href="img/icon-128.png">
+
 	<link rel="stylesheet" href="css/cube-timer.css">
 </head>
 <body class="material"><!-- class="started/stopped" -->
@@ -22,7 +25,17 @@
 					Cube Timer
 				</a>
 				<span class="page-title" i18n-key="timer">Timer</span>
-				<ul class="main-nav right hide-on-med-and-down">
+				<ul class="main-nav right">
+					<li>
+						<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonImport">
+							<i class="material-icons">file_upload</i>
+						</a>
+					</li>
+					<li>
+						<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonExport">
+							<i class="material-icons">file_download</i>
+						</a>
+					</li>
 				</ul>
 				<ul id="nav-mobile"
 						class="side-nav text-black text-lighten-2 collapsible"
@@ -139,42 +152,25 @@
 		<div class="container page page-results">
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
-					<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-green btn">
-						<i class="material-icons left">file_upload</i>
-						<span i18n-key="buttonImport">Import</span>
-					</a>
-					<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-green btn">
-						<i class="material-icons left">file_download</i>
-						<span i18n-key="buttonExport">Export</span>
-					</a>
-
-					<div id="times">
-						<table style="display: none">
-							<tr class="template entry">
-								<td class="index"></td>
-								<td class="date"></td>
-								<td class="value"></td>
-								<td class="tags"></td>
-								<td class="actions">
-									<button class="waves-effect waves-indigo btn-flat btn-small btn-remove">
-										<i class="material-icons">remove</i>
-									</button>
-								</td>
-							</tr>
-						</table>
-						<table class="table highlight">
-							<thead>
-							<tr class="entry">
-								<th class="index">#</th>
-								<th class="date" i18n-key="date">Date</th>
-								<th class="value" i18n-key="score">Score</th>
-								<th class="tags" i18n-key="tags">Tags</th>
-								<th class="actions" i18n-key="actions">Actions</th>
-							</tr>
-							</thead>
-							<tbody class="times-content">
-							</tbody>
-						</table>
+					<div id="results-content">
+						<ul class="template result-container collection z-depth-1">
+						</ul>
+						<div class="template result-header"></div>
+						<ul style="display: none">
+							<li class="template result-item entry collection-item avatar">
+								<i class="material-icons circle">assessment</i>
+								<span class="title">
+									<span class="index"></span>
+									<span class="value"></span>
+									<span class="tags"></span>
+								</span>
+								<a href="#!" class="secondary-content waves-effect waves-indigo">
+									<i class="material-icons">delete</i>
+								</a>
+							</li>
+						</ul>
+						<div class="times-content">
+						</div>
 					</div>
 				</div>
 			</div>
