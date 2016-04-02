@@ -1,4 +1,8 @@
-Core.register(
+var core = require('../core.js');
+var I18n = require('../utils/i18n.js');
+//var $ = require('jquery');
+
+core.register(
     'I18n',
     function(sandbox) {
         var module = {};
@@ -21,6 +25,10 @@ Core.register(
             $("*[i18n-key]").each(function() {
                 var that = $(this);
                 that.html(I18n.translate(that.attr('i18n-key')));
+            });
+            $('*[i18n-title]').each(function() {
+                var that = $(this);
+                that.attr('title', I18n.translate(that.attr('i18n-title')));
             });
         };
 

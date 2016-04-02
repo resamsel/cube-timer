@@ -1,4 +1,9 @@
-Core.register(
+var core = require('../core.js');
+var I18n = require('../utils/i18n.js');
+var Cube = require('../external/rubiks-cube-scrambler.js');
+//var $ = require('jquery');
+
+core.register(
     'Scramble',
     function(sandbox) {
         var module = {};

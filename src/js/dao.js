@@ -75,22 +75,33 @@ if(typeof(Storage) !== 'undefined' && typeof(localStorage) !== 'undefined') {
     dao = defaultDAO;
 }
 
-function storeConfig(key, value, callback) {
+dao.defaultCallback = function(key, defaultValue, callback) {
+    return function (value) {
+        if(value === null || typeof(value) === 'undefined') {
+            value = defaultValue;
+        }
+        if(callback) {
+            callback(value);
+        }
+    };
+};
+
+dao.storeConfig = function(key, value, callback) {
     dao.set(key, value, callback);
-}
+};
 
-function getConfig(key, defaultValue, callback) {
-    return dao.get(key, defaultCallback(key, defaultValue, callback));
-}
+dao.getConfig = function(key, defaultValue, callback) {
+    return dao.get(key, dao.defaultCallback(key, defaultValue, callback));
+};
 
-function storeScore(game, score, callback) {
-    retrieveScores(game, function(scores) {
+dao.storeScore = function(game, score, callback) {
+    dao.retrieveScores(game, function(scores) {
         scores.push(score);
-        storeScores(game, scores, callback);
+        dao.storeScores(game, scores, callback);
     });
-}
+};
 
-function storeScores(game, scores, callback) {
+dao.storeScores = function(game, scores, callback) {
     console.log('storeScores(game=%s, scores=%s, callback)', game, scores);
     scores.sort(function(a, b) { return a.id - b.id; });
     dao.set(
@@ -98,45 +109,45 @@ function storeScores(game, scores, callback) {
         scores.unique(function(a, b) { return a.id == b.id; }),
         callback
     );
-}
+};
 
-function retrieveScores(game, callback) {
+dao.retrieveScores = function(game, callback) {
     console.log('retrieveScores(game=%s, callback)', game);
     dao.get(
         'scores-' + game,
-        defaultCallback('scores-' + game, [], callback)
+        dao.defaultCallback('scores-' + game, [], callback)
     );
-}
+};
 
-function removeScore(game, resultId, callback) {
+dao.removeScore = function(game, resultId, callback) {
     console.log('removeScore(game=%s, resultId=%s, callback)', game, resultId);
-    retrieveScores(game, function(scores) {
+    dao.retrieveScores(game, function(scores) {
         for (var i = 0; i < scores.length; i++) {
             if(scores[i].id == resultId) {
                 scores.remove(i);
-                storeScores(game, scores, callback);
+                dao.storeScores(game, scores, callback);
                 return;
             }
         }
     });
-}
+};
 
-function retrieveActiveGame(callback) {
+dao.retrieveActiveGame = function(callback) {
     dao.get(
         'activeGame',
-        defaultCallback('activeGame', '3x3x3', callback)
+        dao.defaultCallback('activeGame', '3x3x3', callback)
     );
-}
+};
 
-function storeActiveGame(game, callback) {
+dao.storeActiveGame = function(game, callback) {
     console.log('storeActiveGame(game=%s, callback)', game);
     dao.set('activeGame', game, callback);
-}
+};
 
-function retrieveGames(callback) {
+dao.retrieveGames = function(callback) {
     dao.get(
         'games',
-        defaultCallback(
+        dao.defaultCallback(
             'games',
             [
                 '2x2x2', '3x3x3', '4x4x4', '5x5x5',
@@ -145,4 +156,6 @@ function retrieveGames(callback) {
             callback
         )
     );
-}
+};
+
+module.exports = dao;

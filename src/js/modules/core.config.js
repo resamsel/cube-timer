@@ -1,14 +1,18 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+//var $ = require('jquery');
+
+core.register(
     'Config',
     function(sandbox) {
         var module = {};
 
         module.init = function() {
-            getConfig('subtext', true, function(subtext) {
+            dao.getConfig('subtext', true, function(subtext) {
                 $('#subtext')
                     .prop('checked', subtext)
                     .on('click', function(e) {
-                        storeConfig(
+                        dao.storeConfig(
                             'subtext',
                             e.target.checked,
                             module.handleConfigStored(
@@ -19,23 +23,27 @@ Core.register(
                     }
                 );
             });
-            getConfig('inspectionTime', 0, function(inspectionTime) {
+            dao.getConfig('inspectionTime', 0, function(inspectionTime) {
                 $('#inspectionTime')
                     .val(inspectionTime)
                     .change(function() {
-                        storeConfig('inspectionTime', Number($(this).val()));
+                        dao.storeConfig('inspectionTime', Number($(this).val()));
                     });
             });
-            getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+            dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
                 $('#soundAfterInspection')
                     .prop('checked', soundAfterInspection)
                     .on('click', function(e) {
-                        storeConfig('soundAfterInspection', e.target.checked);
+                        dao.storeConfig('soundAfterInspection', e.target.checked);
                     }
                 );
             });
 
-            $('.config-button').css('display', 'block');
+            $('.config-button')
+                .on('click', function(e) {
+                    sandbox.goToPage('config');
+                })
+                .css('display', 'block');
         };
 
         module.handleConfigStored = function(key, value) {
