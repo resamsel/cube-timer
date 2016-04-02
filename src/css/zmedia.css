@@ -1,3 +1,4 @@
+/*
 @media only screen and (min-width: 993px) {
     .material nav {
         background-color: transparent !important;
@@ -9,11 +10,14 @@
         color: rgba(0,0,0,0.87);
     }
 }
+*/
 
 @media (min-width: 768px) {
+    /*
     .material nav .brand-logo {
         padding-left: 30px;
     }
+    */
     #hint {
         display: block;
     }
@@ -48,17 +52,17 @@
     }
 }
 @media (max-width: 420px) {
-    #timer {
+    #timer-display {
         font-size: 84px;
     }
 }
 @media (max-width: 380px) {
-    #timer {
+    #timer-display {
         font-size: 72px;
     }
 }
 @media (max-width: 340px) {
-    #timer {
+    #timer-display {
         font-size: 64px;
     }
 }

@@ -1,3 +1,7 @@
+.card-timer {
+    display: none;
+}
+
 button:focus {
     background-color: #eee;
 }
@@ -12,4 +16,11 @@ button:focus {
 .start-stop-container .start span,
 .start-stop-container .stop span {
     font-size: 18px;
+}
+#timer-container {
+    margin-top: -17px;
+    text-align: center;
+}
+#timer-display {
+    font-size: 96px;
 }

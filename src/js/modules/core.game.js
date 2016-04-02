@@ -1,4 +1,8 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+//var $ = require('jquery');
+
+core.register(
     'Game',
     function(sandbox) {
         var module = {};
@@ -7,6 +11,11 @@ Core.register(
             sandbox.listen(
                 ['game-changed'],
                 module.handleGameChanged,
+                module
+            );
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
                 module
             );
 
@@ -27,7 +36,7 @@ Core.register(
          * Create the list of games in the header bar.
          */
         module.populateGames = function() {
-            retrieveGames(function(games) {
+            dao.retrieveGames(function(games) {
                 var activeGame = sandbox.activeGame();
                 var gameList = $('.game-list');
                 var template = gameList.find('.template'),
@@ -42,7 +51,10 @@ Core.register(
 
                     // 2. Update clone
                     clone.removeClass('template').addClass('game-' + game);
-                    clone.find('a').text(game);
+                    clone
+                        .find('a')
+                        .attr('href', window.location.hash)
+                        .text(game);
                     clone.on('click', module.activateGame(game));
 
                     if(game == activeGame) {
@@ -52,6 +64,7 @@ Core.register(
                     // 3. Add it to the game list
                     gameList.append(clone);
                 }
+                //$('.dropdown-button').dropdown();
 
                 sandbox.notify({type: 'game-list-created'});
             });
@@ -60,7 +73,13 @@ Core.register(
         module.activateGame = function(game) {
             return function() {
                 sandbox.activeGame(game);
+                //$('.button-collapse').sideNav('hide');
+                //sandbox.notify({type: 'main-menu-closed'});
             };
+        };
+
+        module.handlePageChanged = function(event) {
+            $('.active-game').attr('href', '#!' + event.data);
         };
 
         return module;

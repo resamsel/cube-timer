@@ -1,20 +1,26 @@
 {
   "name": "cube-timer",
-  "version": "0.9.0",
+  "version": "0.10.0",
+  "repository": "github:resamsel/cube-timer",
+  "license": "GPL-2.0",
   "dependencies": {
     "chartist": "^0.9.7",
+    "dateformat": "^1.0.12",
+    "human-date": "^1.4.0",
     "jquery": "^2.2.1",
     "jquery-migrate": "^1.4.0",
-    "materialize-css": "^0.97.5"
+    "materialize-css": "^0.97.5",
+    "timer-stopwatch": "^0.2.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
+    "grunt-browserify": "^5.0.0",
     "grunt-contrib-compress": "^1.1.0",
     "grunt-contrib-concat": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.0",
-    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-watch": "^1.0.0",
     "grunt-downloadfile": "^0.3.2"
   }
 }

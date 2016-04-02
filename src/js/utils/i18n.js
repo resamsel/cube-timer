@@ -24,3 +24,5 @@ var I18n = {
         return key;
     }
 };
+
+module.exports = I18n;

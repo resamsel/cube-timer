@@ -1,4 +1,10 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var I18n = require('../utils/i18n.js');
+var misc = require('../utils/misc.js');
+//var Materialize = require('materialize-css');
+
+core.register(
     'Achievement',
     function(sandbox) {
         var module = {};
@@ -15,7 +21,7 @@ Core.register(
 
         module.handleResultCreated = function(event) {
             var result = event.data;
-            retrieveScores(sandbox.activeGame(), function(results) {
+            dao.retrieveScores(sandbox.activeGame(), function(results) {
                 var stats = sandbox.createStats(results);
 
                 module.toastAchievement(result, stats);
@@ -79,7 +85,7 @@ Core.register(
                 );
                 return;
             }
-            stats.latest50.sort(compareNumbers);
+            stats.latest50.sort(misc.compareNumbers);
             if(result.value <= stats.latest50.first()) {
                 Materialize.toast(
                     I18n.translate('achievement_best_latest50'),
@@ -87,7 +93,7 @@ Core.register(
                 );
                 return;
             }
-            stats.latest12.sort(compareNumbers);
+            stats.latest12.sort(misc.compareNumbers);
             if(result.value <= stats.latest12.first()) {
                 Materialize.toast(
                     I18n.translate('achievement_best_latest12'),
@@ -95,7 +101,7 @@ Core.register(
                 );
                 return;
             }
-            stats.latest5.sort(compareNumbers);
+            stats.latest5.sort(misc.compareNumbers);
             if(result.value <= stats.latest5.first()) {
                 Materialize.toast(
                     I18n.translate('achievement_best_latest5'),

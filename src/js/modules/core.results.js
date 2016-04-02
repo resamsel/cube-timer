@@ -1,4 +1,9 @@
-Core.register(
+var core = require('../core.js');
+var dao = require('../dao.js');
+var misc = require('../utils/misc.js');
+var Category = require('../utils/category.js');
+
+core.register(
     'Results',
     function(sandbox) {
         var module = {};
@@ -15,13 +20,12 @@ Core.register(
                 module
             );
 
-            if(window.location.hash == '#results-dialog') {
-                $('#results-dialog').openModal();
-            }
-
             $('.results-button')
                 .css('display', 'block')
-                .on('click', module.updateDates);
+                .on('click', function(e) {
+                    module.updateDates();
+                    sandbox.goToPage('results');
+                });
 
             module.updateResults(sandbox.activeGame());
         };
@@ -30,33 +34,12 @@ Core.register(
             module.updateResults(event.data);
         };
 
-        module.showResult = function(result) {
-            var row = $('#times .template').clone();
-
-            row.attr('id', 'id-' + result.id);
-            row.removeClass('template');
-            row
-                .find('.value')
-                .text(defaultFormatMilliseconds(result.value));
-            row
-                .find('.date')
-                .text(toDate(result.id)).data('date', result.id);
-            row
-                .find('.btn-remove')
-                .data('game', sandbox.activeGame())
-                .data('resultId', result.id)
-                .on('click', function(event) {
-                    module.removeResult(this);
-                });
-
-            $('#times .times-content').prepend(row);
-        };
-
         module.removeResult = function(element) {
             element = $(element);
             var game = element.data('game');
             var resultId = element.data('resultId');
-            removeScore(
+            console.log('removeResult with id %d, game %s', resultId, game);
+            dao.removeScore(
                 game,
                 resultId,
                 module.handleRemoveResult(element, game, resultId)
@@ -77,39 +60,91 @@ Core.register(
             };
         };
 
+        module.createContainer = function() {
+            var container = $('#results-content .template.result-container')
+                .clone()
+                .removeClass('template');
+            $('#results-content .times-content').append(container);
+            return container;
+        };
+
+        module.createResult = function(result, index) {
+            var row = $('#results-content .template.result-item').clone();
+
+            row.attr('id', 'id-' + result.id);
+            row.removeClass('template');
+            row
+                .find('.value')
+                .text(misc.defaultFormatMilliseconds(result.value));
+            row
+                .find('.index')
+                .text('#' + index);
+            row
+                .find('.date')
+                .text(misc.toDate(result.id)).data('date', result.id);
+            row
+                .find('.delete')
+                .data('game', sandbox.activeGame())
+                .data('resultId', result.id)
+                .on('click', function(event) {
+                    module.removeResult(this);
+                });
+
+            return row;
+        };
+
+        module.createDate = function(date) {
+            var element = $('#results-content .template.result-header')
+                .clone()
+                .removeClass('template')
+                .attr('datetime', misc.toIsoDate(date))
+                .html(misc.toGroupedDate(date));
+            var firstChar = element.html().substring(0, 1);
+            if(firstChar == firstChar.toLowerCase()) {
+                // The content was not translated, so add the i18n-key attribute
+                // to translate it later
+                element.attr('i18n-key', element.html());
+            }
+            return element;
+        };
+
         module.updateResults = function(game) {
             console.log(
                 '%s.updateResults(game=%s)',
                 module.id,
                 game
             );
-            $('#times .times-content > *').remove();
-            retrieveScores(game, function(results) {
+            $('#results-content .times-content > *').remove();
+            dao.retrieveScores(game, function(results) {
+                var result;
+                var latestDate = '', date;
+                var parentContainer = $('#results-content .times-content');
+                var container;
                 for (var i = 0; i < results.length; i++) {
-                    module.showResult(results[i]);
+                    result = results[results.length - i - 1];
+                    date = misc.toGroupedDate(result.id);
+                    if(date !== latestDate) {
+                        parentContainer.append(module.createDate(result.id));
+                        container = module.createContainer();
+                        latestDate = date;
+                    }
+                    container.append(
+                        module.createResult(result, results.length - i)
+                    );
                 }
                 module.update(results);
             });
         };
 
         module.update = function(results) {
-            module.updateIndex();
             module.updateDates();
             module.updateLabels(results);
         };
 
-        module.updateIndex = function() {
-            var max = $('#times .times-content > *').length + 1;
-            for(var i = 0; i < max; i++) {
-                $('#times .times-content *:nth-child(' + i + ') .index').
-                    text((max - i) + '.');
-            }
-        };
-
         module.updateDates = function() {
-            $('#times .times-content > * .date').each(function() {
+            $('#results-content .times-content > * .date').each(function() {
                 var that = $(this);
-                that.text(toDate(that.data('date')));
+                that.text(misc.toDate(that.data('date')));
             });
         };
 
@@ -119,7 +154,7 @@ Core.register(
         };
 
         module.updateLabels = function(results) {
-            getConfig('subtext', true, function(markSubX) {
+            dao.getConfig('subtext', true, function(markSubX) {
                 var result,
                     best = {id: 0, value: 999999999},
                     best5 = {id: 0, value: 999999999},
@@ -127,7 +162,7 @@ Core.register(
                     sub;
 
                 // Remove first
-                $('#times .label').remove();
+                $('#results-content .label').remove();
 
                 for (var i = 0; i < results.length; i++) {
                     result = results[i];
