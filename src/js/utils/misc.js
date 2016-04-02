@@ -1,5 +1,6 @@
 var hdate = require("human-date");
 var dateFormat = require("dateformat");
+var I18n = require('./i18n.js');
 
 if(typeof console === 'undefined') {
     var console = {
@@ -66,6 +67,37 @@ misc.toCsv = function(game, scores) {
 misc.toDate = function(timestamp) {
     var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
     return hdate.relativeTime(-interval);
+};
+
+misc.toIsoDate = function(timestamp) {
+    return dateFormat(new Date(timestamp), 'isoDateTime');
+}
+
+misc.toGroupedDate = function(timestamp) {
+    var dayFormat = 'yyyy-mm-dd';
+    var date = new Date(timestamp);
+    var now = new Date();
+    if(dateFormat(date, dayFormat) == dateFormat(now, dayFormat)) {
+        // date is today
+        return I18n.translate('today');
+    }
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if(dateFormat(date, dayFormat) == dateFormat(yesterday, dayFormat)) {
+        // date is yesterday
+        return I18n.translate('yesterday');
+    }
+    var weekFormat = 'yyyy-W';
+    if(dateFormat(date, weekFormat) == dateFormat(now, weekFormat)) {
+        // date is within this week
+        return I18n.translate('thisWeek');
+    }
+    var yearFormat = 'yyyy';
+    if(dateFormat(date, yearFormat) == dateFormat(now, yearFormat)) {
+        // date is within this year
+        return dateFormat(date, 'mmmm');
+    }
+    return dateFormat(date, 'mmmm yyyy');
 };
 
 module.exports = misc;

@@ -35,7 +35,7 @@
         "description": "The name of the link that opens the main view."
     },
     "config": {
-        "message": "Konfiguration",
+        "message": "Einstellungen",
         "description": "The name of the link that opens the configuration dialog."
     },
     "hintSpacebar": {
@@ -87,6 +87,10 @@
     "buttonExport": {
         "message": "Exportieren",
         "description": "The name of the button to export results."
+    },
+    "exportHeader": {
+        "message": "Export Results",
+        "description": "The header of the export dialog."
     },
 
     "inspectionTime": {
@@ -311,5 +315,18 @@
     "achievement_better_than": {
         "message": "Besser als $1% der bisherigen Ergebnisse.",
         "description": "The achievement message for better than X% of previous results."
+    },
+
+    "today": {
+        "message": "Heute",
+        "description": "Today."
+    },
+    "yesterday": {
+        "message": "Gestern",
+        "description": "Yesterday."
+    },
+    "thisWeek": {
+        "message": "Diese Woche",
+        "description": "This week."
     }
 }

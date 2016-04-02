@@ -44,10 +44,6 @@ core.register(
                     sandbox.goToPage('config');
                 })
                 .css('display', 'block');
-
-            if(window.location.hash == '#config') {
-                sandbox.goToPage('config');
-            }
         };
 
         module.handleConfigStored = function(key, value) {

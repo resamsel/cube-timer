@@ -15,14 +15,7 @@ module.exports = function(core) {
         return core.activeGame(game);
     };
     this.goToPage = function(page) {
-        $('.page:not(.page-' + page + ')').hide();
-        $('.page.page-' + page).show();
-        $('.button-collapse').sideNav('hide');
-        $('.page-title')
-            .attr('i18n-key', page)
-            .html(I18n.translate(page));
-
-        this.notify({type: 'page-changed', data: page});
+        core.goToPage(page);
     };
     this.createStats = function(scores) {
         var stats = {

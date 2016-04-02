@@ -13,6 +13,11 @@ core.register(
                 module.handleGameChanged,
                 module
             );
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
 
             $('.active-game').css('display', 'block');
 
@@ -46,7 +51,10 @@ core.register(
 
                     // 2. Update clone
                     clone.removeClass('template').addClass('game-' + game);
-                    clone.find('a').text(game);
+                    clone
+                        .find('a')
+                        .attr('href', window.location.hash)
+                        .text(game);
                     clone.on('click', module.activateGame(game));
 
                     if(game == activeGame) {
@@ -65,8 +73,13 @@ core.register(
         module.activateGame = function(game) {
             return function() {
                 sandbox.activeGame(game);
-                $('.button-collapse').sideNav('hide');
+                //$('.button-collapse').sideNav('hide');
+                //sandbox.notify({type: 'main-menu-closed'});
             };
+        };
+
+        module.handlePageChanged = function(event) {
+            $('.active-game').attr('href', '#!' + event.data);
         };
 
         return module;

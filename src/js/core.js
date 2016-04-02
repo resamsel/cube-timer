@@ -1,5 +1,6 @@
 var Sandbox = require('./sandbox.js');
 var dao = require('./dao.js');
+var I18n = require('./utils/i18n.js');
 
 module.exports = function() {
     var moduleData = {};
@@ -56,6 +57,10 @@ module.exports = function() {
             type: 'game-changed',
             data: this.activeGame()
         });
+
+        if(window.location.hash.startsWith('#!')) {
+            this.goToPage(window.location.hash.substring(2));
+        }
     };
 
     core.stopAll = function() {
@@ -142,6 +147,26 @@ module.exports = function() {
         }
 
         return game;
+    };
+
+    core.goToPage = function(page) {
+        var element = $('.page.page-' + page);
+        if(element.length < 1) {
+            return;
+        }
+
+        $('.page:not(.page-' + page + ')').hide();
+
+        $('.button-collapse').sideNav('hide');
+        core.notify({type: 'main-menu-closed'});
+
+        $('.page-title')
+            .attr('i18n-key', page)
+            .html(I18n.translate(page));
+
+        element.show();
+
+        core.notify({type: 'page-changed', data: page});
     };
 
     return core;

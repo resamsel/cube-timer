@@ -20,10 +20,6 @@ core.register(
                 module
             );
 
-            if(window.location.hash == '#results') {
-                sandbox.goToPage('results');
-            }
-
             $('.results-button')
                 .css('display', 'block')
                 .on('click', function(e) {
@@ -42,6 +38,7 @@ core.register(
             element = $(element);
             var game = element.data('game');
             var resultId = element.data('resultId');
+            console.log('removeResult with id %d, game %s', resultId, game);
             dao.removeScore(
                 game,
                 resultId,
@@ -86,7 +83,7 @@ core.register(
                 .find('.date')
                 .text(misc.toDate(result.id)).data('date', result.id);
             row
-                .find('.btn-remove')
+                .find('.delete')
                 .data('game', sandbox.activeGame())
                 .data('resultId', result.id)
                 .on('click', function(event) {
@@ -97,10 +94,18 @@ core.register(
         };
 
         module.createDate = function(date) {
-            return $('#results-content .template.result-header')
+            var element = $('#results-content .template.result-header')
                 .clone()
                 .removeClass('template')
-                .html(date);
+                .attr('datetime', misc.toIsoDate(date))
+                .html(misc.toGroupedDate(date));
+            var firstChar = element.html().substring(0, 1);
+            if(firstChar == firstChar.toLowerCase()) {
+                // The content was not translated, so add the i18n-key attribute
+                // to translate it later
+                element.attr('i18n-key', element.html());
+            }
+            return element;
         };
 
         module.updateResults = function(game) {
@@ -117,9 +122,9 @@ core.register(
                 var container;
                 for (var i = 0; i < results.length; i++) {
                     result = results[results.length - i - 1];
-                    date = misc.toDate(result.id);
+                    date = misc.toGroupedDate(result.id);
                     if(date !== latestDate) {
-                        parentContainer.append(module.createDate(date));
+                        parentContainer.append(module.createDate(result.id));
                         container = module.createContainer();
                         latestDate = date;
                     }

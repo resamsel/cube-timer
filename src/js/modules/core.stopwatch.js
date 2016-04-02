@@ -32,10 +32,6 @@ core.register(
             startSound = new Audio('audio/start.mp3');
             timerSound.load();
             startSound.load();
-
-            if(window.location.hash == '#timer') {
-                sandbox.goToPage('timer');
-            }
         };
 
         module.handleGameChanged = function(event) {

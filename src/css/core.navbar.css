@@ -1,6 +1,10 @@
 /*
  * Navigation bar
  */
+body.menu-active #wrapper {
+    padding-left: 0px;
+}
+
 nav .brand-logo {
     /*
     background: url(../img/icon-128.png) no-repeat left center;
@@ -101,6 +105,9 @@ nav a.button-collapse i {
     }
 }
 @media only screen and (min-width: 993px) {
+    body.menu-active #wrapper {
+        padding-left: 240px;
+    }
     .side-nav {
         background-color: transparent;
         padding-top: 16px;

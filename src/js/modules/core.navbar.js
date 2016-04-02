@@ -13,7 +13,23 @@ core.register(
                 module.handleGameListCreated,
                 module
             );
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+            sandbox.listen(
+                ['main-menu-click'],
+                module.handleMainMenuClick,
+                module
+            );
+            sandbox.listen(
+                ['main-menu-closed'],
+                module.handleMainMenuClosed,
+                module
+            );
 
+            $('#main-menu').on('click', module.handleMainMenuClick);
             $(".button-collapse").sideNav();
         };
 
@@ -35,6 +51,27 @@ core.register(
                 .addClass('collapsible')
                 .attr('data-collapsible', 'accordion');
             $('.collapsible').collapsible();
+        };
+
+        module.handlePageChanged = function(event) {
+            $('#main-menu').attr('href', '#!' + event.data);
+        };
+
+        module.handleMainMenuClick = function() {
+            var body = $('body');
+            if($('#sidenav-overlay').length > 0) {
+                module.handleMainMenuClosed();
+            } else {
+                module.handleMainMenuOpened();
+            }
+        };
+
+        module.handleMainMenuOpened = function() {
+            $('body').addClass('menu-active');
+        };
+
+        module.handleMainMenuClosed = function() {
+            $('body').removeClass('menu-active');
         };
 
         return module;
