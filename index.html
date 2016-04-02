@@ -18,21 +18,31 @@
 	<div class="navbar-fixed">
 		<nav class="indigo" role="navigation">
 			<div class="nav-wrapper">
-				<a href="#" data-activates="nav-mobile" class="button-collapse show-on-large waves-effect waves-light">
+				<a id="main-menu" href="#" data-activates="nav-mobile" class="button-collapse show-on-large waves-effect waves-light">
 					<i class="material-icons">menu</i>
 				</a>
 				<a id="logo-container" href="#" class="brand-logo" i18n-key="appShortName">
 					Cube Timer
 				</a>
 				<span class="page-title" i18n-key="timer">Timer</span>
-				<ul class="main-nav right hide-on-med-and-down">
+				<ul class="main-nav right">
+					<li>
+						<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonImport">
+							<i class="material-icons">file_upload</i>
+						</a>
+					</li>
+					<li>
+						<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonExport">
+							<i class="material-icons">file_download</i>
+						</a>
+					</li>
 				</ul>
 				<ul id="nav-mobile"
 						class="side-nav text-black text-lighten-2 collapsible"
 						data-collapsible="accordion" data- style="left: -250px;">
 					<li>
 						<a class="active-game collapsible-header waves-effect waves-light"
-								href="#!game" data-activates="game-list" data-beloworigin="true">
+								href="#" data-activates="game-list" data-beloworigin="true">
 							<i class="material-icons left">games</i>
 							<span class="text">3x3x3</span>
 							&nbsp;
@@ -44,19 +54,19 @@
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a class="timer-button waves-effect waves-light" href="#timer">
+						<a class="timer-button waves-effect waves-light" href="#!timer">
 							<i class="material-icons left">timer</i>
 							<span i18n-key="timer">Timer</span>
 						</a>
 					</li>
 					<li>
-						<a class="results-button waves-effect waves-light" href="#results">
+						<a class="results-button waves-effect waves-light" href="#!results">
 							<i class="material-icons left">assessment</i>
 							<span i18n-key="results">Results</span>
 						</a>
 					</li>
 					<li>
-						<a class="config-button waves-effect waves-light" href="#config">
+						<a class="config-button waves-effect waves-light" href="#!config">
 							<i class="material-icons left">settings</i>
 							<span i18n-key="config">Configuration</span>
 						</a>
@@ -78,7 +88,7 @@
 							<span class="card-title" i18n-key="hintSpacebar">
 								Hint: To start/stop the timer press <span class="label">space bar</span>.
 							</span>
-							<a href="#!" class="waves-effect waves-light btn-flat btn-close right" aria-label="Close">
+							<a href="#!timer" class="waves-effect waves-light btn-flat btn-close right" aria-label="Close">
 								<i class="material-icons">close</i>
 							</a>
 						</div>
@@ -142,42 +152,25 @@
 		<div class="container page page-results">
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
-					<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-green btn">
-						<i class="material-icons left">file_upload</i>
-						<span i18n-key="buttonImport">Import</span>
-					</a>
-					<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-green btn">
-						<i class="material-icons left">file_download</i>
-						<span i18n-key="buttonExport">Export</span>
-					</a>
-
-					<div id="times">
-						<table style="display: none">
-							<tr class="template entry">
-								<td class="index"></td>
-								<td class="date"></td>
-								<td class="value"></td>
-								<td class="tags"></td>
-								<td class="actions">
-									<button class="waves-effect waves-indigo btn-flat btn-small btn-remove">
-										<i class="material-icons">remove</i>
-									</button>
-								</td>
-							</tr>
-						</table>
-						<table class="table highlight">
-							<thead>
-							<tr class="entry">
-								<th class="index">#</th>
-								<th class="date" i18n-key="date">Date</th>
-								<th class="value" i18n-key="score">Score</th>
-								<th class="tags" i18n-key="tags">Tags</th>
-								<th class="actions" i18n-key="actions">Actions</th>
-							</tr>
-							</thead>
-							<tbody class="times-content">
-							</tbody>
-						</table>
+					<div id="results-content">
+						<ul class="template result-container collection z-depth-1">
+						</ul>
+						<time class="template result-header"></time>
+						<ul style="display: none">
+							<li class="template result-item entry collection-item avatar">
+								<i class="material-icons circle">assessment</i>
+								<span class="title">
+									<span class="index"></span>
+									<span class="value"></span>
+									<span class="tags"></span>
+								</span>
+								<a href="#!results" class="secondary-content waves-effect waves-indigo delete">
+									<i class="material-icons">delete</i>
+								</a>
+							</li>
+						</ul>
+						<div class="times-content">
+						</div>
 					</div>
 				</div>
 			</div>
@@ -254,7 +247,7 @@
 
 	<div id="export-dialog" class="modal modal-fixed-footer-off" tabindex="-1" role="dialog">
 		<div class="modal-content">
-			<h4>Export Times</h4>
+			<h4 i18n-key="exportHeader">Export Results</h4>
 			<div class="row">
 				<div class="input-field col s12">
 					<textarea id="export-content" class="materialize-textarea"></textarea>
@@ -262,7 +255,7 @@
 			</div>
 		</div><!-- /.modal-content -->
 		<div class="modal-footer" style="display: none">
-			<a id="export-download" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+			<a id="export-download" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat">
 				Download
 			</a>
 		</div>
@@ -299,11 +292,11 @@
 			</div>
 		</div><!-- /.modal-content -->
 		<div class="modal-footer">
-			<a id="import-replace" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+			<a id="import-replace" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat">
 				<i class="material-icons">content_paste</i>
 				Replace
 			</a>
-			<a id="import-append" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+			<a id="import-append" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat">
 				<i class="material-icons">add</i>
 				Append
 			</a>

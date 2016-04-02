@@ -11882,6 +11882,7 @@ module.exports = Stopwatch;
 },{}],8:[function(require,module,exports){
 var Sandbox = require('./sandbox.js');
 var dao = require('./dao.js');
+var I18n = require('./utils/i18n.js');
 
 module.exports = function() {
     var moduleData = {};
@@ -11938,6 +11939,10 @@ module.exports = function() {
             type: 'game-changed',
             data: this.activeGame()
         });
+
+        if(window.location.hash.startsWith('#!')) {
+            this.goToPage(window.location.hash.substring(2));
+        }
     };
 
     core.stopAll = function() {
@@ -12026,9 +12031,29 @@ module.exports = function() {
         return game;
     };
 
+    core.goToPage = function(page) {
+        var element = $('.page.page-' + page);
+        if(element.length < 1) {
+            return;
+        }
+
+        $('.page:not(.page-' + page + ')').hide();
+
+        $('.button-collapse').sideNav('hide');
+        core.notify({type: 'main-menu-closed'});
+
+        $('.page-title')
+            .attr('i18n-key', page)
+            .html(I18n.translate(page));
+
+        element.show();
+
+        core.notify({type: 'page-changed', data: page});
+    };
+
     return core;
 }();
-},{"./dao.js":9,"./sandbox.js":25}],9:[function(require,module,exports){
+},{"./dao.js":9,"./sandbox.js":25,"./utils/i18n.js":28}],9:[function(require,module,exports){
 // TODO: Move to Core
 
 var defaultDAO = {
@@ -12801,10 +12826,6 @@ core.register(
                     sandbox.goToPage('config');
                 })
                 .css('display', 'block');
-
-            if(window.location.hash == '#config') {
-                sandbox.goToPage('config');
-            }
         };
 
         module.handleConfigStored = function(key, value) {
@@ -12830,6 +12851,12 @@ core.register(
         var module = {};
 
         module.init = function() {
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+
             $('#export-content').on('click', function() {
                 this.setSelectionRange(0, this.value.length);
                 // Does not work on Chrome...
@@ -12842,7 +12869,15 @@ core.register(
                     $('#export-content').val(misc.toCsv(game, results));
                     $('#export-content').trigger('autoresize');
                 });
-            }).css('display', 'inline-block');
+            });
+        };
+
+        module.handlePageChanged = function(event) {
+            if(event.data == 'results') {
+                $('#export').css('display', 'inline-block');
+            } else {
+                $('#export').css('display', 'none');
+            }
         };
 
         return module;
@@ -12863,6 +12898,11 @@ core.register(
             sandbox.listen(
                 ['game-changed'],
                 module.handleGameChanged,
+                module
+            );
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
                 module
             );
 
@@ -12898,7 +12938,10 @@ core.register(
 
                     // 2. Update clone
                     clone.removeClass('template').addClass('game-' + game);
-                    clone.find('a').text(game);
+                    clone
+                        .find('a')
+                        .attr('href', window.location.hash)
+                        .text(game);
                     clone.on('click', module.activateGame(game));
 
                     if(game == activeGame) {
@@ -12917,8 +12960,13 @@ core.register(
         module.activateGame = function(game) {
             return function() {
                 sandbox.activeGame(game);
-                $('.button-collapse').sideNav('hide');
+                //$('.button-collapse').sideNav('hide');
+                //sandbox.notify({type: 'main-menu-closed'});
             };
+        };
+
+        module.handlePageChanged = function(event) {
+            $('.active-game').attr('href', '#!' + event.data);
         };
 
         return module;
@@ -12985,6 +13033,10 @@ core.register(
                 var that = $(this);
                 that.html(I18n.translate(that.attr('i18n-key')));
             });
+            $('*[i18n-title]').each(function() {
+                var that = $(this);
+                that.attr('title', I18n.translate(that.attr('i18n-title')));
+            });
         };
 
         module.loadMessages = function(locale) {
@@ -13012,6 +13064,12 @@ core.register(
         var fr = new FileReader();
 
         module.init = function() {
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+
             fr.onload = module.receivedText;
 
             $('#import-content').on('click', function() {
@@ -13024,7 +13082,7 @@ core.register(
                 $('#import-content').val('').trigger('autoresize');
                 // Hide previous errors
                 $('#import-error').hide();
-            }).css('display', 'inline-block');
+            });
             $('#import-file').change(module.handleFileSelect);
             $('#import-from-file').on('click', function() {
                 $('#import-file').click();
@@ -13033,6 +13091,14 @@ core.register(
                 .on('click', module.handleImportAppend);
             $('#import-replace')
                 .on('click', module.handleImportReplace);
+        };
+
+        module.handlePageChanged = function(event) {
+            if(event.data == 'results') {
+                $('#import').css('display', 'inline-block');
+            } else {
+                $('#import').css('display', 'none');
+            }
         };
 
         module.handleImportAppend = function() {
@@ -13175,7 +13241,23 @@ core.register(
                 module.handleGameListCreated,
                 module
             );
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+            sandbox.listen(
+                ['main-menu-click'],
+                module.handleMainMenuClick,
+                module
+            );
+            sandbox.listen(
+                ['main-menu-closed'],
+                module.handleMainMenuClosed,
+                module
+            );
 
+            $('#main-menu').on('click', module.handleMainMenuClick);
             $(".button-collapse").sideNav();
         };
 
@@ -13197,6 +13279,27 @@ core.register(
                 .addClass('collapsible')
                 .attr('data-collapsible', 'accordion');
             $('.collapsible').collapsible();
+        };
+
+        module.handlePageChanged = function(event) {
+            $('#main-menu').attr('href', '#!' + event.data);
+        };
+
+        module.handleMainMenuClick = function() {
+            var body = $('body');
+            if($('#sidenav-overlay').length > 0) {
+                module.handleMainMenuClosed();
+            } else {
+                module.handleMainMenuOpened();
+            }
+        };
+
+        module.handleMainMenuOpened = function() {
+            $('body').addClass('menu-active');
+        };
+
+        module.handleMainMenuClosed = function() {
+            $('body').removeClass('menu-active');
         };
 
         return module;
@@ -13225,10 +13328,6 @@ core.register(
                 module
             );
 
-            if(window.location.hash == '#results') {
-                sandbox.goToPage('results');
-            }
-
             $('.results-button')
                 .css('display', 'block')
                 .on('click', function(e) {
@@ -13243,32 +13342,11 @@ core.register(
             module.updateResults(event.data);
         };
 
-        module.showResult = function(result) {
-            var row = $('#times .template').clone();
-
-            row.attr('id', 'id-' + result.id);
-            row.removeClass('template');
-            row
-                .find('.value')
-                .text(misc.defaultFormatMilliseconds(result.value));
-            row
-                .find('.date')
-                .text(misc.toDate(result.id)).data('date', result.id);
-            row
-                .find('.btn-remove')
-                .data('game', sandbox.activeGame())
-                .data('resultId', result.id)
-                .on('click', function(event) {
-                    module.removeResult(this);
-                });
-
-            $('#times .times-content').prepend(row);
-        };
-
         module.removeResult = function(element) {
             element = $(element);
             var game = element.data('game');
             var resultId = element.data('resultId');
+            console.log('removeResult with id %d, game %s', resultId, game);
             dao.removeScore(
                 game,
                 resultId,
@@ -13290,37 +13368,89 @@ core.register(
             };
         };
 
+        module.createContainer = function() {
+            var container = $('#results-content .template.result-container')
+                .clone()
+                .removeClass('template');
+            $('#results-content .times-content').append(container);
+            return container;
+        };
+
+        module.createResult = function(result, index) {
+            var row = $('#results-content .template.result-item').clone();
+
+            row.attr('id', 'id-' + result.id);
+            row.removeClass('template');
+            row
+                .find('.value')
+                .text(misc.defaultFormatMilliseconds(result.value));
+            row
+                .find('.index')
+                .text('#' + index);
+            row
+                .find('.date')
+                .text(misc.toDate(result.id)).data('date', result.id);
+            row
+                .find('.delete')
+                .data('game', sandbox.activeGame())
+                .data('resultId', result.id)
+                .on('click', function(event) {
+                    module.removeResult(this);
+                });
+
+            return row;
+        };
+
+        module.createDate = function(date) {
+            var element = $('#results-content .template.result-header')
+                .clone()
+                .removeClass('template')
+                .attr('datetime', misc.toIsoDate(date))
+                .html(misc.toGroupedDate(date));
+            var firstChar = element.html().substring(0, 1);
+            if(firstChar == firstChar.toLowerCase()) {
+                // The content was not translated, so add the i18n-key attribute
+                // to translate it later
+                element.attr('i18n-key', element.html());
+            }
+            return element;
+        };
+
         module.updateResults = function(game) {
             console.log(
                 '%s.updateResults(game=%s)',
                 module.id,
                 game
             );
-            $('#times .times-content > *').remove();
+            $('#results-content .times-content > *').remove();
             dao.retrieveScores(game, function(results) {
+                var result;
+                var latestDate = '', date;
+                var parentContainer = $('#results-content .times-content');
+                var container;
                 for (var i = 0; i < results.length; i++) {
-                    module.showResult(results[i]);
+                    result = results[results.length - i - 1];
+                    date = misc.toGroupedDate(result.id);
+                    if(date !== latestDate) {
+                        parentContainer.append(module.createDate(result.id));
+                        container = module.createContainer();
+                        latestDate = date;
+                    }
+                    container.append(
+                        module.createResult(result, results.length - i)
+                    );
                 }
                 module.update(results);
             });
         };
 
         module.update = function(results) {
-            module.updateIndex();
             module.updateDates();
             module.updateLabels(results);
         };
 
-        module.updateIndex = function() {
-            var max = $('#times .times-content > *').length + 1;
-            for(var i = 0; i < max; i++) {
-                $('#times .times-content *:nth-child(' + i + ') .index').
-                    text((max - i) + '.');
-            }
-        };
-
         module.updateDates = function() {
-            $('#times .times-content > * .date').each(function() {
+            $('#results-content .times-content > * .date').each(function() {
                 var that = $(this);
                 that.text(misc.toDate(that.data('date')));
             });
@@ -13340,7 +13470,7 @@ core.register(
                     sub;
 
                 // Remove first
-                $('#times .label').remove();
+                $('#results-content .label').remove();
 
                 for (var i = 0; i < results.length; i++) {
                     result = results[i];
@@ -13475,10 +13605,6 @@ core.register(
             startSound = new Audio('audio/start.mp3');
             timerSound.load();
             startSound.load();
-
-            if(window.location.hash == '#timer') {
-                sandbox.goToPage('timer');
-            }
         };
 
         module.handleGameChanged = function(event) {
@@ -13628,14 +13754,7 @@ module.exports = function(core) {
         return core.activeGame(game);
     };
     this.goToPage = function(page) {
-        $('.page:not(.page-' + page + ')').hide();
-        $('.page.page-' + page).show();
-        $('.button-collapse').sideNav('hide');
-        $('.page-title')
-            .attr('i18n-key', page)
-            .html(I18n.translate(page));
-
-        this.notify({type: 'page-changed', data: page});
+        core.goToPage(page);
     };
     this.createStats = function(scores) {
         var stats = {
@@ -13829,6 +13948,7 @@ module.exports = I18n;
 },{}],29:[function(require,module,exports){
 var hdate = require("human-date");
 var dateFormat = require("dateformat");
+var I18n = require('./i18n.js');
 
 if(typeof console === 'undefined') {
     var console = {
@@ -13897,8 +14017,39 @@ misc.toDate = function(timestamp) {
     return hdate.relativeTime(-interval);
 };
 
+misc.toIsoDate = function(timestamp) {
+    return dateFormat(new Date(timestamp), 'isoDateTime');
+}
+
+misc.toGroupedDate = function(timestamp) {
+    var dayFormat = 'yyyy-mm-dd';
+    var date = new Date(timestamp);
+    var now = new Date();
+    if(dateFormat(date, dayFormat) == dateFormat(now, dayFormat)) {
+        // date is today
+        return I18n.translate('today');
+    }
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if(dateFormat(date, dayFormat) == dateFormat(yesterday, dayFormat)) {
+        // date is yesterday
+        return I18n.translate('yesterday');
+    }
+    var weekFormat = 'yyyy-W';
+    if(dateFormat(date, weekFormat) == dateFormat(now, weekFormat)) {
+        // date is within this week
+        return I18n.translate('thisWeek');
+    }
+    var yearFormat = 'yyyy';
+    if(dateFormat(date, yearFormat) == dateFormat(now, yearFormat)) {
+        // date is within this year
+        return dateFormat(date, 'mmmm');
+    }
+    return dateFormat(date, 'mmmm yyyy');
+};
+
 module.exports = misc;
-},{"dateformat":2,"human-date":4}],30:[function(require,module,exports){
+},{"./i18n.js":28,"dateformat":2,"human-date":4}],30:[function(require,module,exports){
 // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
 $('.modal-trigger').leanModal();
 },{}],31:[function(require,module,exports){
