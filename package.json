@@ -1,6 +1,6 @@
 {
   "name": "cube-timer",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "repository": "github:resamsel/cube-timer",
   "license": "GPL-2.0",
   "dependencies": {
