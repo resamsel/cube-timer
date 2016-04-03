@@ -18,9 +18,12 @@ core.register(
                 module.handleGameChanged,
                 module
             );
-            $('body')
-                .on('keydown', module.handleSpaceDown)
-                .on('keyup', module.handleSpaceUp);
+            sandbox.listen(
+                ['page-changed'],
+                module.handlePageChanged,
+                module
+            );
+
             $('button.start-stop').on('click', module.toggleTimer);
             $('.card-timer').css('display', 'block');
             $('.timer-button').on('click', function(e) {
@@ -34,13 +37,23 @@ core.register(
             startSound.load();
         };
 
+        /*
+         * Handlers
+         */
         module.handleGameChanged = function(event) {
             $('.card-timer .card-title > span').text(event.data);
         };
 
-        /*
-         * Handlers
-         */
+        module.handlePageChanged = function(event) {
+            if(event.data == 'timer') {
+                $('body')
+                    .on('keydown', module.handleSpaceDown)
+                    .on('keyup', module.handleSpaceUp);
+            } else {
+                $('body').off('keydown').off('keyup');
+            }
+        };
+
         module.handleSpaceDown = function(event) {
             if(event.keyCode == 32 && event.target == document.body) {
                 event.preventDefault();
