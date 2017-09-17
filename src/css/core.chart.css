@@ -12,7 +12,7 @@
 
 .ct-label {
     color: rgba(0,0,0,.87);
-    font-size: 0.8rem;
+    font-size: 0.67rem;
 }
 
 #ct-stats .ct-series-a .ct-line {
@@ -66,7 +66,7 @@
 #stats-categories {
     display: inline-block;
     width: 160px;
-    margin-right: 120px;
+    margin-right: 75px;
 }
 #ct-categories {
     position: relative;
@@ -119,8 +119,9 @@
     display: inline-block;
     position: absolute;
     height: 100px;
-    right: 0;
+    right: 16px;
     left: 255px;
+    bottom: 16px;
 }
 
 #ct-weekdays {
@@ -132,7 +133,7 @@
 }
 
 #ct-weekdays .ct-series .ct-bar {
-    stroke-width: 40px;
+    stroke-width: 32px;
     stroke: #448AFF;
 }
 

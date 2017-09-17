@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "resamsel-cube-timer",
+    "staging": "resamsel-cube-timer"
+  }
+}

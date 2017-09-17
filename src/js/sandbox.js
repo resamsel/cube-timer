@@ -17,12 +17,15 @@ module.exports = function(core) {
     this.goToPage = function(page) {
         core.goToPage(page);
     };
+    this.activePage = function() {
+        return core.activePage();
+    };
     this.createStats = function(scores) {
         var stats = {
             scores: scores
         };
 
-        if(stats.scores.length < 1) {
+        if(!stats.scores || stats.scores.length < 1) {
             stats.scores = [{id: 0, value: 0}];
         }
 

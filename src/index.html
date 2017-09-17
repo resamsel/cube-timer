@@ -12,6 +12,10 @@
 	<meta name="theme-color" content="#3f51b5">
 	<link rel="icon" sizes="128x128" href="img/icon-128.png">
 
+	<meta name="google-signin-client_id" content="689117800147-k15gn6i7kbvv6dt800bjrjs80m5jgp6s.apps.googleusercontent.com">
+	<meta name="google-signin-cookiepolicy" content="single_host_origin">
+	<meta name="google-signin-scope" content="profile email">
+
 	<link rel="stylesheet" href="css/cube-timer.css">
 </head>
 <body class="material"><!-- class="started/stopped" -->
@@ -27,19 +31,24 @@
 				<span class="page-title" i18n-key="timer">Timer</span>
 				<ul class="main-nav right">
 					<li>
+						<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonImport">
+							<i class="material-icons">file_upload</i>
+						</a>
+					</li>
+					<li>
 						<a id="export" href="#export-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonExport">
 							<i class="material-icons">file_download</i>
 						</a>
 					</li>
 					<li>
-						<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonImport">
-							<i class="material-icons">file_upload</i>
-						</a>
+						<!-- [START google_button] -->
+						<div class="g-signin2" data-onsuccess="onSignIn" data-theme="light" style="padding: 14px 0;"></div>
+						<!-- [END google_button] -->
 					</li>
 				</ul>
 				<ul id="nav-mobile"
-						class="side-nav text-black text-lighten-2 collapsible"
-						data-collapsible="accordion" data- style="left: -250px;">
+						class="side-nav fixed text-black text-lighten-2 collapsible"
+						data-collapsible="accordion">
 					<li>
 						<a class="active-game collapsible-header waves-effect waves-light"
 								href="#" data-activates="game-list" data-beloworigin="true">
@@ -49,24 +58,24 @@
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
 						<ul id="game-list" class="game-list collapsible-body">
-							<li class="template"><a href="#">3x3x3</a></li>
+							<li class="game template"><a href="#">3x3x3</a></li>
 						</ul>
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a class="timer-button waves-effect waves-light" href="#!timer">
+						<a class="timer-button waves-effect waves-light" href="#!/timer">
 							<i class="material-icons left">timer</i>
 							<span i18n-key="timer">Timer</span>
 						</a>
 					</li>
 					<li>
-						<a class="results-button waves-effect waves-light" href="#!results">
+						<a class="results-button waves-effect waves-light" href="#!/results">
 							<i class="material-icons left">assessment</i>
 							<span i18n-key="results">Results</span>
 						</a>
 					</li>
 					<li>
-						<a class="config-button waves-effect waves-light" href="#!config">
+						<a class="config-button waves-effect waves-light" href="#!/config">
 							<i class="material-icons left">settings</i>
 							<span i18n-key="config">Configuration</span>
 						</a>
@@ -306,6 +315,14 @@
 	<div style="display: none">
 		<input id="import-file" type="file">
 	</div>
+
+	<!-- Google Sign In -->
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-database.js"></script>
+	<script src="credentials.js"></script>
 
 	<script src="js/jquery.min.js"></script>
 

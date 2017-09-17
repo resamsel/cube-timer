@@ -328,5 +328,10 @@
     "thisWeek": {
         "message": "Diese Woche",
         "description": "This week."
+    },
+
+    "firebase_migration_finished": {
+        "message": "Deine bisherigen Ergebnisse wurden mit der Cloud synchronisiert.",
+        "description": "The message when migration has finished uploading it to Firebase."
     }
 }

@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             main: {
                 expand: true,
                 cwd: 'src/',
-                src: ['*.html', 'background.js'],
+                src: ['*.html', 'background.js', 'credentials.js'],
                 dest: 'dist/<%= pkg.name %>'
             },
             js: {

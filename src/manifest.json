@@ -18,7 +18,15 @@
         "128": "img/icon-128.png"
     },
     "permissions": [
-        "storage"
+        "storage",
+		"identity"
     ],
-    "offline_enabled": true
+    "offline_enabled": true,
+	"oauth2": {
+		"client_id": "",
+		"scopes": [
+			
+		]
+	},
+	"content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
 }

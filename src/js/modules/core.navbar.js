@@ -31,30 +31,25 @@ core.register(
 
             $('#main-menu').on('click', module.handleMainMenuClick);
             $(".button-collapse").sideNav();
+            $('.collapsible').collapsible();
         };
 
         module.handleGameListCreated = function(event) {
             var sideNav = $('nav .side-nav');
             var gameList = sideNav.find('.game-list');
             gameList.find('li').each(function() {
-                var game = $(this).attr('class').replace('game-', '').replace('active', '').trim();
+                var game = $(this).attr('class').replace('game game-', '').replace('active', '').trim();
                 $(this).on('click', function () {
                     sandbox.activeGame(game);
                 });
             });
-
-            sideNav
-                .find('.active-game')
-                .addClass('collapsible-header')
-                .parent()
-                .parent()
-                .addClass('collapsible')
-                .attr('data-collapsible', 'accordion');
-            $('.collapsible').collapsible();
         };
 
         module.handlePageChanged = function(event) {
-            $('#main-menu').attr('href', '#!' + event.data);
+            $('#main-menu').attr('href', '#!' + event.data).blur();
+            if(document.activeElement.nodeName != 'BODY') {
+                document.activeElement.blur();
+            }
         };
 
         module.handleMainMenuClick = function() {
@@ -64,14 +59,17 @@ core.register(
             } else {
                 module.handleMainMenuOpened();
             }
+            if(document.activeElement.nodeName != 'BODY') {
+                document.activeElement.blur();
+            }
         };
 
         module.handleMainMenuOpened = function() {
-            $('body').addClass('menu-active');
+            //$('body').addClass('menu-active');
         };
 
         module.handleMainMenuClosed = function() {
-            $('body').removeClass('menu-active');
+            //$('body').removeClass('menu-active');
         };
 
         return module;

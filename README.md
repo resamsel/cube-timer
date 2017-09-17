@@ -22,7 +22,9 @@ installed as well. On Mac you could use [Homebrew](http://brew.sh/) to do that.
 
 ```
 brew install nodejs
-npm install -g grunt grunt-cli
+npm install -g grunt grunt-cli firebase-tools
+firebase login
+firebase init
 ```
 
 As soon as `grunt` is available as command the build can be initialised.
@@ -60,6 +62,20 @@ published in the chrome web store.
 ```
 grunt dist
 ```
+
+### Running
+
+Terminal 1:
+```
+grunt watch
+```
+
+Terminal 2:
+```
+firebase serve
+```
+
+Go to http://localhost:5000 to use the application.
 
 ### Caveats
 

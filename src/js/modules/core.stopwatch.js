@@ -26,8 +26,10 @@ core.register(
 
             $('button.start-stop').on('click', module.toggleTimer);
             $('.card-timer').css('display', 'block');
-            $('.timer-button').on('click', function(e) {
-                sandbox.goToPage('timer');
+			$('.timer-button')
+				.attr('href', '#!' + sandbox.activeGame() + '/timer')
+				.on('click', function(e) {
+				sandbox.goToPage(sandbox.activeGame() + '/timer');
             });
 
             // pre-load sound
@@ -91,20 +93,10 @@ core.register(
             }
             if(elapsed > 0) {
                 // Only use values when stopwatch actually started
-                var result ={ id: new Date().getTime(), value: elapsed };
+                var result ={ timestamp: new Date().getTime(), value: elapsed };
                 dao.storeScore(
                     sandbox.activeGame(),
-                    result,
-                    function() {
-                        sandbox.notify({
-                            type: 'result-created',
-                            data: result
-                        });
-                        sandbox.notify({
-                            type: 'results-changed',
-                            data: sandbox.activeGame()
-                        });
-                    }
+                    result
                 );
             }
             $('body').removeClass('started').addClass('stopped');

@@ -14,5 +14,6 @@ require('./modules/core.navbar.js');
 require('./modules/core.results.js');
 require('./modules/core.export.js');
 require('./modules/core.import.js');
+require('./modules/core.google.js');
 
 core.init();
