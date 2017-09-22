@@ -87,11 +87,11 @@ core.register(
 		};
 
 		module.updateChart = function(stats) {
-			console.log('%s.updateChart(stats=%s)', module.id, stats);
-			
 			if(!module.repaint || sandbox.activePage() != 'timer') {
 				return;
 			}
+
+			console.log('%s.updateChart(stats=%s)', module.id, stats);
 
 			var results = $('#ct-stats');
 			var categories = $('#ct-categories');
@@ -101,11 +101,10 @@ core.register(
 			module.detachChart(categories);
 			module.detachChart(weekdays);
 
-			//if(stats.scores.length > 0) {
-				results.data('chartist', module.createScores(stats));
-				categories.data('chartist', module.createCategories(stats));
-				weekdays.data('chartist', module.createWeekdays(stats));
-				//}
+			results.data('chartist', module.createScores(stats));
+			categories.data('chartist', module.createCategories(stats));
+			weekdays.data('chartist', module.createWeekdays(stats));
+
 			module.repaint = false;
 		};
 

@@ -69,13 +69,13 @@ var dao = {
 };
 
 if(typeof(Storage) !== 'undefined' && typeof(localStorage) !== 'undefined') {
-	console.log('Using local storage');
+	console.debug('Using local storage');
 	dao.localstore = localDAO;
 } else if(typeof(chrome) !== "undefined" && typeof(chrome.storage.local) !== 'undefined') {
-	console.log('Using chrome storage');
+	console.debug('Using chrome storage');
 	dao.localstore = chromeDAO;
 } else {
-	console.log('Using default storage');
+	console.debug('Using default storage');
 	dao.localstore = defaultDAO;
 }
 
@@ -155,7 +155,6 @@ dao.unlisten = function(types, callback) {
 	}
 };
 dao.notify = function(type, score) {
-	console.log('dao.notify(type=%s, score)', type, score);
 	if(dao.listeners[type]) {
 		dao.listeners[type].forEach(function(listener) {
 			listener(score);
@@ -163,8 +162,15 @@ dao.notify = function(type, score) {
 	}
 }
 
+dao.retrieveScores = function(puzzle, callback) {
+	if(dao.datasource) {
+		dao.datasource.retrieveScores(puzzle, callback);
+	} else {
+		dao.get('scores-'+puzzle, callback);
+	}
+};
+
 dao.storeScore = function(puzzle, score, callback) {
-	console.log('storeScore(puzzle=%s, ...)', puzzle);
 	if(dao.datasource) {
 		dao.datasource.storeScore(puzzle, score, callback);
 	} else {
@@ -189,7 +195,6 @@ dao.storeScore = function(puzzle, score, callback) {
 };
 
 dao.removeScore = function(game, score, callback) {
-	console.log('removeScore(game=%s, score, callback)', game);
 	if(dao.datasource) {
 		dao.datasource.removeScore(game, score, callback);
 	} else {
@@ -207,9 +212,7 @@ dao.resetScores = function(game, callback) {
 		dao.datasource.resetScores(game, callback);
 	} else {
 		dao.get('scores-' + game, function(scores) {
-			console.log('dao.get(scores)', scores);
 			dao.set('scores-' + game, [], function() {
-				console.log('dao.set(scores, [])');
 				scores.forEach(function(score) {
 					dao.notify('score-removed', score);
 				});
@@ -229,7 +232,6 @@ dao.retrieveActiveGame = function(callback) {
 };
 
 dao.storeActiveGame = function(game, callback) {
-	console.log('storeActiveGame(game=%s, callback)', game);
 	dao.set('activeGame', game, callback);
 };
 

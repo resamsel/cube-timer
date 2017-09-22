@@ -85,11 +85,11 @@
         "description": "The name of the button to import results."
     },
     "buttonExport": {
-        "message": "Export",
+        "message": "Export active Puzzle",
         "description": "The name of the button to export results."
     },
     "exportHeader": {
-        "message": "Export Results",
+        "message": "Export Results of active Puzzle",
         "description": "The header of the export dialog."
     },
 

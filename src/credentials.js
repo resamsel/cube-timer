@@ -11,7 +11,6 @@ var firebaseConfig = {
 
 // [START googlecallback]
 function onSignIn(googleUser) {
-  console.log('Google Auth Response', googleUser);
   // We need to register an Observer on Firebase Auth to make sure auth is initialized.
   var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
     unsubscribe();
@@ -67,12 +66,3 @@ function isUserEqual(googleUser, firebaseUser) {
   return false;
 }
 // [END checksameuser]
-/**
- * Handle the sign out button press.
- */
-function handleSignOut() {
-  var googleAuth = gapi.auth2.getAuthInstance();
-  googleAuth.signOut().then(function() {
-    firebase.auth().signOut();
-  });
-}

@@ -19,7 +19,6 @@ core.register(
 
 			$inspectionTime = $('#inspectionTime');
 			$inspectionTime.change(function() {
-				console.log('onChange');
 				dao.storeConfig('inspectionTime', Number($(this).val()));
 			});
 			dao.getConfig('inspectionTime', 0, module.handleInspectionTimeChanged);
@@ -51,8 +50,6 @@ core.register(
 		};
 
 		module.handleGameChanged = function(event) {
-			console.log('Config.handleGameChanged');
-
 			dao.unlisten(['config-changed'], module.handleInspectionTimeChanged);
 
 			dao.listen(

@@ -21,13 +21,13 @@ module.exports = function(core) {
         return core.activePage();
     };
     this.createStats = function(scores) {
+        if(!scores || scores.length < 1) {
+            scores = [{timestamp: 0, value: 0}];
+        }
+
         var stats = {
             scores: scores
         };
-
-        if(!stats.scores || stats.scores.length < 1) {
-            stats.scores = [{id: 0, value: 0}];
-        }
 
         stats.values = scores.map(misc.scoreValue);
         stats.latest = stats.values.last();

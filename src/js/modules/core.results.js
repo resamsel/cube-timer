@@ -62,7 +62,6 @@ core.register(
 		};
 		
 		module.handleScoreRemoved = function(score) {
-			//console.log('handleScoreRemoved', event);
 			module.results = module.results.filter(function(result) {
 				return result.timestamp != score.timestamp;
 			});

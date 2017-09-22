@@ -8,11 +8,13 @@ core.register(
 	function(sandbox) {
 		var module = {};
         var defaultTimeout = 7000;
+		var $signOutButton = $('.google-sign-out');
+		var $body = $('body');
 
 		module.init = function() {
 			sandbox.listen(
-				['database-available'],
-				module.handleDatabaseAvailable,
+				['datasource-changed'],
+				module.handleDatasourceChanged,
 				module
 			);
 
@@ -20,11 +22,13 @@ core.register(
 			firebase.initializeApp(firebaseConfig);
 
 			firebase.auth().onAuthStateChanged(function(user) {
-				sandbox.notify({type: 'database-available'});
+				sandbox.notify({type: 'datasource-changed'});
 			});
+
+			$signOutButton.click(module.handleSignOut);
 		};
 
-		module.handleDatabaseAvailable = function() {
+		module.handleDatasourceChanged = function() {
 			var user = firebase.auth().currentUser;
 			if(user) {
 				dao.datasource = module;
@@ -35,10 +39,27 @@ core.register(
 						email: user.email,
 						photo_url : user.photoURL
 					});
+				$body.addClass('auth-ok');
+				$('img.auth-user-image').attr('src', user.photoURL);
+				$('.auth-google-name').text(user.displayName);
+				$('.auth-google-email').text(user.email);
+
 				module.migrateData();
 			} else {
 				dao.datasource = undefined;
+
+				$body.removeClass('auth-ok');
 			}
+		};
+
+		/**
+		* Handle the sign out button press.
+		*/
+		module.handleSignOut = function() {
+			var googleAuth = gapi.auth2.getAuthInstance();
+			googleAuth.signOut().then(function() {
+				firebase.auth().signOut();
+			});
 		};
 
 		module.listen = function(types, key, callback) {
@@ -46,13 +67,13 @@ core.register(
 			types.forEach(function(type) {
 				if(type == 'score-added') {
 					firebase.database()
-						.ref('/users/'+user.uid+'/puzzles/'+key+'/scores')
+						.ref('/users/'+user.uid+'/scores/'+key)
 						.on('child_added', function(snapshot) {
 							callback(snapshot.val());
 						});
 				} else if(type == 'score-removed') {
 					firebase.database()
-						.ref('/users/'+user.uid+'/puzzles/'+key+'/scores')
+						.ref('/users/'+user.uid+'/scores/'+key)
 						.on('child_removed', function(snapshot) {
 							callback(snapshot.val());
 						});
@@ -78,7 +99,19 @@ core.register(
 			});
 		};
 
+		module.retrieveScores = function(puzzle, callback) {
+			var user = firebase.auth().currentUser;
+			var ref = firebase.database()
+				.ref('/users/'+user.uid+'/scores/'+puzzle)
+				.once('value', function(snapshot) {
+					if(callback) {
+						callback(snapshot.val());
+					}
+				});
+		};
+
 		module.storeScore = function(puzzle, score, callback) {
+			var database = firebase.database();
 			var user = firebase.auth().currentUser;
 			var key = score.timestamp+'-'+score.value;
 			var data = {
@@ -93,20 +126,19 @@ core.register(
 
 			// Write the new score's data simultaneously in the score list and the user's score list.
 			updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+key] = data;
-			updates['/users/'+user.uid+'/puzzles/'+puzzle+'/scores/'+key] = data;
+			updates['/users/'+user.uid+'/scores/'+puzzle+'/'+key] = data;
+			updates['/users/'+user.uid+'/puzzles/'+puzzle+'/name'] = puzzle;
 
-			firebase.database().ref().update(updates);
+			database.ref().update(updates);
 		};
 
 		module.removeScore = function(puzzle, score, callback) {
-			console.log('firebase.removeScore(puzzle=%s, score=%s, callback)', puzzle, JSON.stringify(score));
 			var user = firebase.auth().currentUser;
 			var key = score.timestamp+'-'+score.value;
 			var updates = {};
 
 			updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+key] = null;
-			updates['/users/'+user.uid+'/puzzles/'+puzzle+'/scores/'+key] = null;
-			console.log('Updates: %s', JSON.stringify(updates));
+			updates['/users/'+user.uid+'/scores/'+puzzle+'/'+key] = null;
 
 			firebase.database().ref().update(updates);
 			
@@ -119,11 +151,11 @@ core.register(
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
-				.ref('/users/'+user.uid+'/puzzles/'+puzzle+'/scores')
+				.ref('/users/'+user.uid+'/scores/'+puzzle)
 				.once('value', function(snapshot) {
 					var updates = {};
 
-					updates['/users/'+user.uid+'/puzzles/'+puzzle+'/scores'] = [];
+					updates['/users/'+user.uid+'/scores/'+puzzle] = [];
 					snapshot.forEach(function(score) {
 						updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+score.timestamp+'-'+score.value] = null;
 					});
@@ -137,7 +169,6 @@ core.register(
 		};
 
 		module.storeConfig = function(key, value, callback) {
-			console.log('storeConfig(key=%s, value=%s, callback)', key, value);
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
@@ -171,7 +202,6 @@ core.register(
 				games.forEach(function(game) {
 					dao.get('scores-' + game, function(scores) {
 						if(scores && scores.length > 0) {
-							console.log('game', game, scores);
 							// Remove all listeners
 							firebase.database().ref('/').off();
 							scores.forEach(function(score) {

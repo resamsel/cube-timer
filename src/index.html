@@ -19,6 +19,25 @@
 	<link rel="stylesheet" href="css/cube-timer.css">
 </head>
 <body class="material"><!-- class="started/stopped" -->
+	<ul id="dropdown-auth" class="dropdown-content">
+		<li class="auth-google-sign-in">
+			<!-- [START google_button] -->
+			<div class="g-signin2" data-onsuccess="onSignIn" data-theme="light"></div>
+			<!-- [END google_button] -->
+		</li>
+		<li class="auth-google-signed-in">
+			<div class="auth-google-info">
+				<img class="auth-user-image circle">
+				<div class="auth-google-user">
+					<h6 class="auth-google-name"></h6>
+					<div class="auth-google-email grey-text"></div>
+				</div>
+			</div>
+		</li>
+		<li class="auth-google-signed-in">
+			<a class="google-sign-out">Sign out</a>
+		</li>
+	</ul>
 	<div class="navbar-fixed">
 		<nav class="indigo" role="navigation">
 			<div class="nav-wrapper">
@@ -41,9 +60,16 @@
 						</a>
 					</li>
 					<li>
-						<!-- [START google_button] -->
-						<div class="g-signin2" data-onsuccess="onSignIn" data-theme="light" style="padding: 14px 0;"></div>
-						<!-- [END google_button] -->
+						<a
+							class="dropdown-button auth-dropdown"
+							href="#!"
+							data-activates="dropdown-auth"
+							data-belowOrigin="true"
+							data-alignment="right"
+							data-constrainWidth="false">
+							<i class="material-icons">account_circle</i>
+							<img class="auth-user-image circle">
+						</a>
 					</li>
 				</ul>
 				<ul id="nav-mobile"
@@ -249,7 +275,7 @@
 		</div>
 		<div class="footer-copyright grey-text text-darken-1">
 			<div class="container">
-				© 2016 René Samselnig
+				© 2017 René Panzar
 			</div>
 		</div>
 	</footer>
@@ -277,11 +303,6 @@
 				<button id="import-from-file" type="button" class="btn btn-default">
 					<i class="material-icons">file_upload</i>
 					Load from local file
-				</button>
-
-				<button id="import-from-drive" type="button" class="btn btn-default">
-					<i class="material-icons">file_upload</i>
-					Load from Google Drive
 				</button>
 			</div>
 

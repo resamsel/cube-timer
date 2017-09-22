@@ -19,7 +19,7 @@ module.exports = function() {
 	};
 
 	core.start = function(id) {
-		console.log('Core.start(id=%s)', id);
+		console.debug('Core.start(id=%s)', id);
 		var data = moduleData[id];
 		data.instance = data.creator(new Sandbox(this));
 		data.instance.id = id;
@@ -35,7 +35,7 @@ module.exports = function() {
 	};
 
 	core.init = function() {
-		console.log('Core.init()');
+		console.debug('Core.init()');
 
 		// Migrate database, if necessary
 		this.migrate();
@@ -56,7 +56,7 @@ module.exports = function() {
 
 		var that = this;
 		this.listen(
-			['database-available'],
+			['datasource-changed'],
 			function() {
 				that.notify({
 					type: 'game-changed',
@@ -72,14 +72,14 @@ module.exports = function() {
 	};
 
 	core.stopAll = function() {
-		console.log('Core.stopAll()');
+		console.debug('Core.stopAll()');
 		for(var moduleId in moduleData) {
 			this.stop(moduleId);
 		}
 	};
 
 	core.migrate = function() {
-		console.log('Core.migrate()');
+		console.debug('Core.migrate()');
 
 		dao.get('databaseVersion', function(databaseVersion) {
 			if(typeof(databaseVersion) === 'undefined') {
@@ -102,7 +102,7 @@ module.exports = function() {
 	};
 
 	core.notify = function(event) {
-		console.log(
+		console.debug(
 			'Core.notify(event=%s)',
 			JSON.stringify(event)
 		);
@@ -124,7 +124,7 @@ module.exports = function() {
 	};
 
 	core.listen = function(types, handler, module) {
-		console.log(
+		console.debug(
 			'Core.listen(types=%s, handler=%s, module=%s)',
 			JSON.stringify(types),
 			typeof handler,

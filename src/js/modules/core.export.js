@@ -22,8 +22,8 @@ core.register(
             $('#export').on('click', function() {
                 var game = sandbox.activeGame();
                 console.log('Game: %s', game);
-                dao.retrieveScores(game, function(results) {
-                    $('#export-content').val(misc.toCsv(game, results));
+                dao.retrieveScores(game, function(scores) {
+                    $('#export-content').val(misc.toCsv(game, scores));
                     $('#export-content').trigger('autoresize');
                 });
             });

@@ -5,165 +5,171 @@ var Stopwatch = require('timer-stopwatch');
 //var $ = require('jquery');
 
 core.register(
-    'Stopwatch',
-    function(sandbox) {
-        var count, counter, beep;
-        var module = {};
-        var timerSound;
-        var startSound;
+	'Stopwatch',
+	function(sandbox) {
+		var count, counter, beep;
+		var module = {};
+		var timerSound;
+		var startSound;
 
-        module.init = function() {
-            sandbox.listen(
-                ['game-changed'],
-                module.handleGameChanged,
-                module
-            );
-            sandbox.listen(
-                ['page-changed'],
-                module.handlePageChanged,
-                module
-            );
+		module.init = function() {
+			sandbox.listen(
+				['game-changed'],
+				module.handleGameChanged,
+				module
+			);
+			sandbox.listen(
+				['page-changed'],
+				module.handlePageChanged,
+				module
+			);
 
-            $('button.start-stop').on('click', module.toggleTimer);
-            $('.card-timer').css('display', 'block');
+			$('button.start-stop').on('click', module.toggleTimer);
+			$('.card-timer').css('display', 'block');
 			$('.timer-button')
 				.attr('href', '#!' + sandbox.activeGame() + '/timer')
 				.on('click', function(e) {
 				sandbox.goToPage(sandbox.activeGame() + '/timer');
-            });
+			});
 
-            // pre-load sound
-            timerSound = new Audio('audio/timer.mp3');
-            startSound = new Audio('audio/start.mp3');
-            timerSound.load();
-            startSound.load();
-        };
+			// pre-load sound
+			timerSound = new Audio('audio/timer.mp3');
+			startSound = new Audio('audio/start.mp3');
+			timerSound.load();
+			startSound.load();
+		};
 
-        /*
-         * Handlers
-         */
-        module.handleGameChanged = function(event) {
-            $('.card-timer .card-title > span').text(event.data);
-        };
+		/*
+		 * Handlers
+		 */
+		module.handleGameChanged = function(event) {
+			$('.card-timer .card-title > span').text(event.data);
+		};
 
-        module.handlePageChanged = function(event) {
-            if(event.data == 'timer') {
-                $('body')
-                    .on('keydown', module.handleSpaceDown)
-                    .on('keyup', module.handleSpaceUp);
-            } else {
-                $('body').off('keydown').off('keyup');
-            }
-        };
+		module.handlePageChanged = function(event) {
+			if(event.data == 'timer') {
+				$('body')
+					.on('keydown', module.handleSpaceDown)
+					.on('keyup', module.handleSpaceUp);
+			} else {
+				$('body').off('keydown').off('keyup');
+			}
+		};
 
-        module.handleSpaceDown = function(event) {
-            if(event.keyCode == 32 && event.target == document.body) {
-                event.preventDefault();
-                return false;
-            }
-        };
-        module.handleSpaceUp = function(event) {
-            if(event.keyCode == 32 && event.target == document.body) {
-                event.preventDefault();
-                module.toggleTimer();
-            }
-        };
+		module.handleSpaceDown = function(event) {
+			if(event.keyCode == 32 && event.target == document.body) {
+				event.preventDefault();
+				return false;
+			}
+		};
+		module.handleSpaceUp = function(event) {
+			if(event.keyCode == 32 && event.target == document.body) {
+				event.preventDefault();
+				module.toggleTimer();
+			}
+		};
 
-        module.handleStart = function() {
-            $('body').removeClass('stopped').addClass('started');
-            dao.getConfig('inspectionTime', 0, function(inspectionTime) {
-                if(inspectionTime > 0) {
-                    module.startCountdown(inspectionTime);
-                } else {
-                    module.startTimer();
-                }
-            });
-            sandbox.notify({
-                type: 'stopwatch-started',
-                data: null
-            });
-        };
+		module.handleStart = function() {
+			$('body').removeClass('stopped').addClass('started');
+			dao.getConfig('inspectionTime', 0, function(inspectionTime) {
+				if(inspectionTime > 0) {
+					module.startCountdown(inspectionTime);
+				} else {
+					module.startTimer();
+				}
+			});
+			sandbox.notify({
+				type: 'stopwatch-started',
+				data: null
+			});
+		};
 
-        module.handleStop = function() {
-            var elapsed = 0;
-            clearInterval(counter);
-            if(typeof module.stopwatch !== 'undefined') {
-                module.stopwatch.stop();
-                elapsed = module.stopwatch.ms;
-            }
-            if(elapsed > 0) {
-                // Only use values when stopwatch actually started
-                var result ={ timestamp: new Date().getTime(), value: elapsed };
-                dao.storeScore(
-                    sandbox.activeGame(),
-                    result
-                );
-            }
-            $('body').removeClass('started').addClass('stopped');
-        };
+		module.handleStop = function() {
+			var elapsed = 0;
+			clearInterval(counter);
+			if(typeof module.stopwatch !== 'undefined') {
+				module.stopwatch.stop();
+				elapsed = module.stopwatch.ms;
+			}
+			if(elapsed > 0) {
+				// Only use values when stopwatch actually started
+				sandbox.notify({
+					type: 'stopwatch-stopped',
+					data: null
+				});
+				dao.storeScore(
+					sandbox.activeGame(),
+					{
+						timestamp: new Date().getTime(),
+						value: elapsed
+					}
+				);
+			}
+			$('body').removeClass('started').addClass('stopped');
+		};
 
-        module.toggleTimer = function() {
-            if($('body').hasClass('started')) {
-                module.handleStop();
-            } else {
-                module.handleStart();
-            }
-        };
+		module.toggleTimer = function() {
+			if($('body').hasClass('started')) {
+				module.handleStop();
+			} else {
+				module.handleStart();
+			}
+		};
 
-        module.countdownTimer = function() {
-            count = count-1;
-            if (count <= 0)
-            {
-                clearInterval(counter);
-                module.startTimer();
-                return;
-            }
-            module.updateCountdown(count);
-        };
+		module.countdownTimer = function() {
+			count = count-1;
+			if (count <= 0)
+			{
+				clearInterval(counter);
+				module.startTimer();
+				return;
+			}
+			module.updateCountdown(count);
+		};
 
-            // Code for showing the number of seconds
-        module.updateCountdown = function(currentCount) {
-            if(count <= 3) {
-                dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
-                    if(soundAfterInspection) {
-                        timerSound.load();
-                        timerSound.play();
-                    }
-                });
-            }
-            $('#timer-display').text(count);
-        };
+			// Code for showing the number of seconds
+		module.updateCountdown = function(currentCount) {
+			if(count <= 3) {
+				dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+					if(soundAfterInspection) {
+						timerSound.load();
+						timerSound.play();
+					}
+				});
+			}
+			$('#timer-display').text(count);
+		};
 
-        module.startCountdown = function(inspectionTime) {
-            count = inspectionTime;
-            counter = setInterval(module.countdownTimer, 1000);
-            module.updateCountdown(count);
-        };
+		module.startCountdown = function(inspectionTime) {
+			count = inspectionTime;
+			counter = setInterval(module.countdownTimer, 1000);
+			module.updateCountdown(count);
+		};
 
-        module.startTimer = function() {
-            var timerConfig = {
-                refreshRateMS: 31 // prime number
-            };
-            dao.getConfig('inspectionTime', 0, function(inspectionTime) {
-                dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
-                    if(inspectionTime > 0 && soundAfterInspection) {
-                        startSound.load();
-                        startSound.play();
-                    }
-                    if(typeof module.stopwatch !== 'undefined') {
-                        module.stopwatch.stop();
-                    }
-                    module.stopwatch = new Stopwatch(timerConfig);
-                    module.stopwatch
-                        .onTime(function(time) {
-                            $('#timer-display')
-                                .html(misc.defaultFormatMilliseconds(time.ms));
-                        })
-                        .start();
-                });
-            });
-        };
+		module.startTimer = function() {
+			var timerConfig = {
+				refreshRateMS: 31 // prime number
+			};
+			dao.getConfig('inspectionTime', 0, function(inspectionTime) {
+				dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
+					if(inspectionTime > 0 && soundAfterInspection) {
+						startSound.load();
+						startSound.play();
+					}
+					if(typeof module.stopwatch !== 'undefined') {
+						module.stopwatch.stop();
+					}
+					module.stopwatch = new Stopwatch(timerConfig);
+					module.stopwatch
+						.onTime(function(time) {
+							$('#timer-display')
+								.html(misc.defaultFormatMilliseconds(time.ms));
+						})
+						.start();
+				});
+			});
+		};
 
-        return module;
-    }
+		return module;
+	}
 );

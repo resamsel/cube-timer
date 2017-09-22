@@ -1,3 +1,44 @@
-#import-from-drive {
-    display: none;
+.abcRioButton {
+	height: 50px !important;
+}
+.abcRioButtonContentWrapper {
+	padding: 10px 5px;
+}
+.auth-dropdown .auth-user-image {
+	display: none;
+	width: 32px;
+	height: 64px;
+	line-height: 64px;
+	padding: 16px 0;
+}
+.auth-ok .auth-dropdown .auth-user-image {
+	display: block;
+}
+.auth-ok .auth-google-sign-in,
+.auth-ok .auth-dropdown .material-icons,
+.auth-google-signed-in {
+	display: none;
+}
+li.auth-google-signed-in:hover {
+	background-color: transparent;
+	cursor: auto;
+}
+.auth-ok .auth-google-signed-in {
+	display: list-item;
+}
+.auth-google-info {
+	width: 300px;
+}
+.auth-google-info .auth-user-image {
+	float: left;
+	width: 96px;
+	height: 96px;
+	padding: 16px;
+}
+.auth-google-user {
+	margin-left: 96px;
+	padding: 16px 16px 16px 0;
+}
+.auth-google-name {
+	font-weight: bold;
 }
