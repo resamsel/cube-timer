@@ -32,13 +32,16 @@ core.register(
 			var user = firebase.auth().currentUser;
 			if(user) {
 				dao.datasource = module;
-				firebase.database()
-					.ref('/users/'+user.uid+'/info')
-					.set({
-						name: user.displayName,
-						email: user.email,
-						photo_url : user.photoURL
-					});
+				var updates = {};
+				
+				updates['/users/'+user.uid+'/info/name'] = user.displayName;
+				updates['/users/'+user.uid+'/info/email'] = user.email;
+				updates['/users/'+user.uid+'/info/photo_url'] = user.photoURL;
+				updates['/users/'+user.uid+'/info/last_login'] = new Date().getTime();
+				updates['/users/'+user.uid+'/info/last_login_text'] = new Date().toString();
+
+				firebase.database().ref().update(updates);
+
 				$body.addClass('auth-ok');
 				$('img.auth-user-image').attr('src', user.photoURL);
 				$('.auth-google-name').text(user.displayName);
@@ -67,19 +70,19 @@ core.register(
 			types.forEach(function(type) {
 				if(type == 'score-added') {
 					firebase.database()
-						.ref('/users/'+user.uid+'/scores/'+key)
+						.ref('/user-scores/'+user.uid+'/'+key)
 						.on('child_added', function(snapshot) {
 							callback(snapshot.val());
 						});
 				} else if(type == 'score-removed') {
 					firebase.database()
-						.ref('/users/'+user.uid+'/scores/'+key)
+						.ref('/user-scores/'+user.uid+'/'+key)
 						.on('child_removed', function(snapshot) {
 							callback(snapshot.val());
 						});
 				} else if(type == 'config-changed') {
 					firebase.database()
-						.ref('/users/'+user.uid+'/config/'+key)
+						.ref('/configs/'+user.uid+'/'+key)
 						.on('value', function(snapshot) {
 							callback(snapshot.val());
 						});
@@ -102,7 +105,7 @@ core.register(
 		module.retrieveScores = function(puzzle, callback) {
 			var user = firebase.auth().currentUser;
 			var ref = firebase.database()
-				.ref('/users/'+user.uid+'/scores/'+puzzle)
+				.ref('/user-scores/'+user.uid+'/'+puzzle)
 				.once('value', function(snapshot) {
 					if(callback) {
 						callback(snapshot.val());
@@ -126,8 +129,10 @@ core.register(
 
 			// Write the new score's data simultaneously in the score list and the user's score list.
 			updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+key] = data;
-			updates['/users/'+user.uid+'/scores/'+puzzle+'/'+key] = data;
+			updates['/user-scores/'+user.uid+'/'+puzzle+'/'+key] = data;
 			updates['/users/'+user.uid+'/puzzles/'+puzzle+'/name'] = puzzle;
+			updates['/users/'+user.uid+'/info/last_active'] = new Date().getTime();
+			updates['/users/'+user.uid+'/info/last_active_text'] = new Date().toString();
 
 			database.ref().update(updates);
 		};
@@ -138,7 +143,9 @@ core.register(
 			var updates = {};
 
 			updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+key] = null;
-			updates['/users/'+user.uid+'/scores/'+puzzle+'/'+key] = null;
+			updates['/user-scores/'+user.uid+'/'+puzzle+'/'+key] = null;
+			updates['/users/'+user.uid+'/info/last_active'] = new Date().getTime();
+			updates['/users/'+user.uid+'/info/last_active_text'] = new Date().toString();
 
 			firebase.database().ref().update(updates);
 			
@@ -151,11 +158,11 @@ core.register(
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
-				.ref('/users/'+user.uid+'/scores/'+puzzle)
+				.ref('/user-scores/'+user.uid+'/'+puzzle)
 				.once('value', function(snapshot) {
 					var updates = {};
 
-					updates['/users/'+user.uid+'/scores/'+puzzle] = [];
+					updates['/user-scores/'+user.uid+'/'+puzzle] = [];
 					snapshot.forEach(function(score) {
 						updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+score.timestamp+'-'+score.value] = null;
 					});
@@ -166,13 +173,18 @@ core.register(
 						callback();
 					}
 				});
+
+			var updates = {};
+			updates['/users/'+user.uid+'/info/last_active'] = new Date().getTime();
+			updates['/users/'+user.uid+'/info/last_active_text'] = new Date().toString();
+			firebase.database().ref().update(updates);
 		};
 
 		module.storeConfig = function(key, value, callback) {
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
-				.ref('/users/'+user.uid+'/config/'+key)
+				.ref('/configs/'+user.uid+'/'+key)
 				.set(value);
 
 			if(callback) {
@@ -184,7 +196,7 @@ core.register(
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
-				.ref('/users/'+user.uid+'/config/'+key)
+				.ref('/configs/'+user.uid+'/'+key)
 				.once('value', function(snapshot) {
 					callback(snapshot.val());
 				});
