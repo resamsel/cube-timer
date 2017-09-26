@@ -319,7 +319,9 @@ core.register(
 			});
 			configKeys.forEach(function(key) {
 				dao.get(key, function(value) {
-					module.storeConfig(key, value);
+					if(typeof(value) !== 'undefined') {
+						module.storeConfig(key, value);
+					}
 				});
 			});
 		};
