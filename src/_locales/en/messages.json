@@ -335,7 +335,7 @@
         "description": "Sign out link label"
     },
 
-    "firebase_migration_finished": {
+    "firebaseMigrationFinished": {
         "message": "Your existing scores have been synched with the cloud.",
         "description": "The message when migration has finished uploading it to Firebase."
     }

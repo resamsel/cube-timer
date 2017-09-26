@@ -42,6 +42,9 @@ core.register(
 				var defaultTimeout = 7000;
 		var $signOutButton = $('.google-sign-out');
 		var $body = $('body');
+		var configKeys = [
+			'inspectionTime', 'subtext', 'soundAfterInspection', 'hintVisible'
+		];
 
 		module.init = function() {
 			sandbox.listen(
@@ -287,7 +290,7 @@ core.register(
 
 		module.notifyMigrated = misc.debounce(function() {
 			Materialize.toast(
-				I18n.translate('firebase_migration_finished'),
+				I18n.translate('firebaseMigrationFinished'),
 				defaultTimeout
 			);
 		}, 1000);
@@ -312,6 +315,11 @@ core.register(
 							);
 						}
 					});
+				});
+			});
+			configKeys.forEach(function(key) {
+				dao.get(key, function(value) {
+					module.storeConfig(key, value);
 				});
 			});
 		};

@@ -335,7 +335,7 @@
         "description": "Sign out link label"
     },
 
-    "firebase_migration_finished": {
+    "firebaseMigrationFinished": {
         "message": "Deine bisherigen Ergebnisse wurden mit der Cloud synchronisiert.",
         "description": "The message when migration has finished uploading it to Firebase."
     }
