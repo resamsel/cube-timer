@@ -17,6 +17,11 @@ core.register(
 				module
 			);
 			sandbox.listen(
+				['page-changed'],
+				module.handlePageChanged,
+				module
+			);
+			sandbox.listen(
 				['game-changed'],
 				module.handleGameChanged,
 				module
@@ -31,7 +36,17 @@ core.register(
 				});
 		};
 
+		module.handlePageChanged = function(event) {
+			if(event.data == 'results') {
+				$('.results-button').parent().addClass('active');
+			} else {
+				$('.results-button').parent().removeClass('active');
+			}
+		};
+
 		module.handleGameChanged = function(event) {
+			$('.results-button').attr('href', '#!'+event.data+'/results');
+
 			module.results = [];
 
 			dao.unlisten(['score-added'], module.handleScoreAdded);

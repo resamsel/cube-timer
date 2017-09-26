@@ -330,6 +330,11 @@
         "description": "This week."
     },
 
+    "authSignOut": {
+        "message": "Abmelden",
+        "description": "Sign out link label"
+    },
+
     "firebase_migration_finished": {
         "message": "Deine bisherigen Ergebnisse wurden mit der Cloud synchronisiert.",
         "description": "The message when migration has finished uploading it to Firebase."

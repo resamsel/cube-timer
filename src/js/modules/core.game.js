@@ -30,11 +30,12 @@ core.register(
 			$('.game-list .active').removeClass('active');
 			$('.game-list .game-' + game).addClass('active');
 			$('.active-game .text').text(game);
+			$('.active-game').attr('href', '#!'+game+'/'+sandbox.activePage());
 		};
 
 		/*
-		 * Create the list of games in the header bar.
-		 */
+		* Create the list of games in the header bar.
+		*/
 		module.populateGames = function() {
 			dao.retrieveGames(function(games) {
 				var activeGame = sandbox.activeGame();

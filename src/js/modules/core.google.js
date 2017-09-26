@@ -3,11 +3,43 @@ var dao = require('../dao.js');
 var I18n = require('../utils/i18n.js');
 var misc = require('../utils/misc.js');
 
+var Keys = {
+	user: function(user) {
+		return user.email.replace(/\./g, ',');
+	},
+	userInfo: function(user, suffix) {
+		var key = '/users/'+Keys.user(user)+'/info';
+		if(suffix) {
+			return key+'/'+suffix;
+		}
+		return key;
+	},
+	userScores: function(user, puzzle, suffix) {
+		var key = '/user-scores/'+Keys.user(user)+'/'+puzzle;
+		if(suffix) {
+			return key+'/'+suffix;
+		}
+		return key;
+	},
+	userPuzzles: function(user, puzzle) {
+		return '/users/'+Keys.user(user)+'/puzzles/'+puzzle+'/name';
+	},
+	puzzle: function(puzzle, key) {
+		return '/puzzles/'+puzzle+'/'+key;
+	},
+	puzzleScores: function(puzzle, key) {
+		return '/puzzle-scores/'+puzzle+'/'+key;
+	},
+	config: function(user, key) {
+		return '/configs/'+Keys.user(user)+'/'+key;
+	}
+};
+
 core.register(
 	'Google',
 	function(sandbox) {
 		var module = {};
-        var defaultTimeout = 7000;
+				var defaultTimeout = 7000;
 		var $signOutButton = $('.google-sign-out');
 		var $body = $('body');
 
@@ -26,6 +58,7 @@ core.register(
 			});
 
 			$signOutButton.click(module.handleSignOut);
+			window.onSignIn = module.handleSignIn;
 		};
 
 		module.handleDatasourceChanged = function() {
@@ -34,11 +67,11 @@ core.register(
 				dao.datasource = module;
 				var updates = {};
 				
-				updates['/users/'+user.uid+'/info/name'] = user.displayName;
-				updates['/users/'+user.uid+'/info/email'] = user.email;
-				updates['/users/'+user.uid+'/info/photo_url'] = user.photoURL;
-				updates['/users/'+user.uid+'/info/last_login'] = new Date().getTime();
-				updates['/users/'+user.uid+'/info/last_login_text'] = new Date().toString();
+				updates[Keys.userInfo(user, 'name')] = user.displayName;
+				updates[Keys.userInfo(user, 'email')] = user.email;
+				updates[Keys.userInfo(user, 'photo_url')] = user.photoURL;
+				updates[Keys.userInfo(user, 'last_login')] = new Date().getTime();
+				updates[Keys.userInfo(user, 'last_login_text')] = new Date().toString();
 
 				firebase.database().ref().update(updates);
 
@@ -53,6 +86,54 @@ core.register(
 
 				$body.removeClass('auth-ok');
 			}
+		};
+
+		module.handleSignIn = function(googleUser) {
+			// We need to register an Observer on Firebase Auth to make sure auth is initialized.
+			var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
+				unsubscribe();
+				// Check if we are already signed-in Firebase with the correct user.
+				if (!module.isUserEqual(googleUser, firebaseUser)) {
+					// Build Firebase credential with the Google ID token.
+					var credential = firebase.auth.GoogleAuthProvider
+						.credential(googleUser.getAuthResponse().id_token);
+
+					// Sign in with credential from the Google user.
+					firebase.auth()
+							.signInWithCredential(credential)
+							.catch(module.handleAuthError);
+				} else {
+					console.log('User already signed-in Firebase.');
+				}
+				//sandbox.notify({type: 'datasource-changed'});
+			});
+		};
+		
+		module.handleAuthError = function(error) {
+			if (error.code === 'auth/account-exists-with-different-credential') {
+				alert('You have already signed up with a different auth provider for that email.');
+				// If you are using multiple auth providers on your app you should handle linking
+				// the user's accounts here.
+			} else {
+				console.error(error);
+			}
+		};
+
+		/**
+		* Check that the given Google user is equals to the given Firebase user.
+		*/
+		module.isUserEqual = function(googleUser, firebaseUser) {
+			if (firebaseUser) {
+				var providerData = firebaseUser.providerData;
+				for (var i = 0; i < providerData.length; i++) {
+					if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+							providerData[i].uid === googleUser.getBasicProfile().getId()) {
+						// We don't need to reauth the Firebase connection.
+						return true;
+					}
+				}
+			}
+			return false;
 		};
 
 		/**
@@ -70,19 +151,19 @@ core.register(
 			types.forEach(function(type) {
 				if(type == 'score-added') {
 					firebase.database()
-						.ref('/user-scores/'+user.uid+'/'+key)
+						.ref(Keys.userScores(user, key))
 						.on('child_added', function(snapshot) {
 							callback(snapshot.val());
 						});
 				} else if(type == 'score-removed') {
 					firebase.database()
-						.ref('/user-scores/'+user.uid+'/'+key)
+						.ref(Keys.userScores(user, key))
 						.on('child_removed', function(snapshot) {
 							callback(snapshot.val());
 						});
 				} else if(type == 'config-changed') {
 					firebase.database()
-						.ref('/configs/'+user.uid+'/'+key)
+						.ref(Keys.config(user, key))
 						.on('value', function(snapshot) {
 							callback(snapshot.val());
 						});
@@ -105,7 +186,7 @@ core.register(
 		module.retrieveScores = function(puzzle, callback) {
 			var user = firebase.auth().currentUser;
 			var ref = firebase.database()
-				.ref('/user-scores/'+user.uid+'/'+puzzle)
+				.ref(Keys.userScores(user, puzzle))
 				.once('value', function(snapshot) {
 					if(callback) {
 						callback(snapshot.val());
@@ -125,14 +206,16 @@ core.register(
 				value: score.value,
 				timestamp: score.timestamp || score.id
 			};
+			var now = new Date();
 			var updates = {};
 
 			// Write the new score's data simultaneously in the score list and the user's score list.
-			updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+key] = data;
-			updates['/user-scores/'+user.uid+'/'+puzzle+'/'+key] = data;
-			updates['/users/'+user.uid+'/puzzles/'+puzzle+'/name'] = puzzle;
-			updates['/users/'+user.uid+'/info/last_active'] = new Date().getTime();
-			updates['/users/'+user.uid+'/info/last_active_text'] = new Date().toString();
+			updates[Keys.puzzle(puzzle, 'name')] = puzzle;
+			updates[Keys.puzzleScores(puzzle, Keys.user(user)+'-'+key)] = data;
+			updates[Keys.userScores(user, puzzle, key)] = data;
+			updates[Keys.userPuzzles(user, puzzle)] = true;
+			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
+			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
 
 			database.ref().update(updates);
 		};
@@ -140,12 +223,13 @@ core.register(
 		module.removeScore = function(puzzle, score, callback) {
 			var user = firebase.auth().currentUser;
 			var key = score.timestamp+'-'+score.value;
+			var now = new Date();
 			var updates = {};
 
-			updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+key] = null;
-			updates['/user-scores/'+user.uid+'/'+puzzle+'/'+key] = null;
-			updates['/users/'+user.uid+'/info/last_active'] = new Date().getTime();
-			updates['/users/'+user.uid+'/info/last_active_text'] = new Date().toString();
+			updates[Keys.puzzleScores(puzzle, Keys.user(user)+'-'+key)] = null;
+			updates[Keys.userScores(user, puzzle, key)] = null;
+			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
+			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
 
 			firebase.database().ref().update(updates);
 			
@@ -158,13 +242,13 @@ core.register(
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
-				.ref('/user-scores/'+user.uid+'/'+puzzle)
+				.ref(Keys.userScores(user, puzzle))
 				.once('value', function(snapshot) {
 					var updates = {};
 
-					updates['/user-scores/'+user.uid+'/'+puzzle] = [];
+					updates[Keys.userScores(user, puzzle)] = [];
 					snapshot.forEach(function(score) {
-						updates['/puzzles/'+puzzle+'/scores/'+user.uid+'-'+score.timestamp+'-'+score.value] = null;
+						updates[Keys.puzzleScores(puzzle, Keys.user(user)+'-'+score.timestamp+'-'+score.value)] = null;
 					});
 
 					firebase.database().ref().update(updates);
@@ -174,18 +258,17 @@ core.register(
 					}
 				});
 
+			var now = new Date();
 			var updates = {};
-			updates['/users/'+user.uid+'/info/last_active'] = new Date().getTime();
-			updates['/users/'+user.uid+'/info/last_active_text'] = new Date().toString();
+			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
+			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
 			firebase.database().ref().update(updates);
 		};
 
 		module.storeConfig = function(key, value, callback) {
 			var user = firebase.auth().currentUser;
 
-			firebase.database()
-				.ref('/configs/'+user.uid+'/'+key)
-				.set(value);
+			firebase.database().ref(Keys.config(user, key)).set(value);
 
 			if(callback) {
 				callback();
@@ -196,7 +279,7 @@ core.register(
 			var user = firebase.auth().currentUser;
 
 			firebase.database()
-				.ref('/configs/'+user.uid+'/'+key)
+				.ref(Keys.config(user, key))
 				.once('value', function(snapshot) {
 					callback(snapshot.val());
 				});

@@ -68,6 +68,8 @@ module.exports = function() {
 
 		if(window.location.hash.startsWith('#!')) {
 			this.goToPage(window.location.hash.substring(2));
+		} else {
+			this.goToPage(this.activeGame() + '/' + this.activePage());
 		}
 	};
 

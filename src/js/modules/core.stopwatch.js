@@ -40,23 +40,29 @@ core.register(
 		};
 
 		/*
-		 * Handlers
-		 */
+		* Handlers
+		*/
 		module.handleGameChanged = function(event) {
-			$('.card-timer .card-title > span').text(event.data);
+			var game = event.data;
+			$('.card-timer .card-title > span').text(game);
+			$('.timer-button').attr('href', '#!'+game+'/timer');
 		};
 
 		module.handlePageChanged = function(event) {
+			console.log('page-changed', event);
 			if(event.data == 'timer') {
 				$('body')
 					.on('keydown', module.handleSpaceDown)
 					.on('keyup', module.handleSpaceUp);
+				$('.timer-button').parent().addClass('active');
 			} else {
 				$('body').off('keydown').off('keyup');
+				$('.timer-button').parent().removeClass('active');
 			}
 		};
 
 		module.handleSpaceDown = function(event) {
+			console.log('keydown');
 			if(event.keyCode == 32 && event.target == document.body) {
 				event.preventDefault();
 				return false;

@@ -12,6 +12,11 @@ core.register(
 
 		module.init = function() {
 			sandbox.listen(
+				['page-changed'],
+				module.handlePageChanged,
+				module
+			);
+			sandbox.listen(
 				['game-changed'],
 				module.handleGameChanged,
 				module
@@ -47,6 +52,14 @@ core.register(
 					sandbox.goToPage('config');
 				})
 				.css('display', 'block');
+		};
+
+		module.handlePageChanged = function(event) {
+			if(event.data == 'config') {
+				$('.config-button').parent().addClass('active');
+			} else {
+				$('.config-button').parent().removeClass('active');
+			}
 		};
 
 		module.handleGameChanged = function(event) {
