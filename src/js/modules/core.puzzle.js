@@ -3,7 +3,7 @@ var dao = require('../dao.js');
 //var $ = require('jquery');
 
 core.register(
-	'Game',
+	'Puzzle',
 	function(sandbox) {
 		var module = {};
 
@@ -33,6 +33,15 @@ core.register(
 			$('.active-game').attr('href', '#!'+game+'/'+sandbox.activePage());
 		};
 
+		module.handlePageChanged = function(event) {
+			$('.active-game').attr('href', '#!' + sandbox.activeGame() + '/' + event.data);
+			$('.game-list .game > a').each(function(index, el) {
+				var $el = $(el);
+				$el.attr('href', '#!'+$el.data('puzzle')+'/'+event.data);
+			});
+			
+		};
+
 		/*
 		* Create the list of games in the header bar.
 		*/
@@ -52,11 +61,10 @@ core.register(
 
 					// 2. Update clone
 					clone.removeClass('template').addClass('game-' + game);
-					clone
-						.find('a')
-						.attr('href', '#!' + game + '/timer')
-					.text(game);
-					clone.on('click', module.activateGame(game));
+					var $a = clone.find('a');
+					$a.attr('href', '#!'+game+'/timer');
+					$a.text(game);
+					$a.data('puzzle', game);
 
 					if(game == activeGame) {
 						clone.addClass('active');
@@ -69,18 +77,6 @@ core.register(
 
 				sandbox.notify({type: 'game-list-created'});
 			});
-		};
-
-		module.activateGame = function(game) {
-			return function() {
-				sandbox.activeGame(game);
-				//$('.button-collapse').sideNav('hide');
-				//sandbox.notify({type: 'main-menu-closed'});
-			};
-		};
-
-		module.handlePageChanged = function(event) {
-			$('.active-game').attr('href', '#!' + sandbox.activeGame() + '/' + event.data);
 		};
 
 		return module;

@@ -1,4 +1,6 @@
-Core.register(
+var core = require('../core.js');
+
+core.register(
     'Template',
     function(sandbox) {
         var module = {};

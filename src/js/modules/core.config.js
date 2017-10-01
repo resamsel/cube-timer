@@ -9,8 +9,15 @@ core.register(
 		var $inspectionTime;
 		var $subtext;
 		var $soundAfterInspection;
+		var configListeners;
 
 		module.init = function() {
+			configListeners = {
+				inspectionTime: module.handleInspectionTimeChanged,
+				subtext: module.handleSubtextChanged,
+				soundAfterInspection: module.handleSoundAfterInspectionChanged
+			};
+
 			sandbox.listen(
 				['page-changed'],
 				module.handlePageChanged,
@@ -48,9 +55,6 @@ core.register(
 			dao.getConfig('soundAfterInspection', false, module.handleSoundAfterInspectionChanged);
 
 			$('.config-button')
-				.on('click', function(e) {
-					sandbox.goToPage('config');
-				})
 				.css('display', 'block');
 		};
 
@@ -63,34 +67,31 @@ core.register(
 		};
 
 		module.handleGameChanged = function(event) {
-			dao.unlisten(['config-changed'], module.handleInspectionTimeChanged);
-
-			dao.listen(
-				['config-changed'],
-				'inspectionTime',
-				module.handleInspectionTimeChanged
-			);
-			dao.listen(
-				['config-changed'],
-				'subtext',
-				module.handleSubtextChanged
-			);
-			dao.listen(
-				['config-changed'],
-				'soundAfterInspection',
-				module.handleSoundAfterInspectionChanged
-			);
+			Object.keys(configListeners).forEach(function(key) {
+				var listener = configListeners[key];
+				dao.unlisten(['config-changed'], listener);
+				dao.listen(['config-changed'], key, listener);
+			});
 		};
 
 		module.handleInspectionTimeChanged = function(inspectionTime) {
+			if(inspectionTime === null) {
+				inspectionTime = 0;
+			}
 			$inspectionTime.val(inspectionTime);
 		};
 
 		module.handleSubtextChanged = function(subtext) {
+			if(subtext === null) {
+				subtext = true;
+			}
 			$subtext.prop('checked', subtext);
 		};
 
 		module.handleSoundAfterInspectionChanged = function(soundAfterInspection) {
+			if(soundAfterInspection === null) {
+				soundAfterInspection = false;
+			}
 			$soundAfterInspection.prop('checked', soundAfterInspection);
 		};
 

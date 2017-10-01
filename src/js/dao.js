@@ -118,24 +118,32 @@ dao.getConfig = function(key, defaultValue, callback) {
 
 dao.listeners = {
 	'score-added': [],
-	'score-removed': []
+	'score-removed': [],
+	'config-changed': []
 };
-dao.listen = function(types, puzzle, callback) {
+dao.listen = function(types, key, callback) {
 	if(dao.datasource) {
-		dao.datasource.listen(types, puzzle, callback);
+		dao.datasource.listen(types, key, callback);
 	} else {
 		types.forEach(function(type) {
 			if(dao.listeners[type]) {
-				dao.listeners[type].push(callback);
+				dao.listeners[type].push({
+					key: key,
+					callback: callback
+				});
 			}
 
 			// Notify of existing results
 			if(type == 'score-added') {
-				dao.get('scores-' + puzzle, function(scores) {
+				dao.get('scores-' + key, function(scores) {
 					if(scores) {
 						scores.forEach(callback);
 					}
 				});
+			}
+
+			if(type == 'config-changed') {
+				dao.get(key, callback);
 			}
 		});
 	}
@@ -148,7 +156,7 @@ dao.unlisten = function(types, callback) {
 			var listeners = dao.listeners[type];
 			if(listeners) {
 				dao.listeners[type] = listeners.filter(function(listener) {
-					return listener != callback;
+					return listener.callback != callback;
 				});
 			}
 		});
@@ -157,7 +165,7 @@ dao.unlisten = function(types, callback) {
 dao.notify = function(type, score) {
 	if(dao.listeners[type]) {
 		dao.listeners[type].forEach(function(listener) {
-			listener(score);
+			listener.callback(score);
 		});
 	}
 }

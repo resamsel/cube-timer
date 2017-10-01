@@ -15,8 +15,7 @@ module.exports = function(grunt) {
 				expand: true,
 				flatten: true,
 				src: [
-					'node_modules/jquery/dist/jquery.min.js',
-					'node_modules/nprogress/nprogress.js'
+					'node_modules/jquery/dist/jquery.min.js'
 				],
 				dest: 'dist/<%= pkg.name %>/js'
 			},
@@ -89,6 +88,7 @@ module.exports = function(grunt) {
 				src: [
 					'node_modules/jquery-migrate/jquery-migrate.min.js',
 					'node_modules/materialize-css/dist/js/materialize.min.js',
+					'node_modules/nprogress/nprogress.js'
 				],
 				dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.pre.js'
 			},
@@ -118,6 +118,7 @@ module.exports = function(grunt) {
 		jshint: {
 			// define the files to lint
 			files: [
+				'src/*.js',
 				'src/js/config.js',
 				'src/js/core.js',
 				'src/js/modules/*.js',

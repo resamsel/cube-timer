@@ -27,8 +27,8 @@ var Keys = {
 	puzzle: function(puzzle, key) {
 		return '/puzzles/'+puzzle+'/'+key;
 	},
-	puzzleScores: function(puzzle, key) {
-		return '/puzzle-scores/'+puzzle+'/'+key;
+	puzzleScores: function(puzzle, user, key) {
+		return '/puzzle-scores/'+puzzle+'/'+key+'-'+Keys.user(user);
 	},
 	config: function(user, key) {
 		return '/configs/'+Keys.user(user)+'/'+key;
@@ -36,10 +36,11 @@ var Keys = {
 };
 
 core.register(
-	'Google',
+	'Firebase',
 	function(sandbox) {
 		var module = {};
-				var defaultTimeout = 7000;
+		var listeners = [];
+		var defaultTimeout = 7000;
 		var $signOutButton = $('.google-sign-out');
 		var $body = $('body');
 		var configKeys = [
@@ -56,12 +57,15 @@ core.register(
 			// Initialize Firebase
 			firebase.initializeApp(firebaseConfig);
 
-			firebase.auth().onAuthStateChanged(function(user) {
-				sandbox.notify({type: 'datasource-changed'});
-			});
+			firebase.auth().onAuthStateChanged(module.handleAuthStateChanged);
 
 			$signOutButton.click(module.handleSignOut);
 			window.onSignIn = module.handleSignIn;
+		};
+		
+		module.handleAuthStateChanged = function(user) {
+			sandbox.notify({type: 'datasource-changed'});
+			NProgress.done();
 		};
 
 		module.handleDatasourceChanged = function() {
@@ -84,6 +88,12 @@ core.register(
 				$('.auth-google-email').text(user.email);
 
 				module.migrateData();
+
+				Object.keys(dao.listeners).forEach(function(type) {
+					dao.listeners[type].forEach(function(listener) {
+						module.listen([type], listener.key, listener.callback);
+					});
+				});
 			} else {
 				dao.datasource = undefined;
 
@@ -92,24 +102,30 @@ core.register(
 		};
 
 		module.handleSignIn = function(googleUser) {
+			NProgress.start();
 			// We need to register an Observer on Firebase Auth to make sure auth is initialized.
-			var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
-				unsubscribe();
-				// Check if we are already signed-in Firebase with the correct user.
-				if (!module.isUserEqual(googleUser, firebaseUser)) {
-					// Build Firebase credential with the Google ID token.
-					var credential = firebase.auth.GoogleAuthProvider
-						.credential(googleUser.getAuthResponse().id_token);
+			var unsubscribe = firebase.auth()
+				.onAuthStateChanged(function(firebaseUser) {
+					unsubscribe();
+					module.firebaseSignIn(googleUser, firebaseUser);
+				});
+		};
 
-					// Sign in with credential from the Google user.
-					firebase.auth()
-							.signInWithCredential(credential)
-							.catch(module.handleAuthError);
-				} else {
-					console.log('User already signed-in Firebase.');
-				}
-				//sandbox.notify({type: 'datasource-changed'});
-			});
+		module.firebaseSignIn = function(googleUser, firebaseUser) {
+			// Check if we are already signed-in Firebase with the correct user.
+			if (!module.isUserEqual(googleUser, firebaseUser)) {
+				// Build Firebase credential with the Google ID token.
+				var credential = firebase.auth.GoogleAuthProvider
+					.credential(googleUser.getAuthResponse().id_token);
+
+				// Sign in with credential from the Google user.
+				firebase.auth()
+						.signInWithCredential(credential)
+						.then(NProgress.done)
+						.catch(module.handleAuthError);
+			} else {
+				NProgress.done();
+			}
 		};
 		
 		module.handleAuthError = function(error) {
@@ -120,6 +136,7 @@ core.register(
 			} else {
 				console.error(error);
 			}
+			NProgress.done();
 		};
 
 		/**
@@ -149,40 +166,69 @@ core.register(
 			});
 		};
 
+		module.wrap = function(callback) {
+			return function(snapshot) {
+				return callback(snapshot.val());
+			};
+		};
+
 		module.listen = function(types, key, callback) {
+			var existing = listeners.filter(function(listener) {
+				return listener.callback === callback;
+			});
+			if(existing.length > 0) {
+				return;
+			}
+
+			var wrapped = module.wrap(callback);
+			listeners.push({
+				types: types,
+				key: key,
+				callback: callback,
+				wrapped: wrapped
+			});
+
 			var user = firebase.auth().currentUser;
+			var db = firebase.database();
+			var ref;
 			types.forEach(function(type) {
 				if(type == 'score-added') {
-					firebase.database()
-						.ref(Keys.userScores(user, key))
-						.on('child_added', function(snapshot) {
-							callback(snapshot.val());
-						});
+					db.ref(Keys.userScores(user, key))
+						.on('child_added', wrapped);
 				} else if(type == 'score-removed') {
-					firebase.database()
-						.ref(Keys.userScores(user, key))
-						.on('child_removed', function(snapshot) {
-							callback(snapshot.val());
-						});
+					db.ref(Keys.userScores(user, key))
+						.on('child_removed', wrapped);
 				} else if(type == 'config-changed') {
-					firebase.database()
-						.ref(Keys.config(user, key))
-						.on('value', function(snapshot) {
-							callback(snapshot.val());
-						});
+					db.ref(Keys.config(user, key))
+						.on('value', wrapped);
 				}
 			});
 		};
 
 		module.unlisten = function(types, callback) {
+			var ref = firebase.database().ref('/');
+			var callbacks = listeners.filter(function(listener) {
+				return listener.callback === callback;
+			}).map(function(listener) {
+				return listener.wrapped;
+			});
+			if(callbacks.length < 1) {
+				return;
+			}
+
 			types.forEach(function(type) {
-				if(type == 'score-added') {
-					firebase.database().ref('/').off('child_added', callback);
-				} else if(type == 'score-removed') {
-					firebase.database().ref('/').off('child_removed', callback);
-				} else if(type == 'config-changed') {
-					firebase.database().ref('/').off('value', callback);
-				}
+				callbacks.forEach(function(wrapped) {
+					if(type == 'score-added') {
+						ref.off('child_added', wrapped);
+					} else if(type == 'score-removed') {
+						ref.off('child_removed', wrapped);
+					} else if(type == 'config-changed') {
+						ref.off('value', wrapped);
+					}
+				});
+				listeners = listeners.filter(function(listener) {
+					return listener.callback !== callback;
+				});
 			});
 		};
 
@@ -214,7 +260,7 @@ core.register(
 
 			// Write the new score's data simultaneously in the score list and the user's score list.
 			updates[Keys.puzzle(puzzle, 'name')] = puzzle;
-			updates[Keys.puzzleScores(puzzle, Keys.user(user)+'-'+key)] = data;
+			updates[Keys.puzzleScores(puzzle, user, key)] = data;
 			updates[Keys.userScores(user, puzzle, key)] = data;
 			updates[Keys.userPuzzles(user, puzzle)] = true;
 			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
@@ -229,7 +275,7 @@ core.register(
 			var now = new Date();
 			var updates = {};
 
-			updates[Keys.puzzleScores(puzzle, Keys.user(user)+'-'+key)] = null;
+			updates[Keys.puzzleScores(puzzle, user, key)] = null;
 			updates[Keys.userScores(user, puzzle, key)] = null;
 			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
 			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
@@ -251,7 +297,7 @@ core.register(
 
 					updates[Keys.userScores(user, puzzle)] = [];
 					snapshot.forEach(function(score) {
-						updates[Keys.puzzleScores(puzzle, Keys.user(user)+'-'+score.timestamp+'-'+score.value)] = null;
+						updates[Keys.puzzleScores(puzzle, user, score.timestamp+'-'+score.value)] = null;
 					});
 
 					firebase.database().ref().update(updates);
@@ -284,7 +330,11 @@ core.register(
 			firebase.database()
 				.ref(Keys.config(user, key))
 				.once('value', function(snapshot) {
-					callback(snapshot.val());
+					if(snapshot.val() === null) {
+						callback(defaultValue);
+					} else {
+						callback(snapshot.val());
+					}
 				});
 		};
 
@@ -319,7 +369,7 @@ core.register(
 			});
 			configKeys.forEach(function(key) {
 				dao.get(key, function(value) {
-					if(typeof(value) !== 'undefined') {
+					if(value !== null && typeof(value) !== 'undefined') {
 						module.storeConfig(key, value);
 					}
 				});

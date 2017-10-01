@@ -15,12 +15,8 @@ core.register(
 		var windowSize = 50;
 
 		module.repaint = true;
+		module.results = [];
 		module.init = function() {
-			sandbox.listen(
-				['results-changed'],
-				module.handleResultsChanged,
-				module
-			);
 			sandbox.listen(
 				['game-changed'],
 				module.handleGameChanged,
@@ -31,6 +27,7 @@ core.register(
 				module.handlePageChanged,
 				module
 			);
+			module.listen();
 
 			$('.card-stats').css('display', 'block');
 		};
@@ -39,15 +36,21 @@ core.register(
 			//console.log('handleResultsChanged', event);
 			module.updateChart(sandbox.createStats(module.results));
 		}, 250);
-		
+
 		module.handleGameChanged = function(event) {
 			module.results = [];
 			module.repaint = true;
-			var puzzle = sandbox.activeGame();
 
+			module.listen();
+
+			module.handleResultsChanged({data: sandbox.activeGame()});
+		};
+
+		module.listen = function() {
 			dao.unlisten(['score-added'], module.handleScoreAdded);
 			dao.unlisten(['score-removed'], module.handleScoreRemoved);
 
+			var puzzle = sandbox.activeGame();
 			dao.listen(
 				['score-added'],
 				puzzle,
@@ -58,14 +61,9 @@ core.register(
 				puzzle,
 				module.handleScoreRemoved
 			);
-
-			module.handleResultsChanged({data: sandbox.activeGame()});
 		};
 		
 		module.handleScoreAdded = function(score) {
-			if(!module.results) {
-				module.results = [];
-			}
 			module.results.push(score);
 			misc.sortScores(module.results);
 			module.repaint = true;
@@ -91,7 +89,7 @@ core.register(
 				return;
 			}
 
-			console.log('%s.updateChart(stats=%s)', module.id, stats);
+			//console.log('%s.updateChart(stats=%s)', module.id, stats);
 
 			var results = $('#ct-stats');
 			var categories = $('#ct-categories');
@@ -124,10 +122,10 @@ core.register(
 			var best = stats.movingMinimum(values);
 			var len = values.length;
 			var offset = Math.max(0, len - windowSize);
-			console.log(
-				'values=%s, averages12=%s, averages50=%s, best=%s, offset=%d',
-				values, averages12, averages50, best, offset
-			);
+//			console.log(
+//				'values=%s, averages12=%s, averages50=%s, best=%s, offset=%d',
+//				values, averages12, averages50, best, offset
+//			);
 			var data = {
 				// A labels array that can contain any sort of values
 				labels: statistics.scores.map(misc.scoreKey).slice(offset, len).rpad(windowSize, null),

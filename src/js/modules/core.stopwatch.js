@@ -11,6 +11,9 @@ core.register(
 		var module = {};
 		var timerSound;
 		var startSound;
+		var inspectionTime = 0;
+		var soundAfterInspection = false;
+		var $body;
 
 		module.init = function() {
 			sandbox.listen(
@@ -23,14 +26,23 @@ core.register(
 				module.handlePageChanged,
 				module
 			);
+			dao.listen(
+				['config-changed'],
+				'inspectionTime',
+				module.handleInspectionTimeChanged
+			);
+			dao.listen(
+				['config-changed'],
+				'soundAfterInspection',
+				module.handleSoundAfterInspectionChanged
+			);
+
+			$body = $('body');
 
 			$('button.start-stop').on('click', module.toggleTimer);
 			$('.card-timer').css('display', 'block');
 			$('.timer-button')
-				.attr('href', '#!' + sandbox.activeGame() + '/timer')
-				.on('click', function(e) {
-				sandbox.goToPage(sandbox.activeGame() + '/timer');
-			});
+				.attr('href', '#!'+sandbox.activeGame()+'/timer');
 
 			// pre-load sound
 			timerSound = new Audio('audio/timer.mp3');
@@ -49,20 +61,26 @@ core.register(
 		};
 
 		module.handlePageChanged = function(event) {
-			console.log('page-changed', event);
 			if(event.data == 'timer') {
-				$('body')
+				$body
 					.on('keydown', module.handleSpaceDown)
 					.on('keyup', module.handleSpaceUp);
 				$('.timer-button').parent().addClass('active');
 			} else {
-				$('body').off('keydown').off('keyup');
+				$body.off('keydown').off('keyup');
 				$('.timer-button').parent().removeClass('active');
 			}
 		};
 
+		module.handleInspectionTimeChanged = function(value) {
+			inspectionTime = value;
+		};
+
+		module.handleSoundAfterInspectionChanged = function(value) {
+			soundAfterInspection = value;
+		};
+
 		module.handleSpaceDown = function(event) {
-			console.log('keydown');
 			if(event.keyCode == 32 && event.target == document.body) {
 				event.preventDefault();
 				return false;
@@ -77,17 +95,11 @@ core.register(
 
 		module.handleStart = function() {
 			$('body').removeClass('stopped').addClass('started');
-			dao.getConfig('inspectionTime', 0, function(inspectionTime) {
-				if(inspectionTime > 0) {
-					module.startCountdown(inspectionTime);
-				} else {
-					module.startTimer();
-				}
-			});
-			sandbox.notify({
-				type: 'stopwatch-started',
-				data: null
-			});
+			if(inspectionTime > 0) {
+				module.startCountdown(inspectionTime);
+			} else {
+				module.startTimer();
+			}
 		};
 
 		module.handleStop = function() {
@@ -99,10 +111,7 @@ core.register(
 			}
 			if(elapsed > 0) {
 				// Only use values when stopwatch actually started
-				sandbox.notify({
-					type: 'stopwatch-stopped',
-					data: null
-				});
+				sandbox.notify({type: 'stopwatch-stopped', data: null});
 				dao.storeScore(
 					sandbox.activeGame(),
 					{
@@ -111,11 +120,11 @@ core.register(
 					}
 				);
 			}
-			$('body').removeClass('started').addClass('stopped');
+			$body.removeClass('started').addClass('stopped');
 		};
 
 		module.toggleTimer = function() {
-			if($('body').hasClass('started')) {
+			if($body.hasClass('started')) {
 				module.handleStop();
 			} else {
 				module.handleStart();
@@ -136,12 +145,10 @@ core.register(
 			// Code for showing the number of seconds
 		module.updateCountdown = function(currentCount) {
 			if(count <= 3) {
-				dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
-					if(soundAfterInspection) {
-						timerSound.load();
-						timerSound.play();
-					}
-				});
+				if(soundAfterInspection) {
+					timerSound.load();
+					timerSound.play();
+				}
 			}
 			$('#timer-display').text(count);
 		};
@@ -156,24 +163,20 @@ core.register(
 			var timerConfig = {
 				refreshRateMS: 31 // prime number
 			};
-			dao.getConfig('inspectionTime', 0, function(inspectionTime) {
-				dao.getConfig('soundAfterInspection', false, function(soundAfterInspection) {
-					if(inspectionTime > 0 && soundAfterInspection) {
-						startSound.load();
-						startSound.play();
-					}
-					if(typeof module.stopwatch !== 'undefined') {
-						module.stopwatch.stop();
-					}
-					module.stopwatch = new Stopwatch(timerConfig);
-					module.stopwatch
-						.onTime(function(time) {
-							$('#timer-display')
-								.html(misc.defaultFormatMilliseconds(time.ms));
-						})
-						.start();
-				});
-			});
+			if(inspectionTime > 0 && soundAfterInspection) {
+				startSound.load();
+				startSound.play();
+			}
+			if(typeof module.stopwatch !== 'undefined') {
+				module.stopwatch.stop();
+			}
+			module.stopwatch = new Stopwatch(timerConfig);
+			module.stopwatch
+				.onTime(function(time) {
+					$('#timer-display')
+						.html(misc.defaultFormatMilliseconds(time.ms));
+				})
+				.start();
 		};
 
 		return module;

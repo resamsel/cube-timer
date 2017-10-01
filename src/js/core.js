@@ -37,12 +37,10 @@ module.exports = function() {
 	core.init = function() {
 		console.debug('Core.init()');
 
+		NProgress.start();
+
 		// Migrate database, if necessary
 		this.migrate();
-
-		dao.retrieveActiveGame(function(game_){
-			game = game_;
-		});
 
 		for(var moduleId in moduleData) {
 			this.start(moduleId);
@@ -54,23 +52,7 @@ module.exports = function() {
 			this.notify(eventQueue.pop());
 		}
 
-		var that = this;
-		this.listen(
-			['datasource-changed'],
-			function() {
-				that.notify({
-					type: 'game-changed',
-					data: that.activeGame()
-				});
-			},
-			{id: 'Core'}
-		);
-
-		if(window.location.hash.startsWith('#!')) {
-			this.goToPage(window.location.hash.substring(2));
-		} else {
-			this.goToPage(this.activeGame() + '/' + this.activePage());
-		}
+		NProgress.done();
 	};
 
 	core.stopAll = function() {
@@ -113,11 +95,6 @@ module.exports = function() {
 			return;
 		}
 		if(!handlers.hasOwnProperty(event.type)) {
-			console.log(
-				'No handler found for type %s (%s)',
-				event.type,
-				JSON.stringify(Object.keys(handlers))
-			);
 			return;
 		}
 		for(var i = 0; i < handlers[event.type].length; i++) {

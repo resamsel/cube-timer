@@ -11,10 +11,10 @@ core.register(
 		module.results = [];
 
 		module.init = function() {
-			sandbox.listen(
-				['config-subtext-changed'],
-				module.updateLabels,
-				module
+			dao.listen(
+				['config-changed'],
+				'subtext',
+				module.update
 			);
 			sandbox.listen(
 				['page-changed'],
@@ -26,14 +26,28 @@ core.register(
 				module.handleGameChanged,
 				module
 			);
+			module.listen();
 
 			$('.results-button')
 				.css('display', 'block')
-				.attr('href', '#!' + sandbox.activeGame() + '/results')
-				.on('click', function(e) {
-					module.updateDates();
-					sandbox.goToPage(sandbox.activeGame() + '/results');
-				});
+				.attr('href', '#!' + sandbox.activeGame() + '/results');
+		};
+
+		module.listen = function() {
+			dao.unlisten(['score-added'], module.handleScoreAdded);
+			dao.unlisten(['score-removed'], module.handleScoreRemoved);
+
+			var puzzle = sandbox.activeGame();
+			dao.listen(
+				['score-added'],
+				puzzle,
+				module.handleScoreAdded
+			);
+			dao.listen(
+				['score-removed'],
+				puzzle,
+				module.handleScoreRemoved
+			);
 		};
 
 		module.handlePageChanged = function(event) {
@@ -49,19 +63,7 @@ core.register(
 
 			module.results = [];
 
-			dao.unlisten(['score-added'], module.handleScoreAdded);
-			dao.unlisten(['score-removed'], module.handleScoreRemoved);
-
-			dao.listen(
-				['score-added'],
-				sandbox.activeGame(),
-				module.handleScoreAdded
-			);
-			dao.listen(
-				['score-removed'],
-				sandbox.activeGame(),
-				module.handleScoreRemoved
-			);
+			module.listen();
 
 			module.handleResultsChanged();
 		};
@@ -147,11 +149,6 @@ core.register(
 		};
 
 		module.updateResults = misc.debounce(function(game) {
-			console.log(
-				'%s.updateResults(game=%s)',
-				module.id,
-				game
-			);
 			var results = module.results;
 			$('#results-content .times-content > *').remove();
 			var result;
