@@ -9,6 +9,7 @@ core.register(
 		var $inspectionTime;
 		var $subtext;
 		var $soundAfterInspection;
+		var $windowSize;
 		var configListeners;
 
 		module.init = function() {
@@ -33,29 +34,43 @@ core.register(
 			$inspectionTime.change(function() {
 				dao.storeConfig('inspectionTime', Number($(this).val()));
 			});
-			dao.getConfig('inspectionTime', 0, module.handleInspectionTimeChanged);
+			dao.listen(
+				['config-changed'],
+				'inspectionTime',
+				module.handleInspectionTimeChanged
+			);
 
 			$subtext = $('#subtext');
 			$subtext.on('click', function(e) {
-				dao.storeConfig(
-					'subtext',
-					e.target.checked,
-					module.handleConfigStored(
-						'subtext',
-						e.target.checked
-					)
-				);
+				dao.storeConfig('subtext', e.target.checked);
 			});
-			dao.getConfig('subtext', true, module.handleSubtextChanged);
+			dao.listen(
+				['config-changed'],
+				'subtext',
+				module.handleSubtextChanged
+			);
 
 			$soundAfterInspection = $('#soundAfterInspection');
 			$soundAfterInspection.on('click', function(e) {
 				dao.storeConfig('soundAfterInspection', e.target.checked);
 			});
-			dao.getConfig('soundAfterInspection', false, module.handleSoundAfterInspectionChanged);
+			dao.listen(
+				['config-changed'],
+				'soundAfterInspection',
+				module.handleSoundAfterInspectionChanged
+			);
 
-			$('.config-button')
-				.css('display', 'block');
+			$windowSize = $('#windowSize');
+			$windowSize.on('change', function(e) {
+				dao.storeConfig('windowSize', $(e.target).val());
+			});
+			dao.listen(
+				['config-changed'],
+				'windowSize',
+				module.handleWindowSizeChanged
+			);
+
+			$('.config-button').css('display', 'block');
 		};
 
 		module.handlePageChanged = function(event) {
@@ -95,13 +110,11 @@ core.register(
 			$soundAfterInspection.prop('checked', soundAfterInspection);
 		};
 
-		module.handleConfigStored = function(key, value) {
-			return function() {
-				sandbox.notify({
-					type: 'config-' + key + '-changed',
-					data: value
-				});
-			};
+		module.handleWindowSizeChanged = function(windowSize) {
+			if(windowSize === null) {
+				windowSize = 50;
+			}
+			$windowSize.val(windowSize);
 		};
 
 		return module;

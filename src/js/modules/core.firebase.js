@@ -324,20 +324,6 @@ core.register(
 			}
 		};
 
-		module.getConfig = function(key, defaultValue, callback) {
-			var user = firebase.auth().currentUser;
-
-			firebase.database()
-				.ref(Keys.config(user, key))
-				.once('value', function(snapshot) {
-					if(snapshot.val() === null) {
-						callback(defaultValue);
-					} else {
-						callback(snapshot.val());
-					}
-				});
-		};
-
 		module.notifyMigrated = misc.debounce(function() {
 			Materialize.toast(
 				I18n.translate('firebaseMigrationFinished'),

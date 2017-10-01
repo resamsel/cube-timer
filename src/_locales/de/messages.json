@@ -338,5 +338,14 @@
     "firebaseMigrationFinished": {
         "message": "Deine bisherigen Ergebnisse wurden mit der Cloud synchronisiert.",
         "description": "The message when migration has finished uploading it to Firebase."
+    },
+
+    "windowSize": {
+        "message": "Einträge im Chart",
+        "description": "The maximum number of entries in the chart, as a label."
+    },
+    "windowSizeDescription": {
+        "message": "Die maximale Anzahl der Ergebnisse, die im Chart angezeigt werden. Wenn diese Zahl geringer als 3, oder höher, als die aktuelle Anzahl der Ergebnisse ist, dann werden alle Ergebnisse angezeigt.",
+        "description": "The maximum number of entries in the chart, as a label."
     }
 }

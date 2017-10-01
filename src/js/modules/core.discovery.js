@@ -14,6 +14,7 @@ core.register(
 				module.handleHintVisibleChanged
 			);
 
+			$('#hint-spacebar').hide();
 			$('#hint-spacebar .btn-close').on(
 				'click',
 				module.handleSpacebarClose

@@ -7,6 +7,7 @@ core.register(
 	'Results',
 	function(sandbox) {
 		var module = {};
+		var subtext = false;
 
 		module.results = [];
 
@@ -36,6 +37,7 @@ core.register(
 		module.listen = function() {
 			dao.unlisten(['score-added'], module.handleScoreAdded);
 			dao.unlisten(['score-removed'], module.handleScoreRemoved);
+			dao.unlisten(['config-changed'], module.handleSubtextChanged);
 
 			var puzzle = sandbox.activeGame();
 			dao.listen(
@@ -47,6 +49,11 @@ core.register(
 				['score-removed'],
 				puzzle,
 				module.handleScoreRemoved
+			);
+			dao.listen(
+				['config-changed'],
+				'subtext',
+				module.handleSubtextChanged
 			);
 		};
 
@@ -93,6 +100,10 @@ core.register(
 					module.update();
 				}
 			});
+		};
+
+		module.handleSubtextChanged = function(value) {
+			subtext = value;
 		};
  
 		module.removeResult = function(element) {
@@ -197,40 +208,38 @@ core.register(
 		};
 
 		module.updateLabels = function(results) {
-			dao.getConfig('subtext', true, function(markSubX) {
-				var result,
-					best = {timestamp: 0, value: 999999999},
-					best5 = {timestamp: 0, value: 999999999},
-					best12 = {timestamp: 0, value: 999999999},
-					sub;
+			var result,
+				best = {timestamp: 0, value: 999999999},
+				best5 = {timestamp: 0, value: 999999999},
+				best12 = {timestamp: 0, value: 999999999},
+				sub;
 
-				// Remove first
-				$('#results-content .label').remove();
+			// Remove first
+			$('#results-content .label').remove();
 
-				for (var i = 0; i < results.length; i++) {
-					result = results[i];
-					if (result.value < best.value) {
-						best = result;
-					}
-					if ((results.length - i - 1) < 5 && result.value < best5.value) {
-						best5 = result;
-					}
-					if ((results.length - i - 1) < 12 && result.value < best12.value) {
-						best12 = result;
-					}
-					if(markSubX) {
-						sub = Category.fromValue(result.value);
-						if (sub > 0) {
-							module.mark(result, 'sub ' + sub, 'info');
-						}
+			for (var i = 0; i < results.length; i++) {
+				result = results[i];
+				if (result.value < best.value) {
+					best = result;
+				}
+				if ((results.length - i - 1) < 5 && result.value < best5.value) {
+					best5 = result;
+				}
+				if ((results.length - i - 1) < 12 && result.value < best12.value) {
+					best12 = result;
+				}
+				if(subtext) {
+					sub = Category.fromValue(result.value);
+					if (sub > 0) {
+						module.mark(result, 'sub ' + sub, 'info');
 					}
 				}
+			}
 
-				// Then mark
-				module.mark(best, 'best', 'success');
-				module.mark(best5, 'best #5', 'success');
-				module.mark(best12, 'best #12', 'success');
-			});
+			// Then mark
+			module.mark(best, 'best', 'success');
+			module.mark(best5, 'best #5', 'success');
+			module.mark(best12, 'best #12', 'success');
 		};
 
 		return module;

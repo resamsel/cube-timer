@@ -49,6 +49,7 @@ core.register(
 		module.listen = function() {
 			dao.unlisten(['score-added'], module.handleScoreAdded);
 			dao.unlisten(['score-removed'], module.handleScoreRemoved);
+			dao.unlisten(['config-changed'], module.handleWindowSizeChanged);
 
 			var puzzle = sandbox.activeGame();
 			dao.listen(
@@ -60,6 +61,11 @@ core.register(
 				['score-removed'],
 				puzzle,
 				module.handleScoreRemoved
+			);
+			dao.listen(
+				['config-changed'],
+				'windowSize',
+				module.handleWindowSizeChanged
 			);
 		};
 		
@@ -74,6 +80,15 @@ core.register(
 			module.results = module.results.filter(function(result) {
 				return result.timestamp != score.timestamp;
 			});
+			module.repaint = true;
+			module.handleResultsChanged({data: sandbox.activeGame()});
+		};
+
+		module.handleWindowSizeChanged = function(value) {
+			if(value == null || typeof value === 'undefined') {
+				value = 50;
+			}
+			windowSize = value;
 			module.repaint = true;
 			module.handleResultsChanged({data: sandbox.activeGame()});
 		};
@@ -121,20 +136,24 @@ core.register(
 			var averages50 = stats.movingAverage(values, 50);
 			var best = stats.movingMinimum(values);
 			var len = values.length;
-			var offset = Math.max(0, len - windowSize);
+			var maxEntries = windowSize;
+			if(maxEntries < 3 || maxEntries > len) {
+				maxEntries = len;
+			}
+			var offset = Math.max(0, len - maxEntries);
 //			console.log(
 //				'values=%s, averages12=%s, averages50=%s, best=%s, offset=%d',
 //				values, averages12, averages50, best, offset
 //			);
 			var data = {
 				// A labels array that can contain any sort of values
-				labels: statistics.scores.map(misc.scoreKey).slice(offset, len).rpad(windowSize, null),
+				labels: statistics.scores.map(misc.scoreKey).slice(offset, len).rpad(maxEntries, null),
 				// Our series array that contains series objects or in this case series data arrays
 				series: [
-					values.slice(offset, len).rpad(windowSize, null),
-					averages12.slice(offset, len).rpad(windowSize, null),
-					averages50.slice(offset, len).rpad(windowSize, null),
-					best.slice(offset, len).rpad(windowSize, null)
+					values.slice(offset, len).rpad(maxEntries, null),
+					averages12.slice(offset, len).rpad(maxEntries, null),
+					averages50.slice(offset, len).rpad(maxEntries, null),
+					best.slice(offset, len).rpad(maxEntries, null)
 				]
 			};
 
@@ -179,7 +198,11 @@ core.register(
 
 		module.createCategories = function(stats) {
 			var len = stats.scores.length;
-			var offset = Math.max(0, len - windowSize);
+			var maxEntries = windowSize;
+			if(maxEntries < 3 || maxEntries > len) {
+				maxEntries = len;
+			}
+			var offset = Math.max(0, len - maxEntries);
 			var values = stats.scores.slice(offset, len).map(misc.scoreValue);
 			var categories = sandbox.createCategories(values);
 			var series = Object
@@ -214,7 +237,11 @@ core.register(
 		module.createWeekdays = function(stats) {
 			var series = [0, 0, 0, 0, 0, 0, 0];
 			var len = stats.scores.length;
-			var offset = Math.max(0, len - windowSize);
+			var maxEntries = windowSize;
+			if(maxEntries < 3 || maxEntries > len) {
+				maxEntries = len;
+			}
+			var offset = Math.max(0, len - maxEntries);
 			var values = stats.scores.slice(offset, len).map(misc.scoreKey);
 			values.forEach(function(key) {
 				series[new Date(key).getDay()] += 1;
@@ -222,8 +249,8 @@ core.register(
 			var shifted = series.shift();
 			series.push(shifted);
 			var data = {
-			  labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-			  series: [series]
+				labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+				series: [series]
 			};
 			var options = {
 				chartPadding: 0,

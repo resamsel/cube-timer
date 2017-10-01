@@ -338,5 +338,14 @@
     "firebaseMigrationFinished": {
         "message": "Your existing scores have been synched with the cloud.",
         "description": "The message when migration has finished uploading it to Firebase."
+    },
+
+    "windowSize": {
+        "message": "Chart Entries",
+        "description": "The maximum number of entries in the chart, as a label."
+    },
+    "windowSizeDescription": {
+        "message": "The maximum amount of results shown in the chart. When this number is less than 3, or greater than the number of results, all results will be shown.",
+        "description": "The maximum number of entries in the chart, as a label."
     }
 }

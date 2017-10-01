@@ -216,35 +216,44 @@
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
 					<div class="card card-stats">
 						<div class="card-content">
-					<div class="row">
-						<form id="config" class="col s12">
 							<div class="row">
-								<div class="input-field col s4">
-									<label for="inspectionTime" i18n-key="inspectionTime">Inspection time</label>
-								</div>
-								<div class="input-field col s8">
-									<select id="inspectionTime" class="browser-default">
-										<option value="0" i18n-key="inspectionTimeNone">None</option>
-										<option value="3" i18n-key="inspectionTime3Seconds">3 seconds</option>
-										<option value="5" i18n-key="inspectionTime5Seconds">5 seconds</option>
-										<option value="10" i18n-key="inspectionTime10Seconds">10 seconds</option>
-										<option value="15" i18n-key="inspectionTime15Seconds">15 seconds</option>
-									</select>
-								</div>
-								<div class="input-field col offset-s4 s8">
-									<input type="checkbox" class="filled-in" id="soundAfterInspection" />
-									<label for="soundAfterInspection">
-										<span i18n-key="inspectionSound">Play sound after inspection</span>
-									</label>
-								</div>
-								<div class="input-field col offset-s4 s8">
-									<input type="checkbox" class="filled-in" id="subtext" />
-									<label for="subtext">
-										<span i18n-key="showCategoryLabels">Show <span class="label label-info">sub X</span> labels</span>
-									</label>
-								</div>
-							</div>
-						</form>
+								<form id="config" class="col s12">
+									<div class="row">
+										<div class="input-field col s4">
+											<label for="inspectionTime" i18n-key="inspectionTime">Inspection time</label>
+										</div>
+										<div class="input-field col s8">
+											<select id="inspectionTime" class="browser-default">
+												<option value="0" i18n-key="inspectionTimeNone">None</option>
+												<option value="3" i18n-key="inspectionTime3Seconds">3 seconds</option>
+												<option value="5" i18n-key="inspectionTime5Seconds">5 seconds</option>
+												<option value="10" i18n-key="inspectionTime10Seconds">10 seconds</option>
+												<option value="15" i18n-key="inspectionTime15Seconds">15 seconds</option>
+											</select>
+										</div>
+										<div class="input-field col offset-s4 s8">
+											<input type="checkbox" class="filled-in" id="soundAfterInspection" />
+											<label for="soundAfterInspection">
+												<span i18n-key="inspectionSound">Play sound after inspection</span>
+											</label>
+										</div>
+										<div class="input-field col offset-s4 s8">
+											<input type="checkbox" class="filled-in" id="subtext" />
+											<label for="subtext">
+												<span i18n-key="showCategoryLabels">Show <span class="label label-info">sub X</span> labels</span>
+											</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="input-field col s4">
+											<label for="windowSize" i18n-key="windowSize">Window size</label>
+										</div>
+										<div class="input-field col s8">
+											<input type="number" id="windowSize" /><br/>
+											<p i18n-key="windowSizeDescription"></p>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>

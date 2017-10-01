@@ -108,14 +108,6 @@ dao.storeConfig = function(key, value, callback) {
 	}
 };
 
-dao.getConfig = function(key, defaultValue, callback) {
-	if(dao.datasource) {
-		dao.datasource.getConfig(key, defaultValue, callback);
-	} else {
-		dao.get(key, dao.defaultCallback(key, defaultValue, callback));
-	}
-};
-
 dao.listeners = {
 	'score-added': [],
 	'score-removed': [],
