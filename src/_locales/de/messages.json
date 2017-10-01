@@ -72,6 +72,18 @@
         "description": "The actions that may be applied to the result."
     },
 
+    "buttonOk": {
+        "message": "OK",
+        "description": "The OK button."
+    },
+    "buttonCancel": {
+        "message": "Abbrechen",
+        "description": "The cancel button."
+    },
+    "buttonCreatePuzzle": {
+        "message": "Puzzle anlegen",
+        "description": "The button to create the puzzle."
+    },
     "buttonStart": {
         "message": "Start",
         "description": "The name of the button to start the timer."
@@ -338,6 +350,22 @@
     "firebaseMigrationFinished": {
         "message": "Deine bisherigen Ergebnisse wurden mit der Cloud synchronisiert.",
         "description": "The message when migration has finished uploading it to Firebase."
+    },
+    "puzzleCreate": {
+        "message": "Neues Puzzle",
+        "description": "The link to create a new puzzle."
+    },
+    "puzzleDelete": {
+        "message": "Puzzle entfernen",
+        "description": "The header to delete a puzzle."
+    },
+    "puzzleDeleteDescription": {
+        "message": "Willst du das Puzzle mit allen Ergebnissen entfernen? Diese Operation kann nicht rückgängig gemacht werden.",
+        "description": "The description to delete a puzzle."
+    },
+    "puzzles": {
+        "message": "Puzzle",
+        "description": "The link to the puzzle list."
     },
 
     "windowSize": {

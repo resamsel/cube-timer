@@ -79,7 +79,27 @@ module.exports = function() {
 					// 3. store data in game '3x3x3'
 					dao.set('scores-3x3x3', scores);
 
+					// 5. upgrade database version
 					dao.set('databaseVersion', 1);
+				});
+			}
+			if(databaseVersion < 2) {
+				// Migrate data set to support games in Firebase
+				// 1. retrieve data
+				dao.get('games', function(games) {
+					// 2. remove data in games
+					dao.remove('games');
+
+					// 3. migrate games to puzzle objects
+					var puzzles = games.map(function(game) {
+						return {name: game};
+					});
+
+					// 4. store data in puzzles
+					dao.set('puzzles', puzzles);
+
+					// 5. upgrade database version
+					dao.set('databaseVersion', 2);
 				});
 			}
 		});
@@ -125,11 +145,9 @@ module.exports = function() {
 	core.activeGame = function(game_) {
 		if(typeof game_ !== 'undefined') {
 			game = game_;
-			dao.storeActiveGame(game, function() {
-				core.notify({
-					type: 'game-changed',
-					data: game
-				});
+			core.notify({
+				type: 'game-changed',
+				data: game
 			});
 		}
 

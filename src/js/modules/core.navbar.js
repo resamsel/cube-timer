@@ -9,11 +9,6 @@ core.register(
 
         module.init = function() {
             sandbox.listen(
-                ['game-list-created'],
-                module.handleGameListCreated,
-                module
-            );
-            sandbox.listen(
                 ['page-changed'],
                 module.handlePageChanged,
                 module
@@ -32,17 +27,6 @@ core.register(
             $('#main-menu').on('click', module.handleMainMenuClick);
             $(".button-collapse").sideNav();
             $('.collapsible').collapsible();
-        };
-
-        module.handleGameListCreated = function(event) {
-            var sideNav = $('nav .side-nav');
-            var gameList = sideNav.find('.game-list');
-            gameList.find('li').each(function() {
-                var game = $(this).attr('class').replace('game game-', '').replace('active', '').trim();
-                $(this).on('click', function () {
-                    sandbox.activeGame(game);
-                });
-            });
         };
 
         module.handlePageChanged = function(event) {

@@ -21,8 +21,15 @@ var Keys = {
 		}
 		return key;
 	},
-	userPuzzles: function(user, puzzle) {
-		return '/users/'+Keys.user(user)+'/puzzles/'+puzzle+'/name';
+	userPuzzles: function(user) {
+		return '/users/'+Keys.user(user)+'/puzzles';
+	},
+	userPuzzle: function(user, puzzle, suffix) {
+		var key = '/users/'+Keys.user(user)+'/puzzles/'+puzzle;
+		if(suffix) {
+			return key+'/'+suffix;
+		}
+		return key;
 	},
 	puzzle: function(puzzle, key) {
 		return '/puzzles/'+puzzle+'/'+key;
@@ -192,7 +199,13 @@ core.register(
 			var db = firebase.database();
 			var ref;
 			types.forEach(function(type) {
-				if(type == 'score-added') {
+				if(type == 'puzzle-added') {
+					db.ref(Keys.userPuzzles(user))
+						.on('child_added', wrapped);
+				} else if(type == 'puzzle-removed') {
+					db.ref(Keys.userPuzzles(user))
+						.on('child_removed', wrapped);
+				} else if(type == 'score-added') {
 					db.ref(Keys.userScores(user, key))
 						.on('child_added', wrapped);
 				} else if(type == 'score-removed') {
@@ -232,6 +245,32 @@ core.register(
 			});
 		};
 
+		module.storePuzzle = function(puzzle) {
+			var db = firebase.database();
+			var user = firebase.auth().currentUser;
+			var now = new Date();
+			var updates = {};
+
+			updates[Keys.puzzle(puzzle, 'name')] = puzzle;
+			updates[Keys.puzzle(puzzle, 'when_created')] = now.getTime();
+			updates[Keys.puzzle(puzzle, 'when_created_text')] = now.toString();
+			updates[Keys.userPuzzle(user, puzzle, 'name')] = puzzle;
+			updates[Keys.userPuzzle(user, puzzle, 'when_created')] = now.getTime();
+			updates[Keys.userPuzzle(user, puzzle, 'when_created_text')] = now.toString();
+
+			db.ref().update(updates);
+		};
+
+		module.removePuzzle = function(puzzle) {
+			var db = firebase.database();
+			var user = firebase.auth().currentUser;
+
+			// TODO: do a lot more than this!
+			// # remove scores from user-scores
+			// # remove scores from puzzle-scores
+			db.ref(Keys.userPuzzle(user, puzzle)).set(null);
+		};
+
 		module.retrieveScores = function(puzzle, callback) {
 			var user = firebase.auth().currentUser;
 			var ref = firebase.database()
@@ -262,7 +301,9 @@ core.register(
 			updates[Keys.puzzle(puzzle, 'name')] = puzzle;
 			updates[Keys.puzzleScores(puzzle, user, key)] = data;
 			updates[Keys.userScores(user, puzzle, key)] = data;
-			updates[Keys.userPuzzles(user, puzzle)] = true;
+			updates[Keys.userPuzzle(user, puzzle, 'name')] = puzzle;
+			updates[Keys.userPuzzle(user, puzzle, 'last_active')] = now.getTime();
+			updates[Keys.userPuzzle(user, puzzle, 'last_active_text')] = now.toString();
 			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
 			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
 
@@ -332,12 +373,13 @@ core.register(
 		}, 1000);
 
 		module.migrateData = function() {
-			dao.retrieveGames(function(games) {
-				games.forEach(function(game) {
+			firebase.database().ref('/').off();
+			dao.retrieveGames(function(puzzles) {
+				puzzles.forEach(function(puzzle) {
+					var game = puzzle.name;
 					dao.get('scores-' + game, function(scores) {
 						if(scores && scores.length > 0) {
 							// Remove all listeners
-							firebase.database().ref('/').off();
 							scores.forEach(function(score) {
 								if(score.id) {
 									score.timestamp = score.id;
@@ -351,7 +393,9 @@ core.register(
 							);
 						}
 					});
+					dao.storePuzzle(game);
 				});
+				dao.set('puzzles', []);
 			});
 			configKeys.forEach(function(key) {
 				dao.get(key, function(value) {

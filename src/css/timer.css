@@ -73,12 +73,6 @@ body {
 .modal-content .modal-footer {
     padding: 15px;
 }
-.modal-footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    right: 0;
-}
 
 .results-dialog .modal-body {
     /* 100% = dialog height, 110px = header + footer */

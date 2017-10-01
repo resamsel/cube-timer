@@ -109,6 +109,8 @@ dao.storeConfig = function(key, value, callback) {
 };
 
 dao.listeners = {
+	'puzzle-added': [],
+	'puzzle-removed': [],
 	'score-added': [],
 	'score-removed': [],
 	'config-changed': []
@@ -122,6 +124,13 @@ dao.listen = function(types, key, callback) {
 				dao.listeners[type].push({
 					key: key,
 					callback: callback
+				});
+			}
+
+			// Notify of existing puzzles
+			if(type == 'puzzle-added') {
+				dao.get('puzzles', function(games) {
+					games.forEach(callback);
 				});
 			}
 
@@ -224,29 +233,43 @@ dao.resetScores = function(game, callback) {
 	}
 }
 
-dao.retrieveActiveGame = function(callback) {
-	dao.get(
-		'activeGame',
-		dao.defaultCallback('activeGame', '3x3x3', callback)
-	);
-};
-
-dao.storeActiveGame = function(game, callback) {
-	dao.set('activeGame', game, callback);
-};
-
 dao.retrieveGames = function(callback) {
 	dao.get(
-		'games',
-		dao.defaultCallback(
-			'games',
-			[
-				'2x2x2', '3x3x3', '4x4x4', '5x5x5',
-				'1x3x3', '2x3x3', '3x3x4', '5x3x3', '7x3x3', '2x2x4'
-			],
-			callback
-		)
+		'puzzles',
+		dao.defaultCallback('puzzles', ['3x3x3'], callback)
 	);
 };
+
+dao.storePuzzle = function(puzzle) {
+	if(dao.datasource) {
+		dao.datasource.storePuzzle(puzzle);
+	} else {
+		dao.retrieveGames(function(puzzles) {
+			if(puzzles.indexOf(puzzle) < 0) {
+				puzzles.push(puzzle);
+				dao.set('puzzles', puzzles, function() {
+					dao.notify('puzzle-added', {name: puzzle});
+				});
+			}
+		});
+	}
+}
+
+dao.removePuzzle = function(puzzle) {
+	if(dao.datasource) {
+		dao.datasource.removePuzzle(puzzle);
+	} else {
+		dao.retrieveGames(function(puzzles) {
+			if(puzzles.indexOf(puzzle) >= 0) {
+				puzzles = puzzles.filter(function(p) {
+					return p.name !== puzzle;
+				});
+				dao.set('puzzles', puzzles, function() {
+					dao.notify('puzzle-removed', {name: puzzle});
+				});
+			}
+		});
+	}
+}
 
 module.exports = dao;

@@ -1,0 +1,16 @@
+.main-nav .active-game > span,
+.main-nav .active-game {
+	display: none;
+}
+.active-game {
+	padding: 0 16px;
+	top: -4px;
+}
+.modal .modal-footer {
+	text-align: right;
+	padding: 4px 16px;
+}
+.modal .modal-footer .btn,
+.modal .modal-footer .btn-flat {
+	float: none;
+}

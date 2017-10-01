@@ -19,6 +19,21 @@
 	<link rel="stylesheet" href="css/cube-timer.css">
 </head>
 <body class="material"><!-- class="started/stopped" -->
+	<ul id="game-list" class="game-list dropdown-content">
+		<li class="game template">
+			<a href="#">
+				<i class="material-icons left">games</i>
+				<span>3x3x3</span>
+			</a>
+		</li>
+		<li class="divider"></li>
+		<li class="game puzzle-create">
+			<a href="#create-puzzle-dialog" class="modal-trigger">
+				<i class="material-icons left">add</i>
+				<span i18n-key="puzzleCreate">New Puzzle</span>
+			</a>
+		</li>
+	</ul>
 	<ul id="dropdown-auth" class="dropdown-content">
 		<li class="auth-google-sign-in">
 			<!-- [START google_button] -->
@@ -48,6 +63,14 @@
 					Cube Timer
 				</a>
 				<span class="page-title" i18n-key="timer">Timer</span>
+				<a class="active-game dropdown-button waves-effect waves-light"
+					href="#"
+					data-activates="game-list"
+					data-beloworigin="true"
+					data-constrainWidth="false">
+					<span class="text">3x3x3</span>
+					<i class="material-icons right">arrow_drop_down</i>
+				</a>
 				<ul class="main-nav right">
 					<li>
 						<a id="import" href="#import-dialog" class="modal-trigger waves-effect waves-light" i18n-title="buttonImport">
@@ -76,34 +99,27 @@
 						class="side-nav fixed text-black text-lighten-2 collapsible"
 						data-collapsible="accordion">
 					<li>
-						<a class="active-game collapsible-header waves-effect waves-light"
-								href="#" data-activates="game-list" data-beloworigin="true">
-							<i class="material-icons left">games</i>
-							<span class="text">3x3x3</span>
-							&nbsp;
-							<i class="material-icons right">arrow_drop_down</i>
-						</a>
-						<ul id="game-list" class="game-list collapsible-body">
-							<li class="game template"><a href="#">3x3x3</a></li>
-						</ul>
-					</li>
-					<li class="divider"></li>
-					<li>
-						<a class="timer-button waves-effect waves-light" href="#!/timer">
+						<a class="timer-button waves-effect waves-light" href="#!">
 							<i class="material-icons left">timer</i>
 							<span i18n-key="timer">Timer</span>
 						</a>
 					</li>
 					<li>
-						<a class="results-button waves-effect waves-light" href="#!/results">
+						<a class="results-button waves-effect waves-light" href="#!">
 							<i class="material-icons left">assessment</i>
 							<span i18n-key="results">Results</span>
 						</a>
 					</li>
 					<li>
+						<a class="puzzles-button waves-effect waves-light" href="#!">
+							<i class="material-icons left">games</i>
+							<span i18n-key="puzzles">puzzles</span>
+						</a>
+					</li>
+					<li>
 						<a class="config-button waves-effect waves-light" href="#!/config">
 							<i class="material-icons left">settings</i>
-							<span i18n-key="config">Configuration</span>
+							<span i18n-key="config">Settings</span>
 						</a>
 					</li>
 				</ul>
@@ -188,7 +204,7 @@
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
 					<div id="results-content">
-						<ul class="template result-container collection z-depth-1">
+						<ul class="template result-container collection collection-small z-depth-1">
 						</ul>
 						<time class="template result-header"></time>
 						<ul style="display: none">
@@ -210,6 +226,25 @@
 				</div>
 			</div>
 		</div><!-- page: results -->
+
+		<div class="container page page-puzzles">
+			<div class="row">
+				<div class="col l8 offset-l2 m10 offset-m1 s12">
+					<div id="puzzles-content">
+						<ul class="puzzle-container collection collection-small z-depth-1">
+							<li class="template puzzle-item entry collection-item avatar">
+								<i class="material-icons circle">games</i>
+								<span class="title">
+								</span>
+								<a href="#delete-puzzle-dialog" class="modal-trigger secondary-content waves-effect waves-indigo delete">
+									<i class="material-icons">delete</i>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div><!-- page: puzzles -->
 
 		<div class="container page page-config">
 			<div class="row">
@@ -289,7 +324,7 @@
 		</div>
 	</footer>
 
-	<div id="export-dialog" class="modal modal-fixed-footer-off" tabindex="-1" role="dialog">
+	<div id="export-dialog" class="modal modal-fixed-footer" tabindex="-1" role="dialog">
 		<div class="modal-content">
 			<h4 i18n-key="exportHeader">Export Results</h4>
 			<div class="row">
@@ -298,8 +333,13 @@
 				</div>
 			</div>
 		</div><!-- /.modal-content -->
-		<div class="modal-footer" style="display: none">
-			<a id="export-download" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+		<div class="modal-footer ">
+			<a href="#!"
+				class="modal-action modal-close waves-effect waves-indigo btn-flat"
+				i18n-key="buttonCancel">
+				Cancel
+			</a>
+			<a id="export-download" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat" style="display: none">
 				Download
 			</a>
 		</div>
@@ -310,7 +350,7 @@
 			<h4 class="modal-title">Import Times</h4>
 			<div class="btn-group" role="group">
 				<button id="import-from-file" type="button" class="btn btn-default">
-					<i class="material-icons">file_upload</i>
+					<i class="material-icons left">file_upload</i>
 					Load from local file
 				</button>
 			</div>
@@ -331,13 +371,65 @@
 			</div>
 		</div><!-- /.modal-content -->
 		<div class="modal-footer">
-			<a id="import-replace" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat">
-				<i class="material-icons">content_paste</i>
+			<a href="#!"
+				class="modal-action modal-close waves-effect waves-indigo btn-flat"
+				i18n-key="buttonCancel">
+				Cancel
+			</a>
+			<a id="import-replace" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+				<i class="material-icons left">content_paste</i>
 				Replace
 			</a>
-			<a id="import-append" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat">
-				<i class="material-icons">add</i>
+			<a id="import-append" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+				<i class="material-icons left">add</i>
 				Append
+			</a>
+		</div>
+	</div><!-- /.modal -->
+
+	<div id="create-puzzle-dialog" class="modal modal-fixed-footer-off" tabindex="-1" role="dialog">
+		<div class="modal-content">
+			<h4 i18n-key="puzzleCreate">Create new Puzzle</h4>
+			<div class="row">
+				<div class="input-field col s12">
+					<input id="puzzle-name" />
+				</div>
+			</div>
+		</div><!-- /.modal-content -->
+		<div class="modal-footer">
+			<a href="#!"
+				class="modal-action modal-close waves-effect waves-indigo btn-flat"
+				i18n-key="buttonCancel">
+				Cancel
+			</a>
+			<a id="create-puzzle-button"
+				href="#!"
+				class="modal-action modal-close waves-effect waves-indigo btn"
+				i18n-key="buttonCreatePuzzle">
+				Create Puzzle
+			</a>
+		</div>
+	</div><!-- /.modal -->
+
+	<div id="delete-puzzle-dialog" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-content">
+			<h4 i18n-key="puzzleDelete">Delete Puzzle</h4>
+			<p i18n-key="puzzleDeleteDescription">
+				Do you want to delete the puzzle and all of its results?
+			</p>
+		</div><!-- /.modal-content -->
+		<div class="modal-footer">
+			<a id="delete-puzzle-cancel"
+				href="#!"
+				class="modal-action modal-close waves-effect waves-indigo btn-flat"
+				i18n-key="buttonCancel">
+				Cancel
+			</a>
+			<a id="delete-puzzle-ok"
+				href="#!"
+				class="modal-action modal-close waves-effect waves-indigo btn"
+				i18n-key="buttonOk">
+				OK
 			</a>
 		</div>
 	</div><!-- /.modal -->
