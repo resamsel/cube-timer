@@ -5,7 +5,7 @@ var misc = require('../utils/misc.js');
 
 var Keys = {
 	user: function(user) {
-		return user.email.replace(/\./g, ',');
+		return user.uid;
 	},
 	userInfo: function(user, suffix) {
 		var key = '/users/'+Keys.user(user)+'/info';
@@ -81,9 +81,6 @@ core.register(
 				dao.datasource = module;
 				var updates = {};
 				
-				updates[Keys.userInfo(user, 'name')] = user.displayName;
-				updates[Keys.userInfo(user, 'email')] = user.email;
-				updates[Keys.userInfo(user, 'photo_url')] = user.photoURL;
 				updates[Keys.userInfo(user, 'last_login')] = new Date().getTime();
 				updates[Keys.userInfo(user, 'last_login_text')] = new Date().toString();
 
@@ -248,26 +245,14 @@ core.register(
 		module.storePuzzle = function(puzzle) {
 			var db = firebase.database();
 			var user = firebase.auth().currentUser;
-			var now = new Date();
-			var updates = {};
 
-			updates[Keys.puzzle(puzzle, 'name')] = puzzle;
-			updates[Keys.puzzle(puzzle, 'when_created')] = now.getTime();
-			updates[Keys.puzzle(puzzle, 'when_created_text')] = now.toString();
-			updates[Keys.userPuzzle(user, puzzle, 'name')] = puzzle;
-			updates[Keys.userPuzzle(user, puzzle, 'when_created')] = now.getTime();
-			updates[Keys.userPuzzle(user, puzzle, 'when_created_text')] = now.toString();
-
-			db.ref().update(updates);
+			db.ref(Keys.userPuzzle(user, puzzle, 'name')).set(puzzle);
 		};
 
 		module.removePuzzle = function(puzzle) {
 			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 
-			// TODO: do a lot more than this!
-			// # remove scores from user-scores
-			// # remove scores from puzzle-scores
 			db.ref(Keys.userPuzzle(user, puzzle)).set(null);
 		};
 
@@ -283,76 +268,42 @@ core.register(
 		};
 
 		module.storeScore = function(puzzle, score, callback) {
-			var database = firebase.database();
+			var db = firebase.database();
 			var user = firebase.auth().currentUser;
-			var key = score.timestamp+'-'+score.value;
 			var data = {
-				author: user.displayName,
-				authorPic: user.photoURL,
+				name: user.displayName,
+				photo_url: user.photoURL,
 				uid: user.uid,
 				puzzle: puzzle,
 				value: score.value,
 				timestamp: score.timestamp || score.id
 			};
-			var now = new Date();
-			var updates = {};
+			var key = data.timestamp+'-'+data.value;
 
-			// Write the new score's data simultaneously in the score list and the user's score list.
-			updates[Keys.puzzle(puzzle, 'name')] = puzzle;
-			updates[Keys.puzzleScores(puzzle, user, key)] = data;
-			updates[Keys.userScores(user, puzzle, key)] = data;
-			updates[Keys.userPuzzle(user, puzzle, 'name')] = puzzle;
-			updates[Keys.userPuzzle(user, puzzle, 'last_active')] = now.getTime();
-			updates[Keys.userPuzzle(user, puzzle, 'last_active_text')] = now.toString();
-			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
-			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
-
-			database.ref().update(updates);
+			db.ref(Keys.userScores(user, puzzle, key)).set(data);
 		};
 
 		module.removeScore = function(puzzle, score, callback) {
+			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 			var key = score.timestamp+'-'+score.value;
-			var now = new Date();
-			var updates = {};
 
-			updates[Keys.puzzleScores(puzzle, user, key)] = null;
-			updates[Keys.userScores(user, puzzle, key)] = null;
-			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
-			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
+			db.ref(Keys.userScores(user, puzzle, key)).set(null);
 
-			firebase.database().ref().update(updates);
-			
 			if(callback) {
 				callback();
 			}
 		};
 
 		module.resetScores = function(puzzle, callback) {
+			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 
-			firebase.database()
-				.ref(Keys.userScores(user, puzzle))
-				.once('value', function(snapshot) {
-					var updates = {};
+			db.ref(Keys.userScores(user, puzzle)).set(null);
 
-					updates[Keys.userScores(user, puzzle)] = [];
-					snapshot.forEach(function(score) {
-						updates[Keys.puzzleScores(puzzle, user, score.timestamp+'-'+score.value)] = null;
-					});
-
-					firebase.database().ref().update(updates);
-
-					if(callback) {
-						callback();
-					}
-				});
-
-			var now = new Date();
-			var updates = {};
-			updates[Keys.userInfo(user, 'last_active')] = now.getTime();
-			updates[Keys.userInfo(user, 'last_active_text')] = now.toString();
-			firebase.database().ref().update(updates);
+			if(callback) {
+				callback();
+			}
 		};
 
 		module.storeConfig = function(key, value, callback) {
@@ -376,7 +327,7 @@ core.register(
 			firebase.database().ref('/').off();
 			dao.retrieveGames(function(puzzles) {
 				puzzles.forEach(function(puzzle) {
-					var game = puzzle.name;
+					var game = puzzle;
 					dao.get('scores-' + game, function(scores) {
 						if(scores && scores.length > 0) {
 							// Remove all listeners

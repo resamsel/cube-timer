@@ -90,13 +90,21 @@ module.exports = function() {
 					// 2. remove data in games
 					dao.remove('games');
 
-					// 3. migrate games to puzzle objects
-					var puzzles = games.map(function(game) {
-						return {name: game};
-					});
+					var puzzles;
+					if(games !== null) {
+						// 3. migrate games to puzzle objects
+						puzzles = games.map(function(game) {
+							return {name: game};
+						});
+					} else {
+						puzzles = ['3x3x3'];
+					}
 
 					// 4. store data in puzzles
 					dao.set('puzzles', puzzles);
+					puzzles.forEach(function(puzzle) {
+						dao.notify('puzzle-added', {name: puzzle});
+					});
 
 					// 5. upgrade database version
 					dao.set('databaseVersion', 2);

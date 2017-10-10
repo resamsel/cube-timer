@@ -55,6 +55,9 @@
     #timer-display {
         font-size: 84px;
     }
+	.ct-major-twelfth::before {
+		padding-bottom: 66.6666%;
+	}
 }
 @media (max-width: 380px) {
     #timer-display {

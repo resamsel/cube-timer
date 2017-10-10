@@ -53,6 +53,7 @@ core.register(
 			}
 
 			$('.active-game').attr('href', '#!' + sandbox.activeGame() + '/' + event.data);
+			$('.puzzles-button').attr('href', '#!' + sandbox.activeGame() + '/puzzles');
 			$('.game-list .game:not(.puzzle-create) > a').each(function(index, el) {
 				var $el = $(el);
 				$el.attr('href', '#!'+$el.data('puzzle')+'/'+event.data);

@@ -1,6 +1,17 @@
 {
   "hosting": {
-    "public": "./dist/cube-timer/"
+    "public": "dist/cube-timer",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   },
   "database": {
     "rules": "database.rules.json"

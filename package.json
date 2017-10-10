@@ -4,23 +4,23 @@
   "repository": "github:resamsel/cube-timer",
   "license": "GPL-2.0",
   "dependencies": {
-    "chartist": "^0.9.8",
-    "dateformat": "^1.0.12",
+    "chartist": "^0.11.0",
+    "dateformat": "^3.0.2",
     "human-date": "^1.4.0",
-    "jquery": "^2.2.4",
-    "jquery-migrate": "^1.4.1",
-    "materialize-css": "^0.97.8",
+    "jquery": "^3.2.1",
+    "jquery-migrate": "^3.0.1",
+    "materialize-css": "^0.100.2",
     "nprogress": "^0.2.0",
     "timer-stopwatch": "^0.2.0"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
+    "grunt": "^1.0.1",
     "grunt-browserify": "^5.2.0",
     "grunt-contrib-compress": "^1.4.3",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^1.0.2",
+    "grunt-contrib-uglify": "^3.1.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-downloadfile": "^0.3.2"
   }

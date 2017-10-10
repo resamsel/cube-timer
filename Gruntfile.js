@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 			},
 			fonts: {
 				expand: true,
-				cwd: 'node_modules/materialize-css/fonts/',
+				cwd: 'node_modules/materialize-css/dist/fonts/',
 				src: [
 					'roboto/Roboto-Regular*.woff2',
 					'roboto/Roboto-Light*.woff2',
