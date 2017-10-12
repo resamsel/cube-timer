@@ -15,9 +15,9 @@ var Keys = {
 		return key;
 	},
 	userScores: function(user, puzzle, suffix) {
-		var key = '/user-scores/'+Keys.user(user)+'/'+puzzle;
+		var key = '/user-scores/'+Keys.user(user)+'/'+misc.encodeKey(puzzle);
 		if(suffix) {
-			return key+'/'+suffix;
+			return key+'/'+misc.encodeKey(suffix);
 		}
 		return key;
 	},
@@ -25,20 +25,20 @@ var Keys = {
 		return '/users/'+Keys.user(user)+'/puzzles';
 	},
 	userPuzzle: function(user, puzzle, suffix) {
-		var key = '/users/'+Keys.user(user)+'/puzzles/'+puzzle;
+		var key = '/users/'+Keys.user(user)+'/puzzles/'+misc.encodeKey(puzzle);
 		if(suffix) {
-			return key+'/'+suffix;
+			return key+'/'+misc.encodeKey(suffix);
 		}
 		return key;
 	},
 	puzzle: function(puzzle, key) {
-		return '/puzzles/'+puzzle+'/'+key;
+		return '/puzzles/'+misc.encodeKey(puzzle)+'/'+key;
 	},
 	puzzleScores: function(puzzle, user, key) {
-		return '/puzzle-scores/'+puzzle+'/'+key+'-'+Keys.user(user);
+		return '/puzzle-scores/'+misc.encodeKey(puzzle)+'/'+misc.encodeKey(key)+'-'+Keys.user(user);
 	},
 	config: function(user, key) {
-		return '/configs/'+Keys.user(user)+'/'+key;
+		return '/configs/'+Keys.user(user)+'/'+misc.encodeKey(key);
 	}
 };
 
@@ -325,26 +325,25 @@ core.register(
 
 		module.migrateData = function() {
 			firebase.database().ref('/').off();
-			dao.retrieveGames(function(puzzles) {
+			dao.retrievePuzzles(function(puzzles) {
 				puzzles.forEach(function(puzzle) {
-					var game = puzzle;
-					dao.get('scores-' + game, function(scores) {
+					dao.get('scores-' + puzzle, function(scores) {
 						if(scores && scores.length > 0) {
 							// Remove all listeners
 							scores.forEach(function(score) {
 								if(score.id) {
 									score.timestamp = score.id;
 								}
-								dao.storeScore(game, score);
+								dao.storeScore(puzzle, score);
 							});
 							dao.set(
-								'scores-' + game,
+								'scores-' + puzzle,
 								[],
 								module.notifyMigrated
 							);
 						}
 					});
-					dao.storePuzzle(game);
+					dao.storePuzzle(puzzle);
 				});
 				dao.set('puzzles', []);
 			});

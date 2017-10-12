@@ -14,8 +14,8 @@ core.register(
 
         module.init = function() {
             sandbox.listen(
-                ['game-changed'],
-                module.handleGameChanged,
+                ['puzzle-changed'],
+                module.handlePuzzleChanged,
                 module
             );
             sandbox.listen(
@@ -31,20 +31,20 @@ core.register(
 
             Cube['3x3x3'].reset();
 
-            module.scramble(sandbox.activeGame());
+            module.scramble(sandbox.activePuzzle());
         };
 
-        module.handleGameChanged = function(event) {
+        module.handlePuzzleChanged = function(event) {
             module.scramble(event.data);
         };
 
         module.handleResultCreated = function(event) {
-            module.scramble(sandbox.activeGame());
+            module.scramble(sandbox.activePuzzle());
         };
 
-        module.scramble = function(game) {
-            if (Object.keys(scrambles).indexOf(game) > -1) {
-                var scramble = scrambles[game];
+        module.scramble = function(puzzle) {
+            if (Object.keys(scrambles).indexOf(puzzle) > -1) {
+                var scramble = scrambles[puzzle];
                 var i,
                     scrambled = scramble.cube.scramble(),
                     len = Math.min(scramble.len, scrambled.length),
@@ -60,7 +60,7 @@ core.register(
         };
 
         module.handleI18nStarted = function(event) {
-            module.scramble(sandbox.activeGame());
+            module.scramble(sandbox.activePuzzle());
         };
 
         return module;

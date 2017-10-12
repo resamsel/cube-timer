@@ -126,4 +126,16 @@ misc.debounce = function(func, wait, immediate) {
 	};
 };
 
+misc.encodeKey = function(decoded) {
+    return encodeURIComponent(decoded).replace(/\./g, '%2E');
+};
+
+misc.decodeKey = function(encoded) {
+    return decodeURIComponent(encoded.replace('%2E', '.'));
+};
+
+misc.encodeClass = function(decoded) {
+	return decoded.replace(/[!"#\$%&'()\*\+ ,-\.\/:;<=>\?@\[\\\]\^`{\|}~]/g, '\\$&');
+};
+
 module.exports = misc;

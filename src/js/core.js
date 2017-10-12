@@ -1,5 +1,6 @@
 var Sandbox = require('./sandbox.js');
 var dao = require('./dao.js');
+var misc = require('./utils/misc.js');
 var I18n = require('./utils/i18n.js');
 
 module.exports = function() {
@@ -7,7 +8,7 @@ module.exports = function() {
 	var handlers = {};
 	var eventQueue = [];
 	var started = false;
-	var game = '3x3x3';
+	var puzzle = '3x3x3';
 	var page = 'timer';
 	var core = {};
 
@@ -70,13 +71,13 @@ module.exports = function() {
 				databaseVersion = 0;
 			}
 			if(databaseVersion < 1) {
-				// Migrate data set to support multiple games
+				// Migrate data set to support multiple puzzles
 				// 1. retrieve data
 				dao.get('scores', function(scores) {
 					// 2. remove data in scores
 					dao.remove('scores');
 
-					// 3. store data in game '3x3x3'
+					// 3. store data in puzzle '3x3x3'
 					dao.set('scores-3x3x3', scores);
 
 					// 5. upgrade database version
@@ -84,7 +85,7 @@ module.exports = function() {
 				});
 			}
 			if(databaseVersion < 2) {
-				// Migrate data set to support games in Firebase
+				// Migrate data set to support puzzles in Firebase
 				// 1. retrieve data
 				dao.get('games', function(games) {
 					// 2. remove data in games
@@ -150,24 +151,24 @@ module.exports = function() {
 		}
 	};
 
-	core.activeGame = function(game_) {
-		if(typeof game_ !== 'undefined') {
-			game = game_;
+	core.activePuzzle = function(puzzle_) {
+		if(typeof puzzle_ !== 'undefined' && puzzle_ !== puzzle) {
+			puzzle = puzzle_;
 			core.notify({
-				type: 'game-changed',
-				data: game
+				type: 'puzzle-changed',
+				data: puzzle
 			});
 		}
 
-		return game;
+		return puzzle;
 	};
 
 	core.goToPage = function(path) {
 		var parts = path.split('/');
 		if(parts.length > 1) {
-			var game = parts[0];
-			if(game.length > 0 && core.activeGame() != game) {
-				core.activeGame(game);
+			var puzzle = misc.decodeKey(parts[0]);
+			if(puzzle.length > 0 && core.activePuzzle() != puzzle) {
+				core.activePuzzle(puzzle);
 				return core.goToPage(path);
 			}
 		}

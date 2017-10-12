@@ -23,15 +23,15 @@ core.register(
 				module
 			);
 			sandbox.listen(
-				['game-changed'],
-				module.handleGameChanged,
+				['puzzle-changed'],
+				module.handlePuzzleChanged,
 				module
 			);
 			module.listen();
 
 			$('.results-button')
 				.css('display', 'block')
-				.attr('href', '#!' + sandbox.activeGame() + '/results');
+				.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/results');
 		};
 
 		module.listen = function() {
@@ -39,7 +39,7 @@ core.register(
 			dao.unlisten(['score-removed'], module.handleScoreRemoved);
 			dao.unlisten(['config-changed'], module.handleSubtextChanged);
 
-			var puzzle = sandbox.activeGame();
+			var puzzle = sandbox.activePuzzle();
 			dao.listen(
 				['score-added'],
 				puzzle,
@@ -65,8 +65,8 @@ core.register(
 			}
 		};
 
-		module.handleGameChanged = function(event) {
-			$('.results-button').attr('href', '#!'+event.data+'/results');
+		module.handlePuzzleChanged = function(event) {
+			$('.results-button').attr('href', '#!'+misc.encodeKey(event.data)+'/results');
 
 			module.results = [];
 
@@ -77,7 +77,7 @@ core.register(
 
 		module.handleResultsChanged = misc.debounce(function() {
 			misc.sortScores(module.results);
-			module.updateResults(sandbox.activeGame());
+			module.updateResults(sandbox.activePuzzle());
 		}, 250);
 
 		module.handleScoreAdded = function(score) {
@@ -108,10 +108,10 @@ core.register(
  
 		module.removeResult = function(element) {
 			element = $(element);
-			var game = element.data('game');
+			var puzzle = element.data('puzzle');
 			var score = element.data('score');
-			//console.log('removeResult with score %s, game %s', score, game);
-			dao.removeScore(game, score);
+			//console.log('removeResult with score %s, puzzle %s', score, puzzle);
+			dao.removeScore(puzzle, score);
 		};
 
 		module.createContainer = function() {
@@ -135,7 +135,7 @@ core.register(
 				.text(misc.toDate(score.timestamp)).data('date', score.timestamp);
 			row
 				.find('.delete')
-				.data('game', sandbox.activeGame())
+				.data('puzzle', sandbox.activePuzzle())
 				.data('score', score)
 				.on('click', function(event) {
 					module.removeResult(this);
@@ -159,7 +159,7 @@ core.register(
 			return element;
 		};
 
-		module.updateResults = misc.debounce(function(game) {
+		module.updateResults = misc.debounce(function() {
 			var results = module.results;
 			$('#results-content .times-content > *').remove();
 			var result;

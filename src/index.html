@@ -19,15 +19,15 @@
 	<link rel="stylesheet" href="css/cube-timer.css">
 </head>
 <body class="material"><!-- class="started/stopped" -->
-	<ul id="game-list" class="game-list dropdown-content">
-		<li class="game template">
+	<ul id="puzzle-list" class="puzzle-list dropdown-content">
+		<li class="puzzle template">
 			<a href="#">
 				<i class="material-icons left">games</i>
 				<span>3x3x3</span>
 			</a>
 		</li>
 		<li class="divider"></li>
-		<li class="game puzzle-create">
+		<li class="create-puzzle">
 			<a href="#create-puzzle-dialog" class="modal-trigger">
 				<i class="material-icons left">add</i>
 				<span i18n-key="puzzleCreate">New Puzzle</span>
@@ -63,9 +63,9 @@
 					Cube Timer
 				</a>
 				<span class="page-title" i18n-key="timer">Timer</span>
-				<a class="active-game dropdown-button waves-effect waves-light"
+				<a class="active-puzzle dropdown-button waves-effect waves-light"
 					href="#"
-					data-activates="game-list"
+					data-activates="puzzle-list"
 					data-beloworigin="true"
 					data-constrainWidth="false">
 					<span class="text">3x3x3</span>
@@ -387,7 +387,7 @@
 		</div>
 	</div><!-- /.modal -->
 
-	<div id="create-puzzle-dialog" class="modal modal-fixed-footer-off" tabindex="-1" role="dialog">
+	<div id="create-puzzle-dialog" class="modal" tabindex="-1" role="dialog">
 		<div class="modal-content">
 			<h4 i18n-key="puzzleCreate">Create new Puzzle</h4>
 			<div class="row">

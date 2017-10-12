@@ -16,8 +16,8 @@ core.register(
 
 		module.init = function() {
 			sandbox.listen(
-				['game-changed'],
-				module.handleGameChanged,
+				['puzzle-changed'],
+				module.handlePuzzleChanged,
 				module
 			);
 			sandbox.listen(
@@ -27,7 +27,7 @@ core.register(
 			);
 		};
 
-		module.handleGameChanged = function(event) {
+		module.handlePuzzleChanged = function(event) {
 			module.results = [];
 			module.consumeNext = false;
 
@@ -36,12 +36,12 @@ core.register(
 
 			dao.listen(
 				['score-added'],
-				sandbox.activeGame(),
+				sandbox.activePuzzle(),
 				module.handleScoreAdded
 			);
 			dao.listen(
 				['score-removed'],
-				sandbox.activeGame(),
+				sandbox.activePuzzle(),
 				module.handleScoreRemoved
 			);
 		};
@@ -90,33 +90,33 @@ core.register(
 		module.toastAchievement = function(score, stats) {
 			// TODO: Add achievements
 
-			// achievement-$game-best - new best == a single result has been recorded
-			// achievement-$game-zerozero - XX:yy.00 has been recorded
-			// achievement-$game-10 - 10 results have been recorded
-			// achievement-$game-25 - 25 results have been recorded
-			// achievement-$game-50 - 50 results have been recorded
-			// achievement-$game-100 - 100 results have been recorded
-			// achievement-$game-250 - 250 results have been recorded
-			// achievement-$game-500 - 500 results have been recorded
-			// achievement-$game-1000 - 1000 results have been recorded
-			// achievement-$game-3-weekdays - results on 3 different weekdays
-			// achievement-$game-5-weekdays - results on 5 different weekdays
-			// achievement-$game-7-weekdays - results on all weekdays
-			// achievement-$game-streak-3 - results on 3 consecutive days
-			// achievement-$game-streak-5 - results on 5 consecutive days
-			// achievement-$game-streak-7 - results on 7 consecutive days
-			// achievement-$game-streak-10 - results on 10 consecutive days
-			// achievement-$game-streak-25 - results on 25 consecutive days
-			// achievement-$game-3-a-day - results on a single day
-			// achievement-$game-5-a-day - results on a single day
-			// achievement-$game-10-a-day - results on a single day
-			// achievement-$game-25-a-day - results on a single day
-			// achievement-$game-50-a-day - results on a single day
-			// achievement-$game-3-categories - 3 different categories
-			// achievement-$game-5-categories - 5 different categories
-			// achievement-$game-10-categories - 10 different categories
-			// achievement-$game-25-categories - 25 different categories
-			// achievement-$game-50-categories - 50 different categories
+			// achievement-$puzzle-best - new best == a single result has been recorded
+			// achievement-$puzzle-zerozero - XX:yy.00 has been recorded
+			// achievement-$puzzle-10 - 10 results have been recorded
+			// achievement-$puzzle-25 - 25 results have been recorded
+			// achievement-$puzzle-50 - 50 results have been recorded
+			// achievement-$puzzle-100 - 100 results have been recorded
+			// achievement-$puzzle-250 - 250 results have been recorded
+			// achievement-$puzzle-500 - 500 results have been recorded
+			// achievement-$puzzle-1000 - 1000 results have been recorded
+			// achievement-$puzzle-3-weekdays - results on 3 different weekdays
+			// achievement-$puzzle-5-weekdays - results on 5 different weekdays
+			// achievement-$puzzle-7-weekdays - results on all weekdays
+			// achievement-$puzzle-streak-3 - results on 3 consecutive days
+			// achievement-$puzzle-streak-5 - results on 5 consecutive days
+			// achievement-$puzzle-streak-7 - results on 7 consecutive days
+			// achievement-$puzzle-streak-10 - results on 10 consecutive days
+			// achievement-$puzzle-streak-25 - results on 25 consecutive days
+			// achievement-$puzzle-3-a-day - results on a single day
+			// achievement-$puzzle-5-a-day - results on a single day
+			// achievement-$puzzle-10-a-day - results on a single day
+			// achievement-$puzzle-25-a-day - results on a single day
+			// achievement-$puzzle-50-a-day - results on a single day
+			// achievement-$puzzle-3-categories - 3 different categories
+			// achievement-$puzzle-5-categories - 5 different categories
+			// achievement-$puzzle-10-categories - 10 different categories
+			// achievement-$puzzle-25-categories - 25 different categories
+			// achievement-$puzzle-50-categories - 50 different categories
 		};
 
 		module.toastMotivation = function(score, stats) {

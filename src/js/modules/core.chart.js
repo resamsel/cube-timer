@@ -18,8 +18,8 @@ core.register(
 		module.results = [];
 		module.init = function() {
 			sandbox.listen(
-				['game-changed'],
-				module.handleGameChanged,
+				['puzzle-changed'],
+				module.handlePuzzleChanged,
 				module
 			);
 			sandbox.listen(
@@ -37,13 +37,13 @@ core.register(
 			module.updateChart(sandbox.createStats(module.results));
 		}, 250);
 
-		module.handleGameChanged = function(event) {
+		module.handlePuzzleChanged = function(event) {
 			module.results = [];
 			module.repaint = true;
 
 			module.listen();
 
-			module.handleResultsChanged({data: sandbox.activeGame()});
+			module.handleResultsChanged({data: sandbox.activePuzzle()});
 		};
 
 		module.listen = function() {
@@ -51,7 +51,7 @@ core.register(
 			dao.unlisten(['score-removed'], module.handleScoreRemoved);
 			dao.unlisten(['config-changed'], module.handleWindowSizeChanged);
 
-			var puzzle = sandbox.activeGame();
+			var puzzle = sandbox.activePuzzle();
 			dao.listen(
 				['score-added'],
 				puzzle,
@@ -73,7 +73,7 @@ core.register(
 			module.results.push(score);
 			misc.sortScores(module.results);
 			module.repaint = true;
-			module.handleResultsChanged({data: sandbox.activeGame()});
+			module.handleResultsChanged({data: sandbox.activePuzzle()});
 		};
 
 		module.handleScoreRemoved = function(score) {
@@ -81,7 +81,7 @@ core.register(
 				return result.timestamp != score.timestamp;
 			});
 			module.repaint = true;
-			module.handleResultsChanged({data: sandbox.activeGame()});
+			module.handleResultsChanged({data: sandbox.activePuzzle()});
 		};
 
 		module.handleWindowSizeChanged = function(value) {
@@ -90,12 +90,12 @@ core.register(
 			}
 			windowSize = value;
 			module.repaint = true;
-			module.handleResultsChanged({data: sandbox.activeGame()});
+			module.handleResultsChanged({data: sandbox.activePuzzle()});
 		};
 
 		module.handlePageChanged = function(event) {
 			if(event.data == 'timer' && module.repaint) {
-				module.handleResultsChanged({data: sandbox.activeGame()});
+				module.handleResultsChanged({data: sandbox.activePuzzle()});
 			}
 		};
 

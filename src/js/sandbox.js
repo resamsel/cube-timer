@@ -11,8 +11,8 @@ module.exports = function(core) {
     this.listen = function(types, handler, module) {
         core.listen(types, handler, module);
     };
-    this.activeGame = function(game) {
-        return core.activeGame(game);
+    this.activePuzzle = function(puzzle) {
+        return core.activePuzzle(puzzle);
     };
     this.goToPage = function(page) {
         core.goToPage(page);

@@ -1,4 +1,5 @@
 var core = require('../core.js');
+var misc = require('../utils/misc.js');
 //var $ = require('jquery');
 //var Materialize = require('materialize-css');
 
@@ -30,7 +31,7 @@ core.register(
         };
 
         module.handlePageChanged = function(event) {
-            $('#main-menu').attr('href', '#!' + event.data).blur();
+            $('#main-menu').attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/'+event.data).blur();
             if(document.activeElement.nodeName != 'BODY') {
                 document.activeElement.blur();
             }

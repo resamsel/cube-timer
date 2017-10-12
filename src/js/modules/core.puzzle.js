@@ -15,8 +15,8 @@ core.register(
 			$puzzleList = $('#puzzles-content .puzzle-container');
 
 			sandbox.listen(
-				['game-changed'],
-				module.handleGameChanged,
+				['puzzle-changed'],
+				module.handlePuzzleChanged,
 				module
 			);
 			sandbox.listen(
@@ -30,19 +30,19 @@ core.register(
 			$puzzleList.hide();
 			$('.puzzles-button')
 				.css('display', 'block')
-				.attr('href', '#!' + sandbox.activeGame() + '/puzzles');
+				.attr('href', '#!' + misc.encodeKey(sandbox.activePuzzle()) + '/puzzles');
 
 			$('#create-puzzle-button').click(module.handleCreatePuzzle);
 		};
 
-		module.handleGameChanged = function(event) {
-			console.log('handleGameChanged(event)', event);
-			var game = event.data;
+		module.handlePuzzleChanged = function(event) {
+			console.log('handlePuzzleChanged(event)', event);
+			var puzzle = event.data;
 
-			$('.game-list .active').removeClass('active');
-			$('.game-list .game-' + game).addClass('active');
-			$('.active-game .text').text(game);
-			$('.active-game').attr('href', '#!'+game+'/'+sandbox.activePage());
+			$('.puzzle-list .active').removeClass('active');
+			$('.puzzle-list .puzzle-'+misc.encodeClass(puzzle)).addClass('active');
+			$('.active-puzzle .text').text(puzzle);
+			$('.active-puzzle').attr('href', '#!'+misc.encodeKey(puzzle)+'/'+sandbox.activePage());
 		};
 
 		module.handlePageChanged = function(event) {
@@ -52,11 +52,11 @@ core.register(
 				$('.puzzles-button').parent().removeClass('active');
 			}
 
-			$('.active-game').attr('href', '#!' + sandbox.activeGame() + '/' + event.data);
-			$('.puzzles-button').attr('href', '#!' + sandbox.activeGame() + '/puzzles');
-			$('.game-list .game:not(.puzzle-create) > a').each(function(index, el) {
+			$('.active-puzzle').attr('href', '#!' + misc.encodeKey(sandbox.activePuzzle()) + '/' + event.data);
+			$('.puzzles-button').attr('href', '#!' + misc.encodeKey(sandbox.activePuzzle()) + '/puzzles');
+			$('.puzzle-list .puzzle:not(.puzzle-create) > a').each(function(index, el) {
 				var $el = $(el);
-				$el.attr('href', '#!'+$el.data('puzzle')+'/'+event.data);
+				$el.attr('href', '#!'+misc.encodeKey($el.data('puzzle'))+'/'+event.data);
 			});
 			
 		};
@@ -68,7 +68,7 @@ core.register(
 			}
 
 			module.addPuzzle(puzzle);
-			module.populateGames();
+			module.pupulatePuzzles();
 		};
 
 		module.handlePuzzleRemoved = function(puzzle) {
@@ -76,30 +76,30 @@ core.register(
 				puzzles = puzzles.filter(function(p) {
 					return p !== puzzle.name;
 				});
-				if(puzzle.name === sandbox.activeGame()) {
-					sandbox.activeGame(puzzles[0].name);
+				if(puzzle.name === sandbox.activePuzzle()) {
+					sandbox.activePuzzle(puzzles[0].name);
 				}
 			}
 
-			$('#puzzle-'+puzzle.name).fadeOut({
+			$(document.getElementById('puzzle-'+misc.encodeClass(puzzle.name))).fadeOut({
 				complete: function() {
 					$(this).remove();
 				}
 			});
-			module.populateGames();
+			module.pupulatePuzzles();
 		};
 
 		module.handleCreatePuzzle = function() {
 			var puzzle = $puzzleName.val();
 			$puzzleName.val('');
 			dao.storePuzzle(puzzle);
-			sandbox.activeGame(puzzle);
+			sandbox.activePuzzle(puzzle);
 		};
 
 		module.addPuzzle = function(puzzle) {
 			var row = $('#puzzles-content .template').clone();
 
-			row.attr('id', 'puzzle-' + puzzle.name);
+			row.attr('id', 'puzzle-' + misc.encodeClass(puzzle.name));
 			row.removeClass('template');
 			row
 				.find('.title')
@@ -110,12 +110,12 @@ core.register(
 				.on('click', function(event) {
 					var puzzle = $(this).data('puzzle');
 					$('#delete-puzzle-ok')
-						.attr('href', '#!'+sandbox.activeGame()+'/puzzles')
+						.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/puzzles')
 						.on('click', function () {
 							dao.removePuzzle(puzzle);
 						});
 					$('#delete-puzzle-cancel')
-						.attr('href', '#!'+sandbox.activeGame()+'/puzzles')
+						.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/puzzles')
 						.on('click', function () {
 							$('#delete-puzzle-ok').off('click');
 						});
@@ -127,34 +127,33 @@ core.register(
 		};
 
 		/*
-		* Create the list of games in the header bar.
+		* Create the list of puzzles in the header bar.
 		*/
-		module.populateGames = misc.debounce(function() {
-			var activeGame = sandbox.activeGame();
-			var puzzleList = $('.game-list');
-			var divider = $('.game-list .divider');
+		module.pupulatePuzzles = misc.debounce(function() {
+			var activePuzzle = sandbox.activePuzzle();
+			var puzzleList = $('.puzzle-list');
+			var divider = $('.puzzle-list .divider');
 			var template = puzzleList.find('.template'),
-				clone,
-				game;
+			clone;
 
-			puzzleList.find('[class^="game game-"]').remove();
+			puzzleList.find('[class^="puzzle puzzle-"]').remove();
 			puzzles.sort();
-			puzzles.forEach(function(game) {
+			puzzles.forEach(function(puzzle) {
 				// 1. Clone template
 				clone = template.clone();
 
 				// 2. Update clone
-				clone.removeClass('template').addClass('game-' + game);
+				clone.removeClass('template').addClass('puzzle-'+misc.encodeClass(puzzle));
 				var $a = clone.find('a')
-					.attr('href', '#!'+game+'/timer')
-					.data('puzzle', game);
-				$a.find('span').text(game);
+					.attr('href', '#!'+misc.encodeKey(puzzle)+'/timer')
+					.data('puzzle', puzzle);
+				$a.find('span').text(puzzle);
 
-				if(game == activeGame) {
+				if(puzzle == activePuzzle) {
 					clone.addClass('active');
 				}
 
-				// 3. Add it to the game list
+				// 3. Add it to the puzzle list
 				divider.before(clone);
 			});
 		}, 250);

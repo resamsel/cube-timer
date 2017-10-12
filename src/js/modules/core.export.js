@@ -20,9 +20,9 @@ core.register(
                 // window.clipboardData.setData("Text", $(this).val());
             });
             $('#export').on('click', function() {
-                var game = sandbox.activeGame();
-                dao.retrieveScores(game, function(scores) {
-                    $('#export-content').val(misc.toCsv(game, scores));
+                var puzzle = sandbox.activePuzzle();
+                dao.retrieveScores(puzzle, function(scores) {
+                    $('#export-content').val(misc.toCsv(puzzle, scores));
                     $('#export-content').trigger('autoresize');
                 });
             });

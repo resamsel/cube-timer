@@ -57,8 +57,8 @@ core.register(
 		module.handleImport = function(replace) {
 			var content = $('#import-content').val().split('\n'),
 				scores = {},
-				activeGame = sandbox.activeGame(),
-				line, date, value, i;
+				activePuzzle = sandbox.activePuzzle(),
+				line, date, value, i, puzzle;
 
 			for(i = 0; i < content.length; i++) {
 				line = content[i].split(';');
@@ -68,7 +68,7 @@ core.register(
 					if(line[0] == 'Date' || line[1] == 'Duration') {
 						continue;
 					}
-					game = activeGame;
+					puzzle = activePuzzle;
 					date = new Date(line[0]);
 					value = Number(line[1]);
 					break;
@@ -76,7 +76,7 @@ core.register(
 					if(line[0] == 'Game' || line[1] == 'Date' || line[2] == 'Duration') {
 						continue;
 					}
-					game = line[0];
+					puzzle = line[0];
 					date = new Date(line[1]);
 					value = Number(line[2]);
 					break;
@@ -85,23 +85,23 @@ core.register(
 				}
 
 				if(date !== null && value !== null) {
-					if(typeof scores[game] === 'undefined') {
-						scores[game] = [];
+					if(typeof scores[puzzle] === 'undefined') {
+						scores[puzzle] = [];
 					}
-					scores[game].push({timestamp: date.getTime(), value: value});
+					scores[puzzle].push({timestamp: date.getTime(), value: value});
 				}
 			}
 
-			Object.keys(scores).forEach(function(game) {
+			Object.keys(scores).forEach(function(puzzle) {
 				if(!replace) {
 					// Appending scores
-					scores[game].forEach(function(score) {
-						dao.storeScore(game, score);
+					scores[puzzle].forEach(function(score) {
+						dao.storeScore(puzzle, score);
 					});
 				} else {
-					dao.resetScores(game, function() {
-						scores[game].forEach(function(score) {
-							dao.storeScore(game, score);
+					dao.resetScores(puzzle, function() {
+						scores[puzzle].forEach(function(score) {
+							dao.storeScore(puzzle, score);
 						});
 					});
 				}

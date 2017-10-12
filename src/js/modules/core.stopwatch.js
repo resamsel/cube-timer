@@ -17,8 +17,8 @@ core.register(
 
 		module.init = function() {
 			sandbox.listen(
-				['game-changed'],
-				module.handleGameChanged,
+				['puzzle-changed'],
+				module.handlePuzzleChanged,
 				module
 			);
 			sandbox.listen(
@@ -42,7 +42,7 @@ core.register(
 			$('button.start-stop').on('click', module.toggleTimer);
 			$('.card-timer').css('display', 'block');
 			$('.timer-button')
-				.attr('href', '#!'+sandbox.activeGame()+'/timer');
+				.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/timer');
 
 			// pre-load sound
 			timerSound = new Audio('audio/timer.mp3');
@@ -54,10 +54,10 @@ core.register(
 		/*
 		* Handlers
 		*/
-		module.handleGameChanged = function(event) {
-			var game = event.data;
-			$('.card-timer .card-title > span').text(game);
-			$('.timer-button').attr('href', '#!'+game+'/timer');
+		module.handlePuzzleChanged = function(event) {
+			var puzzle = event.data;
+			$('.card-timer .card-title > span').text(puzzle);
+			$('.timer-button').attr('href', '#!'+misc.encodeKey(puzzle)+'/timer');
 		};
 
 		module.handlePageChanged = function(event) {
@@ -113,7 +113,7 @@ core.register(
 				// Only use values when stopwatch actually started
 				sandbox.notify({type: 'stopwatch-stopped', data: null});
 				dao.storeScore(
-					sandbox.activeGame(),
+					sandbox.activePuzzle(),
 					{
 						timestamp: new Date().getTime(),
 						value: elapsed

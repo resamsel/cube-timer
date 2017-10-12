@@ -129,8 +129,8 @@ dao.listen = function(types, key, callback) {
 
 			// Notify of existing puzzles
 			if(type == 'puzzle-added') {
-				dao.get('puzzles', function(games) {
-					games.forEach(callback);
+				dao.get('puzzles', function(puzzles) {
+					puzzles.forEach(callback);
 				});
 			}
 
@@ -203,25 +203,25 @@ dao.storeScore = function(puzzle, score, callback) {
 	}
 };
 
-dao.removeScore = function(game, score, callback) {
+dao.removeScore = function(puzzle, score, callback) {
 	if(dao.datasource) {
-		dao.datasource.removeScore(game, score, callback);
+		dao.datasource.removeScore(puzzle, score, callback);
 	} else {
-		dao.get('scores-' + game, function(scores) {
+		dao.get('scores-' + puzzle, function(scores) {
 			scores = scores.filter(function(s) {
 				return s.timestamp != score.timestamp;
 			});
-			dao.set('scores-' + game, scores, callback);
+			dao.set('scores-' + puzzle, scores, callback);
 		});
 	}
 };
 
-dao.resetScores = function(game, callback) {
+dao.resetScores = function(puzzle, callback) {
 	if(dao.datasource) {
-		dao.datasource.resetScores(game, callback);
+		dao.datasource.resetScores(puzzle, callback);
 	} else {
-		dao.get('scores-' + game, function(scores) {
-			dao.set('scores-' + game, [], function() {
+		dao.get('scores-' + puzzle, function(scores) {
+			dao.set('scores-' + puzzle, [], function() {
 				scores.forEach(function(score) {
 					dao.notify('score-removed', score);
 				});
@@ -233,7 +233,7 @@ dao.resetScores = function(game, callback) {
 	}
 }
 
-dao.retrieveGames = function(callback) {
+dao.retrievePuzzles = function(callback) {
 	dao.get(
 		'puzzles',
 		dao.defaultCallback('puzzles', ['3x3x3'], callback)
@@ -244,7 +244,7 @@ dao.storePuzzle = function(puzzle) {
 	if(dao.datasource) {
 		dao.datasource.storePuzzle(puzzle);
 	} else {
-		dao.retrieveGames(function(puzzles) {
+		dao.retrievePuzzles(function(puzzles) {
 			if(puzzles.indexOf(puzzle) < 0) {
 				puzzles.push(puzzle);
 				dao.set('puzzles', puzzles, function() {
@@ -259,7 +259,7 @@ dao.removePuzzle = function(puzzle) {
 	if(dao.datasource) {
 		dao.datasource.removePuzzle(puzzle);
 	} else {
-		dao.retrieveGames(function(puzzles) {
+		dao.retrievePuzzles(function(puzzles) {
 			if(puzzles.indexOf(puzzle) >= 0) {
 				puzzles = puzzles.filter(function(p) {
 					return p.name !== puzzle;

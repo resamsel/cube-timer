@@ -1,5 +1,7 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const firebaseKeyEncode = require('firebase-key-encode')
+
 admin.initializeApp(functions.config().firebase)
 
 const ref = admin.database().ref()
@@ -47,13 +49,13 @@ exports.onCreateScore = functions.database
 		updates[`/puzzle-scores/${puzzle}/${key}-${uid}`] = event.data.val()
 
 		// Add puzzle to the global puzzles
-		updates[`/puzzles/${puzzle}/name`] = puzzle
+		updates[`/puzzles/${puzzle}/name`] = firebaseKeyEncode.decode(puzzle)
 		updates[`/puzzles/${puzzle}/latest`] = event.data.val()
 		updates[`/puzzles/${puzzle}/last_active`] = lastActive
 		updates[`/puzzles/${puzzle}/last_active_text`] = lastActiveText
 
 		// Add puzzle to the user puzzles
-		updates[`/users/${uid}/puzzles/${puzzle}/name`] = puzzle
+		updates[`/users/${uid}/puzzles/${puzzle}/name`] = firebaseKeyEncode.decode(puzzle)
 		updates[`/users/${uid}/puzzles/${puzzle}/latest`] = event.data.val()
 		updates[`/users/${uid}/puzzles/${puzzle}/last_active`] = lastActive
 		updates[`/users/${uid}/puzzles/${puzzle}/last_active_text`] = lastActiveText
@@ -96,7 +98,7 @@ exports.onCreateUserPuzzle = functions.database
 		const updates = {};
 
 		// Add puzzle to the global puzzles
-		updates[`/puzzles/${puzzle}/name`] = puzzle
+		updates[`/puzzles/${puzzle}/name`] = firebaseKeyEncode.decode(puzzle)
 		//updates[`/puzzles/${puzzle}/when_created`] = whenCreated
 		//updates[`/puzzles/${puzzle}/when_created_text`] = whenCreatedText
 

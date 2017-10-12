@@ -25,8 +25,8 @@ core.register(
 				module
 			);
 			sandbox.listen(
-				['game-changed'],
-				module.handleGameChanged,
+				['puzzle-changed'],
+				module.handlePuzzleChanged,
 				module
 			);
 
@@ -81,7 +81,7 @@ core.register(
 			}
 		};
 
-		module.handleGameChanged = function(event) {
+		module.handlePuzzleChanged = function(event) {
 			Object.keys(configListeners).forEach(function(key) {
 				var listener = configListeners[key];
 				dao.unlisten(['config-changed'], listener);
