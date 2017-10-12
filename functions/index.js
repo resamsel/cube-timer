@@ -99,8 +99,6 @@ exports.onCreateUserPuzzle = functions.database
 
 		// Add puzzle to the global puzzles
 		updates[`/puzzles/${puzzle}/name`] = firebaseKeyEncode.decode(puzzle)
-		//updates[`/puzzles/${puzzle}/when_created`] = whenCreated
-		//updates[`/puzzles/${puzzle}/when_created_text`] = whenCreatedText
 
 		// Add puzzle to the user puzzles
 		updates[`/users/${uid}/puzzles/${puzzle}/when_created`] = whenCreated
