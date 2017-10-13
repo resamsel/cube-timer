@@ -219,35 +219,35 @@
         "description": "The short name of the stat label for: average."
     },
     "average5": {
-        "message": "Mittel #5",
+        "message": "Ao5",
         "description": "The short name of the stat label for: average5."
     },
     "average5_short": {
-        "message": "Mittel 5",
+        "message": "ao5",
         "description": "The short name of the stat label for: average5."
     },
     "average12": {
-        "message": "Mittel #12",
+        "message": "Ao12",
         "description": "The name of the stat label for: average12."
     },
     "average12_short": {
-        "message": "Mittel 12",
+        "message": "ao12",
         "description": "The short name of the stat label for: average12."
     },
     "average25": {
-        "message": "Mittel #25",
+        "message": "Ao25",
         "description": "The name of the stat label for: average25."
     },
     "average25_short": {
-        "message": "Mittel 25",
+        "message": "ao25",
         "description": "The short name of the stat label for: average25."
     },
     "average50": {
-        "message": "Mittel #50",
+        "message": "Ao50",
         "description": "The short name of the stat label for: average50."
     },
     "average50_short": {
-        "message": "Mittel 50",
+        "message": "ao50",
         "description": "The name of the stat label for: average50."
     },
     "average80_short": {
