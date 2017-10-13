@@ -351,6 +351,10 @@
         "message": "Your existing scores have been synched with the cloud.",
         "description": "The message when migration has finished uploading it to Firebase."
     },
+    "lastActive": {
+        "message": "Last active",
+        "description": "Last activity."
+    },
     "puzzleCreate": {
         "message": "Create Puzzle",
         "description": "The link to create a new puzzle."

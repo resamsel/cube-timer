@@ -14,3 +14,15 @@
 .modal .modal-footer .btn-flat {
 	float: none;
 }
+.collection.collection-medium .collection-item.avatar {
+    min-height: 64px;
+}
+.collection-medium li.entry .secondary-content {
+    display: none;
+}
+.collection-medium li.entry:hover .secondary-content {
+    display: inline-block;
+}
+.collection .collection-item.puzzle-item.active:hover .secondary-content {
+	display: none;
+}

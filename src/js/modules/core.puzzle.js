@@ -36,13 +36,16 @@ core.register(
 		};
 
 		module.handlePuzzleChanged = function(event) {
-			console.log('handlePuzzleChanged(event)', event);
+			console.debug('handlePuzzleChanged(event)', event);
 			var puzzle = event.data;
 
 			$('.puzzle-list .active').removeClass('active');
 			$('.puzzle-list .puzzle-'+misc.encodeClass(puzzle)).addClass('active');
 			$('.active-puzzle .text').text(puzzle);
 			$('.active-puzzle').attr('href', '#!'+misc.encodeKey(puzzle)+'/'+sandbox.activePage());
+
+			$('.puzzle-item.active').removeClass('active');
+			$(document.getElementById('puzzle-'+misc.encodeClass(puzzle))).addClass('active');
 		};
 
 		module.handlePageChanged = function(event) {
@@ -62,13 +65,12 @@ core.register(
 		};
 
 		module.handlePuzzleAdded = function(puzzle) {
-			console.log('Puzzle added', puzzle);
 			if(puzzles.indexOf(puzzle.name) < 0) {
 				puzzles.push(puzzle.name);
 			}
 
 			module.addPuzzle(puzzle);
-			module.pupulatePuzzles();
+			module.populatePuzzles();
 		};
 
 		module.handlePuzzleRemoved = function(puzzle) {
@@ -86,7 +88,7 @@ core.register(
 					$(this).remove();
 				}
 			});
-			module.pupulatePuzzles();
+			module.populatePuzzles();
 		};
 
 		module.handleCreatePuzzle = function() {
@@ -101,9 +103,17 @@ core.register(
 
 			row.attr('id', 'puzzle-' + misc.encodeClass(puzzle.name));
 			row.removeClass('template');
+			row.data('puzzle', puzzle.name);
+			if(puzzle.name == sandbox.activePuzzle()) {
+				row.addClass('active');
+			}
+			row.find('.title').text(puzzle.name);
+			if(typeof puzzle.last_active !== 'undefined') {
+				row.find('.last-active').text(moment(puzzle.last_active).fromNow());
+			}
 			row
-				.find('.title')
-				.text(puzzle.name);
+				.find('.select')
+				.attr('href', '#!'+misc.encodeKey(puzzle.name)+'/puzzles');
 			row
 				.find('.delete')
 				.data('puzzle', puzzle.name)
@@ -121,7 +131,17 @@ core.register(
 						});
 				});
 
-			$puzzleList.append(row);
+			var added = false;
+			$puzzleList.children().each(function(index, item) {
+				var $item = $(item);
+				if(added === false && $item.data('puzzle') > puzzle.name) {
+					$item.before(row);
+					added = true;
+				}
+			});
+			if(added === false) {
+				$puzzleList.append(row);
+			}
 
 			$puzzleList.show();
 		};
@@ -129,7 +149,7 @@ core.register(
 		/*
 		* Create the list of puzzles in the header bar.
 		*/
-		module.pupulatePuzzles = misc.debounce(function() {
+		module.populatePuzzles = misc.debounce(function() {
 			var activePuzzle = sandbox.activePuzzle();
 			var puzzleList = $('.puzzle-list');
 			var divider = $('.puzzle-list .divider');
@@ -145,7 +165,7 @@ core.register(
 				// 2. Update clone
 				clone.removeClass('template').addClass('puzzle-'+misc.encodeClass(puzzle));
 				var $a = clone.find('a')
-					.attr('href', '#!'+misc.encodeKey(puzzle)+'/timer')
+					.attr('href', '#!'+misc.encodeKey(puzzle)+'/'+sandbox.activePage())
 					.data('puzzle', puzzle);
 				$a.find('span').text(puzzle);
 

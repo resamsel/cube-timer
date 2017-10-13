@@ -88,7 +88,8 @@ module.exports = function(grunt) {
 				src: [
 					'node_modules/jquery-migrate/jquery-migrate.min.js',
 					'node_modules/materialize-css/dist/js/materialize.min.js',
-					'node_modules/nprogress/nprogress.js'
+					'node_modules/nprogress/nprogress.js',
+					'node_modules/moment/min/moment-with-locales.min.js'
 				],
 				dest: 'dist/<%= pkg.name %>/js/<%= pkg.name %>.pre.js'
 			},

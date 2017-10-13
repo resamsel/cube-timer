@@ -231,14 +231,22 @@
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
 					<div id="puzzles-content">
-						<ul class="puzzle-container collection collection-small z-depth-1">
+						<ul class="puzzle-container collection collection-medium z-depth-1">
 							<li class="template puzzle-item entry collection-item avatar">
 								<i class="material-icons circle">games</i>
-								<span class="title">
-								</span>
-								<a href="#delete-puzzle-dialog" class="modal-trigger secondary-content waves-effect waves-indigo delete">
-									<i class="material-icons">delete</i>
-								</a>
+								<span class="title"></span>
+								<p>
+									<span i18n-key="lastActive"></span>
+									<span class="last-active"></span>
+								</p>
+								<div class="secondary-content">
+									<a href="#!" class="modal-trigger btn-flat btn-hover waves-effect waves-light select">
+										<i class="material-icons">check_circle</i>
+									</a>
+									<a href="#delete-puzzle-dialog" class="modal-trigger btn-flat btn-hover waves-effect waves-light delete">
+										<i class="material-icons">delete</i>
+									</a>
+								</div>
 							</li>
 						</ul>
 					</div>
