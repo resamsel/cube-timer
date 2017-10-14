@@ -213,7 +213,9 @@
 								<span class="title">
 									<span class="index"></span>
 									<span class="value"></span>
-									<span class="tags"></span>
+									<span class="tags">
+										<time class="sync" i18n-format="dateTimeFormat"></time>
+									</span>
 								</span>
 								<a href="#!results" class="secondary-content waves-effect waves-indigo delete">
 									<i class="material-icons">delete</i>
@@ -237,7 +239,7 @@
 								<span class="title"></span>
 								<p>
 									<span i18n-key="lastActive"></span>
-									<span class="last-active"></span>
+									<time class="sync last-active" i18n-format="dateTimeFormat"></time>
 								</p>
 								<div class="secondary-content">
 									<a href="#!" class="modal-trigger btn-flat btn-hover waves-effect waves-light select">
@@ -261,6 +263,14 @@
 						<div class="card-content">
 							<div class="row">
 								<form id="config" class="col s12">
+									<div class="row">
+										<div class="input-field col s4">
+											<label for="language" i18n-key="language">Language</label>
+										</div>
+										<div class="input-field col s8">
+											<select id="language"></select>
+										</div>
+									</div>
 									<div class="row">
 										<div class="input-field col s4">
 											<label for="inspectionTime" i18n-key="inspectionTime">Inspection time</label>

@@ -190,10 +190,17 @@ core.register(
 		}, 250);
 
 		module.updateDates = function() {
+			module.results.forEach(function(result, index) {
+				misc.updateWithTime(
+					$('#id-' + result.timestamp + ' time'),
+					new Date(result.timestamp)
+				);
+			});
 			$('#results-content .times-content > * .date').each(function() {
 				var that = $(this);
 				that.text(misc.toDate(that.data('date')));
 			});
+			
 		};
 
 		module.updateIndices = function(results) {

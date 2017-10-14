@@ -347,9 +347,25 @@
         "description": "Sign out link label"
     },
 
+    "dateTimeFormat": {
+        "message": "dddd, Do MMMM YYYY, HH:mm:ss",
+        "description": "The date and time format to use."
+    },
     "firebaseMigrationFinished": {
         "message": "Deine bisherigen Ergebnisse wurden mit der Cloud synchronisiert.",
         "description": "The message when migration has finished uploading it to Firebase."
+    },
+    "language": {
+        "message": "Sprache",
+        "description": "The language."
+    },
+    "language_de": {
+        "message": "Deutsch",
+        "description": "The language de."
+    },
+    "language_en": {
+        "message": "Englisch",
+        "description": "The language en."
     },
     "lastActive": {
         "message": "Zuletzt aktiv",

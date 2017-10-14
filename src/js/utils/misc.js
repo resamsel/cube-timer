@@ -147,4 +147,16 @@ misc.encodeClass = function(decoded) {
 	return decoded.replace(/[!"#\$%&'()\*\+ ,-\.\/:;<=>\?@\[\\\]\^`{\|}~]/g, '\\$&');
 };
 
+misc.updateWithTime = function($el, time, format) {
+	if(typeof time !== 'undefined') {
+		$el.attr('datetime', time.toISOString());
+	} else {
+		time = $el.attr('datetime');
+	}
+	if(typeof time !== 'undefined') {
+		var m = moment(time);
+		$el.text(m.fromNow()).attr('title', m.format($el.attr('format')));
+	}
+};
+
 module.exports = misc;

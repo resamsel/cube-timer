@@ -1,5 +1,9 @@
 var I18n = {
     messages: null,
+
+	language: null,
+	languages: ['en', 'de'],
+
     translate: function(key, params) {
         var translation;
         if(typeof(chrome) !== 'undefined' && typeof(chrome.i18n) !== 'undefined') {

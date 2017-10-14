@@ -26,6 +26,11 @@ core.register(
 			);
 			dao.listen(['puzzle-added'], null, module.handlePuzzleAdded);
 			dao.listen(['puzzle-removed'], null, module.handlePuzzleRemoved);
+			dao.listen(
+				['config-changed'],
+				'language',
+				module.handleLanguageChanged
+			);
 
 			$puzzleList.hide();
 			$('.puzzles-button')
@@ -33,6 +38,8 @@ core.register(
 				.attr('href', '#!' + misc.encodeKey(sandbox.activePuzzle()) + '/puzzles');
 
 			$('#create-puzzle-button').click(module.handleCreatePuzzle);
+
+			module.updateTime();
 		};
 
 		module.handlePuzzleSwitched = function(event) {
@@ -101,6 +108,11 @@ core.register(
 			module.updatePuzzle(puzzle, $(document.getElementById('puzzle-'+misc.encodeClass(puzzle.name))));
 		};
 
+		module.handleLanguageChanged = function(value) {
+			moment.locale(value);
+			module.updateTime();
+		};
+
 		module.handleCreatePuzzle = function() {
 			var puzzle = $puzzleName.val();
 			$puzzleName.val('');
@@ -136,7 +148,10 @@ core.register(
 			}
 			row.find('.title').text(puzzle.name);
 			if(typeof puzzle.last_active !== 'undefined') {
-				row.find('.last-active').text(moment(puzzle.last_active).fromNow());
+				misc.updateWithTime(
+					row.find('.last-active'),
+					new Date(puzzle.last_active)
+				);
 			} else {
 				row.find('.last-active').hide();
 			}
@@ -194,6 +209,14 @@ core.register(
 				divider.before(clone);
 			});
 		}, 250);
+
+		module.updateTime = function() {
+			$('time.sync').each(function(index, el) {
+				misc.updateWithTime($(el));
+			});
+
+			setTimeout(module.updateTime, 10000);
+		};
 
 		return module;
 	}

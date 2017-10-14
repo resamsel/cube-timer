@@ -1,11 +1,13 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
+var I18n = require('../utils/i18n.js');
 //var $ = require('jquery');
 
 core.register(
 	'Config',
 	function(sandbox) {
 		var module = {};
+		var $language;
 		var $inspectionTime;
 		var $subtext;
 		var $soundAfterInspection;
@@ -28,6 +30,19 @@ core.register(
 				['puzzle-changed'],
 				module.handlePuzzleChanged,
 				module
+			);
+
+			$language = $('#language');
+			I18n.languages.forEach(function(language) {
+				$language.append($('<option value="'+language+'" i18n-key="language_'+language+'">'+language+'</option>'));
+			});
+			$language.change(function() {
+				dao.storeConfig('language', $(this).val());
+			});
+			dao.listen(
+				['config-changed'],
+				'language',
+				module.handleLanguageChanged
 			);
 
 			$inspectionTime = $('#inspectionTime');
@@ -87,6 +102,13 @@ core.register(
 				dao.unlisten(['config-changed'], listener);
 				dao.listen(['config-changed'], key, listener);
 			});
+		};
+
+		module.handleLanguageChanged = function(language) {
+			if(language === null) {
+				language = 'en';
+			}
+			$language.val(language);
 		};
 
 		module.handleInspectionTimeChanged = function(inspectionTime) {
