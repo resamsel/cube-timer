@@ -111,6 +111,7 @@ dao.storeConfig = function(key, value, callback) {
 dao.listeners = {
 	'puzzle-added': [],
 	'puzzle-removed': [],
+	'puzzle-changed': [],
 	'score-added': [],
 	'score-removed': [],
 	'config-changed': []

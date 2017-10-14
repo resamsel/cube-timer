@@ -127,14 +127,23 @@ misc.debounce = function(func, wait, immediate) {
 };
 
 misc.encodeKey = function(decoded) {
-    return encodeURIComponent(decoded).replace(/\./g, '%2E');
+	if(typeof decoded === 'undefined') {
+		return decoded;
+	}
+	return encodeURIComponent(decoded).replace(/\./g, '%2E');
 };
 
 misc.decodeKey = function(encoded) {
+	if(typeof encoded === 'undefined') {
+		return encoded;
+	}
     return decodeURIComponent(encoded.replace('%2E', '.'));
 };
 
 misc.encodeClass = function(decoded) {
+	if(typeof decoded === 'undefined') {
+		return decoded;
+	}
 	return decoded.replace(/[!"#\$%&'()\*\+ ,-\.\/:;<=>\?@\[\\\]\^`{\|}~]/g, '\\$&');
 };
 

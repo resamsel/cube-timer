@@ -16,7 +16,7 @@ core.register(
 
 			sandbox.listen(
 				['puzzle-changed'],
-				module.handlePuzzleChanged,
+				module.handlePuzzleSwitched,
 				module
 			);
 			sandbox.listen(
@@ -35,8 +35,8 @@ core.register(
 			$('#create-puzzle-button').click(module.handleCreatePuzzle);
 		};
 
-		module.handlePuzzleChanged = function(event) {
-			console.debug('handlePuzzleChanged(event)', event);
+		module.handlePuzzleSwitched = function(event) {
+			console.debug('handlePuzzleSwitched(event)', event);
 			var puzzle = event.data;
 
 			$('.puzzle-list .active').removeClass('active');
@@ -71,6 +71,12 @@ core.register(
 
 			module.addPuzzle(puzzle);
 			module.populatePuzzles();
+
+			dao.listen(
+				['puzzle-changed'],
+				misc.encodeKey(puzzle.name),
+				module.handlePuzzleChanged
+			);
 		};
 
 		module.handlePuzzleRemoved = function(puzzle) {
@@ -91,6 +97,10 @@ core.register(
 			module.populatePuzzles();
 		};
 
+		module.handlePuzzleChanged = function(puzzle) {
+			module.updatePuzzle(puzzle, $(document.getElementById('puzzle-'+misc.encodeClass(puzzle.name))));
+		};
+
 		module.handleCreatePuzzle = function() {
 			var puzzle = $puzzleName.val();
 			$puzzleName.val('');
@@ -99,8 +109,25 @@ core.register(
 		};
 
 		module.addPuzzle = function(puzzle) {
-			var row = $('#puzzles-content .template').clone();
+			var row = module.updatePuzzle(puzzle, $('#puzzles-content .template').clone());
 
+			var added = false;
+			$puzzleList.children().each(function(index, item) {
+				var $item = $(item);
+				if(added === false && $item.data('puzzle') > puzzle.name) {
+					$item.before(row);
+					added = true;
+				}
+			});
+			if(added === false) {
+				$puzzleList.append(row);
+			}
+
+			$puzzleList.show();
+		};
+
+		module.updatePuzzle = function(puzzle, row) {
+			console.log('updatePuzzle(puzzle, row)', puzzle, row);
 			row.attr('id', 'puzzle-' + misc.encodeClass(puzzle.name));
 			row.removeClass('template');
 			row.data('puzzle', puzzle.name);
@@ -110,6 +137,8 @@ core.register(
 			row.find('.title').text(puzzle.name);
 			if(typeof puzzle.last_active !== 'undefined') {
 				row.find('.last-active').text(moment(puzzle.last_active).fromNow());
+			} else {
+				row.find('.last-active').hide();
 			}
 			row
 				.find('.select')
@@ -131,19 +160,7 @@ core.register(
 						});
 				});
 
-			var added = false;
-			$puzzleList.children().each(function(index, item) {
-				var $item = $(item);
-				if(added === false && $item.data('puzzle') > puzzle.name) {
-					$item.before(row);
-					added = true;
-				}
-			});
-			if(added === false) {
-				$puzzleList.append(row);
-			}
-
-			$puzzleList.show();
+			return row;
 		};
 
 		/*

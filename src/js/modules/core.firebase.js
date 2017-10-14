@@ -178,7 +178,7 @@ core.register(
 
 		module.listen = function(types, key, callback) {
 			var existing = listeners.filter(function(listener) {
-				return listener.callback === callback;
+				return listener.callback === callback && listener.key === key;
 			});
 			if(existing.length > 0) {
 				return;
@@ -202,6 +202,10 @@ core.register(
 				} else if(type == 'puzzle-removed') {
 					db.ref(Keys.userPuzzles(user))
 						.on('child_removed', wrapped);
+				} else if(type == 'puzzle-changed') {
+					console.log('notify of puzzle changed for key %s', Keys.userPuzzle(user, key));
+					db.ref(Keys.userPuzzle(user, key))
+						.on('value', wrapped);
 				} else if(type == 'score-added') {
 					db.ref(Keys.userScores(user, key))
 						.on('child_added', wrapped);
@@ -228,7 +232,13 @@ core.register(
 
 			types.forEach(function(type) {
 				callbacks.forEach(function(wrapped) {
-					if(type == 'score-added') {
+					if(type == 'puzzle-added') {
+						ref.off('child_added', wrapped);
+					} else if(type == 'puzzle-removed') {
+						ref.off('child_removed', wrapped);
+					} else if(type == 'puzzle-changed') {
+						ref.off('value', wrapped);
+					} else if(type == 'score-added') {
 						ref.off('child_added', wrapped);
 					} else if(type == 'score-removed') {
 						ref.off('child_removed', wrapped);
