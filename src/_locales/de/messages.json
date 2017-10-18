@@ -387,6 +387,10 @@
         "message": "Puzzle",
         "description": "The link to the puzzle list."
     },
+    "scoresEmpty": {
+        "message": "Bisher noch keine Ergebnisse.",
+        "description": "No scores avalable."
+    },
 
     "windowSize": {
         "message": "Einträge im Chart",

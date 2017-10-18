@@ -387,6 +387,10 @@
         "message": "Puzzles",
         "description": "The link to the puzzle list."
     },
+    "scoresEmpty": {
+        "message": "No scores yet — use the timer or import to add results.",
+        "description": "No scores avalable."
+    },
 
     "windowSize": {
         "message": "Chart Entries",

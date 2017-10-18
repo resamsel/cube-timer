@@ -8,14 +8,14 @@ var Keys = {
 		return user.uid;
 	},
 	userInfo: function(user, suffix) {
-		var key = '/users/'+Keys.user(user)+'/info';
+		var key = '/users/'+Keys.user(user);
 		if(suffix) {
-			return key+'/'+suffix;
+			return key+'/'+misc.encodeKey(suffix);
 		}
 		return key;
 	},
 	userScores: function(user, puzzle, suffix) {
-		var key = '/user-scores/'+Keys.user(user)+'/'+misc.encodeKey(puzzle);
+		var key = '/users/'+Keys.user(user)+'/puzzles/'+misc.encodeKey(puzzle)+'/scores';
 		if(suffix) {
 			return key+'/'+misc.encodeKey(suffix);
 		}
@@ -30,15 +30,6 @@ var Keys = {
 			return key+'/'+misc.encodeKey(suffix);
 		}
 		return key;
-	},
-	puzzle: function(puzzle, key) {
-		return '/puzzles/'+misc.encodeKey(puzzle)+'/'+key;
-	},
-	puzzleScores: function(puzzle, user, key) {
-		return '/puzzle-scores/'+misc.encodeKey(puzzle)+'/'+misc.encodeKey(key)+'-'+Keys.user(user);
-	},
-	config: function(user, key) {
-		return '/configs/'+Keys.user(user)+'/'+misc.encodeKey(key);
 	}
 };
 
@@ -80,11 +71,12 @@ core.register(
 			if(user) {
 				dao.datasource = module;
 				var updates = {};
+				var now = new Date();
 				
-				updates[Keys.userInfo(user, 'last_login')] = new Date().getTime();
-				updates[Keys.userInfo(user, 'last_login_text')] = new Date().toString();
-
-				firebase.database().ref().update(updates);
+				firebase.firestore().doc(Keys.userInfo(user)).set({
+					'lastLogin': now.getTime(),
+					'lastLoginText': now.toString()
+				}, {merge: true});
 
 				$body.addClass('auth-ok');
 				$('img.auth-user-image').attr('src', user.photoURL);
@@ -170,10 +162,32 @@ core.register(
 			});
 		};
 
-		module.wrap = function(callback) {
-			return function(snapshot) {
-				return callback(snapshot.val());
-			};
+		module.listenChanged = function(key, callback) {
+			return firebase.firestore().doc(key).onSnapshot(callback);
+		};
+
+		module.listenChildAdded = function(key, callback) {
+			return firebase.firestore().collection(key)
+				.onSnapshot(function(snapshot) {
+					snapshot.docChanges.forEach(function(change) {
+						console.debug('Change on collection %s:', key, change);
+						if(change.type === 'added') {
+							callback(change.doc.data());
+						}
+					});
+				});
+		};
+
+		module.listenChildRemoved = function(key, callback) {
+			return firebase.firestore().collection(key)
+				.onSnapshot(function(snapshot) {
+					snapshot.docChanges.forEach(function(change) {
+						console.debug('Change on collection %s:', key, change);
+						if(change.type === 'removed') {
+							callback(change.doc.data());
+						}
+					});
+				});
 		};
 
 		module.listen = function(types, key, callback) {
@@ -184,121 +198,149 @@ core.register(
 				return;
 			}
 
-			var wrapped = module.wrap(callback);
+			var unsubscribe;
+			var db = firebase.firestore();
+			var user = firebase.auth().currentUser;
+			types.forEach(function(type) {
+				if(type == 'puzzle-added') {
+					// FIXME: FIX LISTENERS FOR FIRESTORE!
+					unsubscribe = module.listenChildAdded(
+						Keys.userPuzzles(user),
+						callback
+					);
+				} else if(type == 'puzzle-removed') {
+					unsubscribe = module.listenChildRemoved(
+						Keys.userPuzzles(user),
+						callback
+					);
+				} else if(type == 'puzzle-changed') {
+					unsubscribe = module.listenChanged(
+						Keys.userPuzzle(user, key),
+						callback
+					);
+				} else if(type == 'score-added') {
+					unsubscribe = module.listenChildAdded(
+						Keys.userScores(user, key),
+						callback
+					);
+				} else if(type == 'score-removed') {
+					unsubscribe = module.listenChildRemoved(
+						Keys.userScores(user, key),
+						callback
+					);
+				} else if(type == 'config-changed') {
+					unsubscribe = module.listenChanged(
+						Keys.userInfo(user),
+						function(value) {
+							return callback(value.data()[key]);
+						}
+					);
+				}
+			});
+
 			listeners.push({
 				types: types,
 				key: key,
 				callback: callback,
-				wrapped: wrapped
-			});
-
-			var user = firebase.auth().currentUser;
-			var db = firebase.database();
-			var ref;
-			types.forEach(function(type) {
-				if(type == 'puzzle-added') {
-					db.ref(Keys.userPuzzles(user))
-						.on('child_added', wrapped);
-				} else if(type == 'puzzle-removed') {
-					db.ref(Keys.userPuzzles(user))
-						.on('child_removed', wrapped);
-				} else if(type == 'puzzle-changed') {
-					console.log('notify of puzzle changed for key %s', Keys.userPuzzle(user, key));
-					db.ref(Keys.userPuzzle(user, key))
-						.on('value', wrapped);
-				} else if(type == 'score-added') {
-					db.ref(Keys.userScores(user, key))
-						.on('child_added', wrapped);
-				} else if(type == 'score-removed') {
-					db.ref(Keys.userScores(user, key))
-						.on('child_removed', wrapped);
-				} else if(type == 'config-changed') {
-					db.ref(Keys.config(user, key))
-						.on('value', wrapped);
-				}
+				unsubscribe: unsubscribe
 			});
 		};
 
 		module.unlisten = function(types, callback) {
-			var ref = firebase.database().ref('/');
 			var callbacks = listeners.filter(function(listener) {
 				return listener.callback === callback;
-			}).map(function(listener) {
-				return listener.wrapped;
 			});
 			if(callbacks.length < 1) {
 				return;
 			}
 
-			types.forEach(function(type) {
-				callbacks.forEach(function(wrapped) {
-					if(type == 'puzzle-added') {
-						ref.off('child_added', wrapped);
-					} else if(type == 'puzzle-removed') {
-						ref.off('child_removed', wrapped);
-					} else if(type == 'puzzle-changed') {
-						ref.off('value', wrapped);
-					} else if(type == 'score-added') {
-						ref.off('child_added', wrapped);
-					} else if(type == 'score-removed') {
-						ref.off('child_removed', wrapped);
-					} else if(type == 'config-changed') {
-						ref.off('value', wrapped);
-					}
-				});
-				listeners = listeners.filter(function(listener) {
-					return listener.callback !== callback;
-				});
+			callbacks.forEach(function(listener) {
+				listener.unsubscribe();
+			});
+			listeners = listeners.filter(function(listener) {
+				return listener.callback !== callback;
 			});
 		};
 
 		module.storePuzzle = function(puzzle) {
-			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 
-			db.ref(Keys.userPuzzle(user, puzzle, 'name')).set(puzzle);
+			firebase.firestore()
+				.doc('users/'+user.uid+'/puzzles/'+misc.encodeKey(puzzle))
+				.set({name: puzzle})
+				.then(function(docRef) {
+					console.debug("Document written with ID: ", docRef);
+				})
+				.catch(function(error) {
+					console.error("Error adding document: ", error);
+				});
 		};
 
 		module.removePuzzle = function(puzzle) {
-			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 
-			db.ref(Keys.userPuzzle(user, puzzle)).set(null);
+			firebase.firestore()
+				.doc('users/'+user.uid+'/puzzles/'+misc.encodeKey(puzzle))
+				.delete()
+				.then(function(docRef) {
+					console.debug("Document removed: ", docRef);
+				})
+				.catch(function(error) {
+					console.error("Error removing document: ", error);
+				});
 		};
 
 		module.retrieveScores = function(puzzle, callback) {
 			var user = firebase.auth().currentUser;
-			var ref = firebase.database()
-				.ref(Keys.userScores(user, puzzle))
-				.once('value', function(snapshot) {
+			firebase.firestore()
+				.collection(Keys.userScores(user, puzzle)).get()
+				.then(function(snapshot) {
 					if(callback) {
-						callback(snapshot.val());
+						callback(snapshot.docs.map(function(doc) {
+							return doc.data();
+						}));
 					}
 				});
 		};
 
 		module.storeScore = function(puzzle, score, callback) {
-			var db = firebase.database();
+			var firestore = firebase.firestore();
 			var user = firebase.auth().currentUser;
+			var now = new Date();
 			var data = {
-				name: user.displayName,
-				photo_url: user.photoURL,
-				uid: user.uid,
+				user: firestore.doc(Keys.userInfo(user)),
 				puzzle: puzzle,
 				value: score.value,
-				timestamp: score.timestamp || score.id
+				timestamp: score.timestamp || score.id,
+				whenCreated: now.getTime(),
+				whenCreatedText: now.toString()
 			};
 			var key = data.timestamp+'-'+data.value;
 
-			db.ref(Keys.userScores(user, puzzle, key)).set(data);
+			firestore
+				.doc(Keys.userScores(user, puzzle, key))
+				.set(data)
+				.then(function(docRef) {
+					console.debug("Score added: ", docRef);
+				})
+				.catch(function(error) {
+					console.error("Error adding score: ", error);
+				});
 		};
 
 		module.removeScore = function(puzzle, score, callback) {
-			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 			var key = score.timestamp+'-'+score.value;
 
-			db.ref(Keys.userScores(user, puzzle, key)).set(null);
+			firebase.firestore()
+				.doc(Keys.userScores(user, puzzle, key))
+				.delete()
+				.then(function(docRef) {
+					console.debug("Score removed: ", docRef);
+				})
+				.catch(function(error) {
+					console.error("Error removing score: ", error);
+				});
 
 			if(callback) {
 				callback();
@@ -306,24 +348,41 @@ core.register(
 		};
 
 		module.resetScores = function(puzzle, callback) {
-			var db = firebase.database();
 			var user = firebase.auth().currentUser;
 
-			db.ref(Keys.userScores(user, puzzle)).set(null);
+			firebase.firestore()
+				.doc(Keys.userScores(user, puzzle))
+				.delete()
+				.then(function(docRef) {
+					console.debug("Puzzle removed: ", docRef);
 
-			if(callback) {
-				callback();
-			}
+					if(callback) {
+						callback();
+					}
+				})
+				.catch(function(error) {
+					console.error("Error removing puzzle: ", error);
+				});
 		};
 
 		module.storeConfig = function(key, value, callback) {
 			var user = firebase.auth().currentUser;
+			var doc = {};
+			doc[key] = value;
 
-			firebase.database().ref(Keys.config(user, key)).set(value);
+			firebase.firestore()
+				.doc(Keys.userInfo(user))
+				.set(doc, {merge: true})
+				.then(function(docRef) {
+					console.debug("Config stored: ", docRef);
 
-			if(callback) {
-				callback();
-			}
+					if(callback) {
+						callback();
+					}
+				})
+				.catch(function(error) {
+					console.error("Error storing config: ", error);
+				});
 		};
 
 		module.notifyMigrated = misc.debounce(function() {
@@ -334,7 +393,6 @@ core.register(
 		}, 1000);
 
 		module.migrateData = function() {
-			firebase.database().ref('/').off();
 			dao.retrievePuzzles(function(puzzles) {
 				puzzles.forEach(function(puzzle) {
 					dao.get('scores-' + puzzle, function(scores) {

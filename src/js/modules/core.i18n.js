@@ -44,7 +44,6 @@ core.register(
 		};
 
 		module.handleLanguageChanged = function(value) {
-			console.log('handleLanguageChanged(value=%s)', value);
 			module.loadMessages(value);
 		};
 

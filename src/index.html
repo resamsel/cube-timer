@@ -203,6 +203,23 @@
 		<div class="container page page-results">
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
+					<div class="loading center">
+						<div class="preloader-wrapper big active">
+							<div class="spinner-layer spinner-blue-only">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div><div class="gap-patch">
+									<div class="circle"></div>
+								</div><div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="empty center">
+						<div><span class="material-icons">assessment</span></div>
+						<p i18n-key="scoresEmpty">Nothing to see here, yet.</p>
+					</div>
 					<div id="results-content">
 						<ul class="template result-container collection collection-small z-depth-1">
 						</ul>
@@ -459,9 +476,10 @@
 	<!-- Google Sign In -->
 	<script src="https://apis.google.com/js/platform.js" async defer></script>
 	<!-- Firebase -->
-	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-firestore.js"></script>
 	<script src="credentials.js"></script>
 
 	<script src="js/jquery.min.js"></script>

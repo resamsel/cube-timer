@@ -3,7 +3,7 @@ var dao = require('../dao.js');
 var misc = require('../utils/misc.js');
 
 core.register(
-	'Puzzle',
+	'Puzzles',
 	function(sandbox) {
 		var module = {};
 		var puzzles = [];
@@ -13,6 +13,8 @@ core.register(
 		module.init = function() {
 			$puzzleName = $('#puzzle-name');
 			$puzzleList = $('#puzzles-content .puzzle-container');
+
+			$puzzleList.hide();
 
 			sandbox.listen(
 				['puzzle-changed'],
@@ -32,7 +34,6 @@ core.register(
 				module.handleLanguageChanged
 			);
 
-			$puzzleList.hide();
 			$('.puzzles-button')
 				.css('display', 'block')
 				.attr('href', '#!' + misc.encodeKey(sandbox.activePuzzle()) + '/puzzles');
@@ -72,6 +73,8 @@ core.register(
 		};
 
 		module.handlePuzzleAdded = function(puzzle) {
+			console.log('handlePuzzleAdded', puzzle, puzzles);
+
 			if(puzzles.indexOf(puzzle.name) < 0) {
 				puzzles.push(puzzle.name);
 			}
@@ -105,7 +108,9 @@ core.register(
 		};
 
 		module.handlePuzzleChanged = function(puzzle) {
-			module.updatePuzzle(puzzle, $(document.getElementById('puzzle-'+misc.encodeClass(puzzle.name))));
+			if(puzzle) {
+				module.updatePuzzle(puzzle, $(document.getElementById('puzzle-'+misc.encodeClass(puzzle.name))));
+			}
 		};
 
 		module.handleLanguageChanged = function(value) {
@@ -121,6 +126,8 @@ core.register(
 		};
 
 		module.addPuzzle = function(puzzle) {
+			console.log('addPuzzle', puzzle);
+
 			var row = module.updatePuzzle(puzzle, $('#puzzles-content .template').clone());
 
 			var added = false;
@@ -139,7 +146,6 @@ core.register(
 		};
 
 		module.updatePuzzle = function(puzzle, row) {
-			console.log('updatePuzzle(puzzle, row)', puzzle, row);
 			row.attr('id', 'puzzle-' + misc.encodeClass(puzzle.name));
 			row.removeClass('template');
 			row.data('puzzle', puzzle.name);
@@ -182,6 +188,8 @@ core.register(
 		* Create the list of puzzles in the header bar.
 		*/
 		module.populatePuzzles = misc.debounce(function() {
+			console.log('populatePuzzles');
+
 			var activePuzzle = sandbox.activePuzzle();
 			var puzzleList = $('.puzzle-list');
 			var divider = $('.puzzle-list .divider');
@@ -191,6 +199,8 @@ core.register(
 			puzzleList.find('[class^="puzzle puzzle-"]').remove();
 			puzzles.sort();
 			puzzles.forEach(function(puzzle) {
+				console.log('puzzle', puzzle);
+
 				// 1. Clone template
 				clone = template.clone();
 

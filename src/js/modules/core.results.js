@@ -7,11 +7,26 @@ core.register(
 	'Results',
 	function(sandbox) {
 		var module = {};
+		var results = [];
 		var subtext = false;
-
-		module.results = [];
+		var timeout;
+		var $loading;
+		var $resultsButton;
+		var $scoresContent;
+		var $scoreTemplate;
 
 		module.init = function() {
+			$loading = $('.page-results .loading');
+			$resultsButton = $('.results-button');
+			$scoresContent = $('#results-content .times-content');
+			$scoreTemplate = $('#results-content .template.result-container');
+			$noResults = $('.page-results .empty');
+
+			timeout = setTimeout(function() {
+				$loading.hide();
+				$noResults.fadeIn();
+			}, 2000);
+
 			dao.listen(
 				['config-changed'],
 				'subtext',
@@ -29,9 +44,10 @@ core.register(
 			);
 			module.listen();
 
-			$('.results-button')
+			$resultsButton
 				.css('display', 'block')
 				.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/results');
+			$noResults.hide();
 		};
 
 		module.listen = function() {
@@ -59,16 +75,22 @@ core.register(
 
 		module.handlePageChanged = function(event) {
 			if(event.data == 'results') {
-				$('.results-button').parent().addClass('active');
+				$resultsButton.parent().addClass('active');
 			} else {
-				$('.results-button').parent().removeClass('active');
+				$resultsButton.parent().removeClass('active');
 			}
 		};
 
 		module.handlePuzzleChanged = function(event) {
-			$('.results-button').attr('href', '#!'+misc.encodeKey(event.data)+'/results');
+			module.cleanResults();
+			$loading.fadeIn();
 
-			module.results = [];
+			$resultsButton.attr(
+				'href',
+				'#!'+misc.encodeKey(event.data)+'/results'
+			);
+
+			results = [];
 
 			module.listen();
 
@@ -76,17 +98,22 @@ core.register(
 		};
 
 		module.handleResultsChanged = misc.debounce(function() {
-			misc.sortScores(module.results);
+			misc.sortScores(results);
 			module.updateResults(sandbox.activePuzzle());
 		}, 250);
 
 		module.handleScoreAdded = function(score) {
-			module.results.push(score);
+			if(typeof timeout !== 'undefined') {
+				clearTimeout(timeout);
+				timeout = undefined;
+			}
+
+			results.push(score);
 			module.handleResultsChanged();
 		};
 		
 		module.handleScoreRemoved = function(score) {
-			module.results = module.results.filter(function(result) {
+			results = results.filter(function(result) {
 				return result.timestamp != score.timestamp;
 			});
 			$('#id-' + score.timestamp).fadeOut({
@@ -110,23 +137,19 @@ core.register(
 			element = $(element);
 			var puzzle = element.data('puzzle');
 			var score = element.data('score');
-			//console.log('removeResult with score %s, puzzle %s', score, puzzle);
 			dao.removeScore(puzzle, score);
 		};
 
 		module.createContainer = function() {
-			var container = $('#results-content .template.result-container')
-				.clone()
-				.removeClass('template');
-			$('#results-content .times-content').append(container);
+			var container = $scoreTemplate.clone().removeClass('template');
+			$scoresContent.append(container);
 			return container;
 		};
 
 		module.createResult = function(score, index) {
 			var row = $('#results-content .template.result-item').clone();
 
-			row.attr('id', 'id-' + score.timestamp);
-			row.removeClass('template');
+			row.attr('id', 'id-' + score.timestamp).removeClass('template');
 			row
 				.find('.value')
 				.text(misc.defaultFormatMilliseconds(score.value));
@@ -159,19 +182,29 @@ core.register(
 			return element;
 		};
 
-		module.updateResults = misc.debounce(function() {
-			var results = module.results;
+		module.cleanResults = function() {
 			$('#results-content .times-content > *').remove();
+			$noResults.hide();
+		};
+
+		module.updateResults = misc.debounce(function() {
+			module.cleanResults();
+			$loading.hide();
+
 			var result;
 			var latestDate = '', date;
-			var parentContainer = $('#results-content .times-content');
 			var container;
 			var previous;
+
+			if(results.length < 1) {
+				$noResults.fadeIn();
+				return;
+			}
 
 			results.slice().reverse().forEach(function(result, i) {
 				date = misc.toGroupedDate(result.timestamp);
 				if(date !== latestDate) {
-					parentContainer.append(module.createDate(result.timestamp));
+					$scoresContent.append(module.createDate(result.timestamp));
 					container = module.createContainer();
 					latestDate = date;
 				}
@@ -185,12 +218,12 @@ core.register(
 		module.update = misc.debounce(function() {
 			//console.log('update', results);
 			module.updateDates();
-			module.updateIndices(module.results);
-			module.updateLabels(module.results);
+			module.updateIndices(results);
+			module.updateLabels(results);
 		}, 250);
 
 		module.updateDates = function() {
-			module.results.forEach(function(result, index) {
+			results.forEach(function(result, index) {
 				misc.updateWithTime(
 					$('#id-' + result.timestamp + ' time'),
 					new Date(result.timestamp)

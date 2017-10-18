@@ -1,0 +1,13 @@
+.loading {
+	padding: 10em 0;
+}
+.empty {
+	padding: 10em;
+	color: #9e9e9e;
+}
+.empty .material-icons {
+	font-size: 16em;
+}
+.empty p {
+	font-size: 2em;
+}

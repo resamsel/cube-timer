@@ -8,7 +8,7 @@ require('./modules/core.config.js');
 require('./modules/core.chart.js');
 require('./modules/core.i18n.js');
 require('./modules/core.scramble.js');
-require('./modules/core.puzzle.js');
+require('./modules/core.puzzles.js');
 require('./modules/core.navbar.js');
 require('./modules/core.results.js');
 require('./modules/core.export.js');

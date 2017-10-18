@@ -98,13 +98,14 @@ module.exports = function() {
 							return {name: game};
 						});
 					} else {
-						puzzles = ['3x3x3'];
+						puzzles = [{name: '3x3x3'}];
 					}
 
 					// 4. store data in puzzles
 					dao.set('puzzles', puzzles);
+					console.log('puzzles', puzzles);
 					puzzles.forEach(function(puzzle) {
-						dao.notify('puzzle-added', {name: puzzle});
+						dao.notify('puzzle-added', puzzle);
 					});
 
 					// 5. upgrade database version
