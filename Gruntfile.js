@@ -8,7 +8,13 @@ module.exports = function(grunt) {
 			main: {
 				expand: true,
 				cwd: 'src/',
-				src: ['*.html', 'background.js', 'credentials.js'],
+				src: [
+					'*.html',
+					'background.js',
+					'credentials.js',
+					'service-worker.js',
+					'serviceworker-cache-polyfill.js'
+				],
 				dest: 'dist/<%= pkg.name %>'
 			},
 			js: {
