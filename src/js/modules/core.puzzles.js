@@ -73,7 +73,7 @@ core.register(
 		};
 
 		module.handlePuzzleAdded = function(puzzle) {
-			console.log('handlePuzzleAdded', puzzle, puzzles);
+			console.debug('handlePuzzleAdded', puzzle, puzzles);
 
 			if(puzzles.indexOf(puzzle.name) < 0) {
 				puzzles.push(puzzle.name);
@@ -126,8 +126,6 @@ core.register(
 		};
 
 		module.addPuzzle = function(puzzle) {
-			console.log('addPuzzle', puzzle);
-
 			var row = module.updatePuzzle(puzzle, $('#puzzles-content .template').clone());
 
 			var added = false;
@@ -188,8 +186,6 @@ core.register(
 		* Create the list of puzzles in the header bar.
 		*/
 		module.populatePuzzles = misc.debounce(function() {
-			console.log('populatePuzzles');
-
 			var activePuzzle = sandbox.activePuzzle();
 			var puzzleList = $('.puzzle-list');
 			var divider = $('.puzzle-list .divider');
@@ -199,8 +195,6 @@ core.register(
 			puzzleList.find('[class^="puzzle puzzle-"]').remove();
 			puzzles.sort();
 			puzzles.forEach(function(puzzle) {
-				console.log('puzzle', puzzle);
-
 				// 1. Clone template
 				clone = template.clone();
 

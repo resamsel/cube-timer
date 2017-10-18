@@ -103,7 +103,6 @@ module.exports = function() {
 
 					// 4. store data in puzzles
 					dao.set('puzzles', puzzles);
-					console.log('puzzles', puzzles);
 					puzzles.forEach(function(puzzle) {
 						dao.notify('puzzle-added', puzzle);
 					});

@@ -33,7 +33,6 @@ core.register(
 		};
 
 		module.handleResultsChanged = misc.debounce(function(event) {
-			//console.log('handleResultsChanged', event);
 			module.updateChart(sandbox.createStats(module.results));
 		}, 250);
 
@@ -104,8 +103,6 @@ core.register(
 				return;
 			}
 
-			//console.log('%s.updateChart(stats=%s)', module.id, stats);
-
 			var results = $('#ct-stats');
 			var categories = $('#ct-categories');
 			var weekdays = $('#ct-weekdays');
@@ -141,10 +138,6 @@ core.register(
 				maxEntries = len;
 			}
 			var offset = Math.max(0, len - maxEntries);
-//			console.log(
-//				'values=%s, averages12=%s, averages50=%s, best=%s, offset=%d',
-//				values, averages12, averages50, best, offset
-//			);
 			var data = {
 				// A labels array that can contain any sort of values
 				labels: statistics.scores.map(misc.scoreKey).slice(offset, len).rpad(maxEntries, null),

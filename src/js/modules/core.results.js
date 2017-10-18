@@ -216,7 +216,6 @@ core.register(
 		}, 250);
 
 		module.update = misc.debounce(function() {
-			//console.log('update', results);
 			module.updateDates();
 			module.updateIndices(results);
 			module.updateLabels(results);

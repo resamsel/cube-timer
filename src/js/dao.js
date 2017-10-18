@@ -42,9 +42,7 @@ var localDAO = {
 };
 var chromeDAO = {
 	get: function(key, callback) {
-		// console.log('chromeDAO.get(%s, callback)', key);
 		chrome.storage.local.get(key, function (v) {
-			// console.log('get(%s): %o', key, v);
 			var value = v[key];
 			if(typeof(value) !== 'undefined') {
 				value = JSON.parse(v[key]);
