@@ -2,6 +2,8 @@
 
 # Rubik's Cube Timer
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/resamsel/cube-timer.svg)](https://greenkeeper.io/)
+
 [![Dependency Status](https://david-dm.org/resamsel/cube-timer.svg?style=flat)](https://david-dm.org/resamsel/cube-timer)
 [![devDependency Status](https://david-dm.org/resamsel/cube-timer/dev-status.svg?style=flat)](https://david-dm.org/resamsel/cube-timer#info=devDependencies)
 
