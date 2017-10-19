@@ -1,6 +1,7 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
 var misc = require('../utils/misc.js');
+var $ = require('jquery');
 
 core.register(
     'Export',

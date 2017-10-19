@@ -7,16 +7,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title i18n-key="appName">Rubik's Cube Timer</title>
-	<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="./img/icon-128.png">
 
 	<meta name="theme-color" content="#3f51b5">
-	<link rel="icon" sizes="128x128" href="img/icon-128.png">
+	<link rel="icon" sizes="128x128" href="./img/icon-128.png">
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<meta name="google-signin-client_id" content="689117800147-k15gn6i7kbvv6dt800bjrjs80m5jgp6s.apps.googleusercontent.com">
 	<meta name="google-signin-cookiepolicy" content="single_host_origin">
 	<meta name="google-signin-scope" content="profile email">
-
-	<link rel="stylesheet" href="css/cube-timer.css">
 </head>
 <body class="material"><!-- class="started/stopped" -->
 	<ul id="puzzle-list" class="puzzle-list dropdown-content">
@@ -473,24 +473,10 @@
 		<input id="import-file" type="file">
 	</div>
 
-	<!-- Google Sign In -->
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
-	<!-- Firebase -->
-	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-auth.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase-firestore.js"></script>
-	<script src="credentials.js"></script>
-
-	<script src="js/jquery.min.js"></script>
-
-	<script src="js/cube-timer.pre.js"></script>
-
-	<script src="js/cube-timer.js"></script>
-
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function() {
-				navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+				navigator.serviceWorker.register('/sw.bundle.js').then(function(registration) {
 					// Registration was successful
 					console.log('ServiceWorker registration successful with scope: ', registration.scope);
 				}, function(err) {

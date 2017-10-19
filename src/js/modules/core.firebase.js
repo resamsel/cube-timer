@@ -1,7 +1,18 @@
+const $script = require("scriptjs")
+$script("https://apis.google.com/js/platform.js")
+
+const firebase = require('@firebase/app').default
+require('@firebase/auth')
+require('@firebase/firestore')
+
 var core = require('../core.js');
 var dao = require('../dao.js');
 var I18n = require('../utils/i18n.js');
 var misc = require('../utils/misc.js');
+var $ = require('jquery');
+var NProgress = require('nprogress');
+
+const firebaseConfig = require('../firebaseConfig.js')
 
 var Keys = {
 	user: function(user) {
@@ -60,10 +71,10 @@ core.register(
 			$signOutButton.click(module.handleSignOut);
 			window.onSignIn = module.handleSignIn;
 		};
-		
+
 		module.handleAuthStateChanged = function(user) {
 			sandbox.notify({type: 'datasource-changed'});
-			NProgress.done();
+			// NProgress.done();
 		};
 
 		module.handleDatasourceChanged = function() {
@@ -72,7 +83,7 @@ core.register(
 				dao.datasource = module;
 				var updates = {};
 				var now = new Date();
-				
+
 				firebase.firestore().doc(Keys.userInfo(user)).set({
 					'lastLogin': now.getTime(),
 					'lastLoginText': now.toString()
@@ -123,7 +134,7 @@ core.register(
 				NProgress.done();
 			}
 		};
-		
+
 		module.handleAuthError = function(error) {
 			if (error.code === 'auth/account-exists-with-different-credential') {
 				alert('You have already signed up with a different auth provider for that email.');
@@ -203,7 +214,6 @@ core.register(
 			var user = firebase.auth().currentUser;
 			types.forEach(function(type) {
 				if(type == 'puzzle-added') {
-					// FIXME: FIX LISTENERS FOR FIRESTORE!
 					unsubscribe = module.listenChildAdded(
 						Keys.userPuzzles(user),
 						callback

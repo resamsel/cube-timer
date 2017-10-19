@@ -245,9 +245,9 @@ dao.storePuzzle = function(puzzle) {
 	} else {
 		dao.retrievePuzzles(function(puzzles) {
 			if(puzzles.indexOf(puzzle) < 0) {
-				puzzles.push(puzzle);
+				puzzles.push({name: puzzle});
 				dao.set('puzzles', puzzles, function() {
-					dao.notify('puzzle-added', {name: puzzle});
+					dao.notify('puzzle-added', puzzle);
 				});
 			}
 		});

@@ -16,72 +16,60 @@ chrome app allows you to install and use the timer locally.
 
 ## Development
 
-Cube Timer uses [Grunt](http://gruntjs.com/) as build system, which must be
-installed using npm. Node.js packages the command npm, so it needs to be
-installed as well. On Mac you could use [Homebrew](http://brew.sh/) to do that.
+Cube Timer uses [Webpack](https://webpack.js.org/) as build system, which must
+be installed using npm. Node.js packages the command npm, so it needs to be
+installed as well. On Mac you could use [Homebrew](https://brew.sh/) to do that.
 
 ```
 brew install nodejs
-npm install -g grunt grunt-cli firebase-tools
+npm install
+npm install -g webpack webpack-dev-server
+```
+
+### Local Firebase Development
+```
+npm install -g firebase-tools
 firebase login
 firebase init
 ```
 
-As soon as `grunt` is available as command the build can be initialised.
-
-```
-npm install
-```
-
 ### Building
 
-The *dist* task creates a distribution directory **dist** which contains the
+The *build* task creates a distribution directory **dist** which contains the
 entry point index.html and all relevant resources. The dist directory can also
 be used as the Apache DocumentRoot.
 
 ```
-grunt dist
+npm run build
 ```
 
 ### Watching
 
-Any change within the src directory must be followed by a `grunt dist` to
+Any change within the src directory must be followed by a `npm build` to
 reflect the changes into the dist directory. To avoid doing this manually,
-Grunt offers the watch task: it watches a set of files for changes and invokes
-the given tasks after a change has been identified.
+Webpack offers the --watch option: it watches a set of files for changes and
+invokes the given tasks after a change has been identified.
 
 ```
-grunt watch
+npm watch
 ```
 
 ### Packaging
 
-The dist task creates a zip file in the dist directory. That file can then be
+The build task creates a zip file in the dist directory. That file can then be
 published in the chrome web store.
 
 ```
-grunt dist
+npm run build
 ```
 
 ### Running
 
-Terminal 1:
 ```
-grunt watch
-```
-
-Terminal 2:
-```
-firebase serve
+npm start
 ```
 
-Go to http://localhost:5000 to use the application.
-
-### Caveats
-
-The Google API only works when the app is delivered from http://localhost/. To
-use it, use a webserver that delivers the content of the dist/cube-timer
-directory.
+You will be sent to http://localhost:5000 to use the application.
 
 ## Sources
 

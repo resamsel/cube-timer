@@ -1,4 +1,4 @@
-var I18n = {
+const I18n = {
     messages: null,
 
 	language: null,

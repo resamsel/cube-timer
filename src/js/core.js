@@ -1,7 +1,10 @@
-var Sandbox = require('./sandbox.js');
-var dao = require('./dao.js');
-var misc = require('./utils/misc.js');
-var I18n = require('./utils/i18n.js');
+const Sandbox = require('./sandbox.js')
+const dao = require('./dao.js')
+const misc = require('./utils/misc.js')
+const I18n = require('./utils/i18n.js')
+const NProgress = require('nprogress')
+
+NProgress.start();
 
 module.exports = function() {
 	var moduleData = {};
@@ -37,8 +40,6 @@ module.exports = function() {
 
 	core.init = function() {
 		console.debug('Core.init()');
-
-		NProgress.start();
 
 		// Migrate database, if necessary
 		this.migrate();
@@ -194,10 +195,10 @@ module.exports = function() {
 
 		core.notify({type: 'page-changed', data: page});
 	};
-	
+
 	core.activePage = function() {
 		return page;
 	};
 
 	return core;
-}();
+}()

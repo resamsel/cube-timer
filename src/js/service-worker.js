@@ -13,7 +13,7 @@
 
 // This polyfill provides Cache.add(), Cache.addAll(), and CacheStorage.match(),
 // which are not implemented in Chrome 40.
-importScripts('serviceworker-cache-polyfill.js');
+require('./serviceworker-cache-polyfill.js');
 
 // While overkill for this specific sample in which there is only one cache,
 // this is one best practice that can be followed in general to keep track of
@@ -96,7 +96,7 @@ self.addEventListener('install', function(event) {
       });
 
       return Promise.all(cachePromises).then(function() {
-        console.log('Pre-fetching complete.');
+        console.debug('Pre-fetching complete.');
       });
     }).catch(function(error) {
       console.error('Pre-fetching failed:', error);
@@ -118,7 +118,7 @@ self.addEventListener('activate', function(event) {
         cacheNames.map(function(cacheName) {
           if (expectedCacheNames.indexOf(cacheName) === -1) {
             // If this cache name isn't present in the array of "expected" cache names, then delete it.
-            console.log('Deleting out of date cache:', cacheName);
+            console.debug('Deleting out of date cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -128,24 +128,24 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  console.log('Handling fetch event for', event.request.url);
+  console.debug('Handling fetch event for', event.request.url);
 
   event.respondWith(
     // caches.match() will look for a cache entry in all of the caches available to the service worker.
     // It's an alternative to first opening a specific named cache and then matching on that.
     caches.match(event.request).then(function(response) {
       if (response) {
-        console.log('Found response in cache:', response);
+        console.debug('Found response in cache:', response);
 
         return response;
       }
 
-      console.log('No response found in cache. About to fetch from network...');
+      console.debug('No response found in cache. About to fetch from network...');
 
       // event.request will always have the proper mode set ('cors, 'no-cors', etc.) so we don't
       // have to hardcode 'no-cors' like we do when fetch()ing in the install handler.
       return fetch(event.request).then(function(response) {
-        console.log('Response from network is:', response);
+        console.debug('Response from network is:', response);
 
         return response;
       }).catch(function(error) {

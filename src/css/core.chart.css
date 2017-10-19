@@ -72,6 +72,10 @@
     position: relative;
 }
 
+.ct-line,
+.ct-slice-donut {
+    fill: transparent;
+}
 .ct-series-a .ct-slice-donut {
     stroke: #448AFF;
 }

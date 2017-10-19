@@ -1,7 +1,12 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
 var I18n = require('../utils/i18n.js');
-//var $ = require('jquery');
+var NProgress = require('nprogress');
+var $ = require('jquery');
+const messages = {
+	en: require('!json-loader!../../_locales/en/messages.json'),
+	de: require('!json-loader!../../_locales/de/messages.json')
+};
 
 core.register(
 	'I18n',
@@ -41,6 +46,8 @@ core.register(
 				that.attr('format', I18n.translate(that.attr('i18n-format')));
 			});
 			$('select').material_select();
+
+			NProgress.done();
 		};
 
 		module.handleLanguageChanged = function(value) {
@@ -52,14 +59,10 @@ core.register(
 			if(I18n.language === locale) {
 				return;
 			}
-			$.ajax({
-				url: 'locales/' + locale + '/messages.json',
-				dataType: 'json'
-			}).done(function (data) {
-				I18n.messages = data;
-				I18n.language = locale;
-				sandbox.notify({type: 'i18n-started'});
-			});
+			NProgress.start();
+			I18n.messages = messages[locale];
+			I18n.language = locale;
+			sandbox.notify({type: 'i18n-started'});
 		};
 
 		return module;

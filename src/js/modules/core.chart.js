@@ -4,8 +4,10 @@ var I18n = require('../utils/i18n.js');
 var misc = require('../utils/misc.js');
 var stats = require('../utils/stats.js');
 var Chartist = require('chartist');
-var legend = require('../external/chartist-plugin-legend.js');
-//var $ = require('jquery');
+var legend = require('chartist-plugin-legend');
+var $ = require('jquery');
+
+require('../../css/core.chart.css')
 
 core.register(
 	'Chart',
@@ -67,7 +69,7 @@ core.register(
 				module.handleWindowSizeChanged
 			);
 		};
-		
+
 		module.handleScoreAdded = function(score) {
 			module.results.push(score);
 			misc.sortScores(module.results);
@@ -207,11 +209,12 @@ core.register(
 						return categories[key];
 					})
 			};
-			
+
 			var options = {
 				donut: true,
 				donutWidth: 15,
 				showLabel: false,
+				showArea: false,
 				plugins: [
 					Chartist.plugins.legend({
 						legendNames: series
@@ -221,9 +224,9 @@ core.register(
 						clickable: false
 					})
 				]
-				
+
 			};
-		
+
 			return new Chartist.Pie('#ct-categories', data, options);
 		};
 

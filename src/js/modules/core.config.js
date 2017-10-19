@@ -1,7 +1,10 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
+var misc = require('../utils/misc.js');
 var I18n = require('../utils/i18n.js');
-//var $ = require('jquery');
+var $ = require('jquery');
+
+require('../../css/core.config.css')
 
 core.register(
 	'Config',
@@ -76,9 +79,9 @@ core.register(
 			);
 
 			$windowSize = $('#windowSize');
-			$windowSize.on('change', function(e) {
-				dao.storeConfig('windowSize', $(e.target).val());
-			});
+			$windowSize.on('change', misc.debounce(function(e) {
+				dao.storeConfig('windowSize', $windowSize.val());
+			}, 250));
 			dao.listen(
 				['config-changed'],
 				'windowSize',

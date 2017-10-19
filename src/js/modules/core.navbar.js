@@ -1,7 +1,7 @@
 var core = require('../core.js');
 var misc = require('../utils/misc.js');
-//var $ = require('jquery');
-//var Materialize = require('materialize-css');
+var $ = require('jquery');
+var Materialize = require('materialize-css');
 
 core.register(
     'Navbar',

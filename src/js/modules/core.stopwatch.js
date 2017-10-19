@@ -2,7 +2,10 @@ var core = require('../core.js');
 var dao = require('../dao.js');
 var misc = require('../utils/misc.js');
 var Stopwatch = require('timer-stopwatch');
-//var $ = require('jquery');
+var $ = require('jquery');
+
+const timerSound = require('../../audio/timer.mp3')
+const startSound = require('../../audio/start.mp3')
 
 core.register(
 	'Stopwatch',
@@ -45,8 +48,8 @@ core.register(
 				.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/timer');
 
 			// pre-load sound
-			timerSound = new Audio('audio/timer.mp3');
-			startSound = new Audio('audio/start.mp3');
+			timerSound = new Audio(timerSound);
+			startSound = new Audio(startSound);
 			timerSound.load();
 			startSound.load();
 		};

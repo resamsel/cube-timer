@@ -2,6 +2,7 @@ var core = require('../core.js');
 var dao = require('../dao.js');
 var misc = require('../utils/misc.js');
 var Category = require('../utils/category.js');
+var $ = require('jquery');
 
 core.register(
 	'Results',
@@ -14,6 +15,7 @@ core.register(
 		var $resultsButton;
 		var $scoresContent;
 		var $scoreTemplate;
+		var $noResults;
 
 		module.init = function() {
 			$loading = $('.page-results .loading');
@@ -111,7 +113,7 @@ core.register(
 			results.push(score);
 			module.handleResultsChanged();
 		};
-		
+
 		module.handleScoreRemoved = function(score) {
 			results = results.filter(function(result) {
 				return result.timestamp != score.timestamp;
@@ -132,7 +134,7 @@ core.register(
 		module.handleSubtextChanged = function(value) {
 			subtext = value;
 		};
- 
+
 		module.removeResult = function(element) {
 			element = $(element);
 			var puzzle = element.data('puzzle');
@@ -232,7 +234,7 @@ core.register(
 				var that = $(this);
 				that.text(misc.toDate(that.data('date')));
 			});
-			
+
 		};
 
 		module.updateIndices = function(results) {

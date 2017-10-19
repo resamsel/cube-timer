@@ -1,6 +1,6 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
-//var $ = require('jquery');
+var $ = require('jquery');
 
 core.register(
 	'Hint',

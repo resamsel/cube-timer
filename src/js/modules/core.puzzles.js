@@ -1,6 +1,8 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
 var misc = require('../utils/misc.js');
+const moment = require('moment')
+var $ = require('jquery');
 
 core.register(
 	'Puzzles',
@@ -69,7 +71,7 @@ core.register(
 				var $el = $(el);
 				$el.attr('href', '#!'+misc.encodeKey($el.data('puzzle'))+'/'+event.data);
 			});
-			
+
 		};
 
 		module.handlePuzzleAdded = function(puzzle) {

@@ -1,6 +1,7 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
 var I18n = require('../utils/i18n.js');
+var $ = require('jquery');
 
 core.register(
 	'Import',
