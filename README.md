@@ -71,6 +71,12 @@ npm start
 
 You will be sent to http://localhost:5000 to use the application.
 
+### Deployment
+
+```
+firebase deploy
+```
+
 ## Sources
 
 * Countdown sound: [Beep](http://soundbible.com/1251-Beep.html)
