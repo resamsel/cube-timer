@@ -60,6 +60,9 @@ core.register(
 				return;
 			}
 			NProgress.start();
+			if(!messages.hasOwnProperty(locale)) {
+				locale = 'en';
+			}
 			I18n.messages = messages[locale];
 			I18n.language = locale;
 			sandbox.notify({type: 'i18n-started'});
