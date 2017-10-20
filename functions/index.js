@@ -57,7 +57,8 @@ exports.onCreateUser = functions.auth.user().onCreate(event => {
 		whenCreatedText: now.toString(),
 		lastLogin: now.getTime(),
 		lastLoginText: now.toString(),
-		deleted: false
+		deleted: false,
+		paid: false
 	}
 
 	return Promise.all([

@@ -4,39 +4,42 @@ var misc = require('../utils/misc.js');
 var $ = require('jquery');
 
 core.register(
-    'Export',
-    function(sandbox) {
-        var module = {};
+  'Export',
+  function(sandbox) {
+    var module = {};
+    var $exportContent;
+    var exportContent;
+    var $export;
 
-        module.init = function() {
-            sandbox.listen(
-                ['page-changed'],
-                module.handlePageChanged,
-                module
-            );
+    module.init = function() {
+      exportContent = document.getElementById('export-content');
+      $exportContent = $(exportContent);
+      $export = document.getElementById('export');
 
-            $('#export-content').on('click', function() {
-                this.setSelectionRange(0, this.value.length);
-                // Does not work on Chrome...
-                // window.clipboardData.setData("Text", $(this).val());
-            });
-            $('#export').on('click', function() {
-                var puzzle = sandbox.activePuzzle();
-                dao.retrieveScores(puzzle, function(scores) {
-                    $('#export-content').val(misc.toCsv(puzzle, scores));
-                    $('#export-content').trigger('autoresize');
-                });
-            });
-        };
+      sandbox.listen(['page-changed'], module.handlePageChanged, module);
 
-        module.handlePageChanged = function(event) {
-            if(event.data == 'results') {
-                $('#export').css('display', 'inline-block');
-            } else {
-                $('#export').css('display', 'none');
-            }
-        };
+      exportContent.on('click', function() {
+        this.setSelectionRange(0, this.value.length);
+        // Does not work on Chrome...
+        // window.clipboardData.setData("Text", $(this).val());
+      });
+      $export.on('click', function() {
+        var puzzle = sandbox.activePuzzle();
+        dao.retrieveScores(puzzle, function(scores) {
+          exportContent.value = misc.toCsv(puzzle, scores);
+          // From materialize-css
+          $exportContent.trigger('autoresize');
+        });
+      });
+    };
+    module.handlePageChanged = function(event) {
+      if (event.data == 'results') {
+        $export.style.display = 'inline-block';
+      } else {
+        $export.style.display = 'none';
+      }
+    };
 
-        return module;
-    }
+    return module;
+  }
 );

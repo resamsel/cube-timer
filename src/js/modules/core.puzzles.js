@@ -110,6 +110,7 @@ core.register(
 		};
 
 		module.handlePuzzleChanged = function(puzzle) {
+			console.log('handlePuzzleChanged(puzzle)', puzzle);
 			if(puzzle) {
 				module.updatePuzzle(puzzle, $(document.getElementById('puzzle-'+misc.encodeClass(puzzle.name))));
 			}
@@ -153,10 +154,10 @@ core.register(
 				row.addClass('active');
 			}
 			row.find('.title').text(puzzle.name);
-			if(typeof puzzle.last_active !== 'undefined') {
+			if(typeof puzzle.lastActive !== 'undefined') {
 				misc.updateWithTime(
 					row.find('.last-active'),
-					new Date(puzzle.last_active)
+					new Date(puzzle.lastActive)
 				);
 			} else {
 				row.find('.last-active').hide();

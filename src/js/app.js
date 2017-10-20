@@ -24,6 +24,7 @@ const core = require('./core.js');
 
 require('./utils/array.js');
 require('./utils/modal.js');
+require('./utils/element.js');
 
 require('./modules/core.achievement.js');
 require('./modules/core.stopwatch.js');

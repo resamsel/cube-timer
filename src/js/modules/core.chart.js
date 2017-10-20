@@ -5,7 +5,6 @@ var misc = require('../utils/misc.js');
 var stats = require('../utils/stats.js');
 var Chartist = require('chartist');
 var legend = require('chartist-plugin-legend');
-var $ = require('jquery');
 
 require('../../css/core.chart.css')
 
@@ -15,10 +14,17 @@ core.register(
 		var module = {};
 		var maxCategories = 5;
 		var windowSize = 50;
+		var $results;
+		var $categories;
+		var $weekdays;
 
 		module.repaint = true;
 		module.results = [];
 		module.init = function() {
+			$results = document.getElementById('ct-stats');
+			$categories = document.getElementById('ct-categories');
+			$weekdays = document.getElementById('ct-weekdays');
+
 			sandbox.listen(
 				['puzzle-changed'],
 				module.handlePuzzleChanged,
@@ -31,7 +37,9 @@ core.register(
 			);
 			module.listen();
 
-			$('.card-stats').css('display', 'block');
+			document.querySelectorAll('.card-stats').forEach(el => {
+				el.style.display = 'block';
+			});
 		};
 
 		module.handleResultsChanged = misc.debounce(function(event) {
@@ -105,26 +113,26 @@ core.register(
 				return;
 			}
 
-			var results = $('#ct-stats');
-			var categories = $('#ct-categories');
-			var weekdays = $('#ct-weekdays');
+			module.detachChart($results);
+			module.detachChart($categories);
+			module.detachChart($weekdays);
 
-			module.detachChart(results);
-			module.detachChart(categories);
-			module.detachChart(weekdays);
-
-			results.data('chartist', module.createScores(stats));
-			categories.data('chartist', module.createCategories(stats));
-			weekdays.data('chartist', module.createWeekdays(stats));
+			$results.dataset.chartist = module.createScores(stats);
+			$categories.dataset.chartis = module.createCategories(stats);
+			$weekdays.dataset.chartist = module.createWeekdays(stats);
 
 			module.repaint = false;
 		};
 
 		module.detachChart = function(container) {
-			var chart = container.data('chartist');
+			if(typeof container === 'undefined') {
+				return;
+			}
+			var chart = container.dataset.chartist;
 			if(chart) {
-				chart.detach();
-				container.children().remove();
+				while(container.hasChildNodes()) {
+					container.removeChild(container.lastChild);
+				}
 			}
 		};
 

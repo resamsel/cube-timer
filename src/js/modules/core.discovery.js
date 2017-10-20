@@ -1,21 +1,23 @@
 var core = require('../core.js');
 var dao = require('../dao.js');
-var $ = require('jquery');
 
 core.register(
 	'Hint',
 	function(sandbox) {
 		var module = {};
+		var $hintSpacebar;
+		var hintSpacebar;
 
 		module.init = function() {
+			$hintSpacebar = document.getElementById('hint-spacebar');
+			$hintSpacebar.hide();
+
 			dao.listen(
 				['config-changed'],
 				'hintVisible',
 				module.handleHintVisibleChanged
 			);
-
-			$('#hint-spacebar').hide();
-			$('#hint-spacebar .btn-close').on(
+			document.querySelector('#hint-spacebar .btn-close').on(
 				'click',
 				module.handleSpacebarClose
 			);
@@ -34,9 +36,9 @@ core.register(
 				hintVisible = true;
 			}
 			if(hintVisible) {
-				$('#hint-spacebar').fadeIn();
+				$hintSpacebar.fadeIn();
 			} else {
-				$('#hint-spacebar').fadeOut();
+				$hintSpacebar.fadeOut();
 			}
 		};
 
