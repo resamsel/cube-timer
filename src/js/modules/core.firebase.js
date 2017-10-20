@@ -5,14 +5,14 @@ const firebase = require('@firebase/app').default
 require('@firebase/auth')
 require('@firebase/firestore')
 
-const core = require('../core.js');
-const dao = require('../dao.js');
-const I18n = require('../utils/i18n.js');
-const misc = require('../utils/misc.js');
+const core = require('../core');
+const dao = require('../dao');
+const I18n = require('../utils/i18n');
+const misc = require('../utils/misc');
 const $ = require('jquery');
 const NProgress = require('nprogress');
 
-const firebaseConfig = require('../firebaseConfig.js')
+const firebaseConfig = require('../firebaseConfig')
 
 const Keys = {
   user: function(user) {

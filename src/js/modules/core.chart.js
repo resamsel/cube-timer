@@ -1,8 +1,8 @@
-var core = require('../core.js');
-var dao = require('../dao.js');
-var I18n = require('../utils/i18n.js');
-var misc = require('../utils/misc.js');
-var stats = require('../utils/stats.js');
+var core = require('../core');
+var dao = require('../dao');
+var I18n = require('../utils/i18n');
+var misc = require('../utils/misc');
+var stats = require('../utils/stats');
 var Chartist = require('chartist');
 var legend = require('chartist-plugin-legend');
 

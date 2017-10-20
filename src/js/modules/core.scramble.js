@@ -1,6 +1,6 @@
-var core = require('../core.js');
-var I18n = require('../utils/i18n.js');
-var Cube = require('../external/rubiks-cube-scrambler.js');
+var core = require('../core');
+var I18n = require('../utils/i18n');
+var Cube = require('../external/rubiks-cube-scrambler');
 var $ = require('jquery');
 
 core.register(

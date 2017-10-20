@@ -20,26 +20,26 @@ require('../css/theme.css');
 require('../css/timer.css');
 require('../css/zmedia.css');
 
-const core = require('./core.js');
+const core = require('./core');
 
-require('./utils/array.js');
-require('./utils/modal.js');
-require('./utils/element.js');
+require('./utils/array');
+require('./utils/modal');
+require('./utils/element');
 
-require('./modules/core.achievement.js');
-require('./modules/core.stopwatch.js');
-require('./modules/core.config.js');
-require('./modules/core.chart.js');
-require('./modules/core.i18n.js');
-require('./modules/core.scramble.js');
-require('./modules/core.puzzles.js');
-require('./modules/core.navbar.js');
-require('./modules/core.results.js');
-require('./modules/core.export.js');
-require('./modules/core.import.js');
-require('./modules/core.routes.js');
-require('./modules/core.discovery.js');
+require('./modules/core.achievement');
+require('./modules/core.stopwatch');
+require('./modules/core.config');
+require('./modules/core.chart');
+require('./modules/core.i18n');
+require('./modules/core.scramble');
+require('./modules/core.puzzles');
+require('./modules/core.navbar');
+require('./modules/core.results');
+require('./modules/core.export');
+require('./modules/core.import');
+require('./modules/core.routes');
+require('./modules/core.discovery');
 
-require('./modules/core.firebase.js');
+require('./modules/core.firebase');
 
 core.init();

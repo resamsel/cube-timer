@@ -1,5 +1,5 @@
-var core = require('../core.js');
-var misc = require('../utils/misc.js');
+var core = require('../core');
+var misc = require('../utils/misc');
 var $ = require('jquery');
 var Materialize = require('materialize-css');
 

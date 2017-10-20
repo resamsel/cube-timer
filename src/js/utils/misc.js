@@ -1,6 +1,6 @@
 var hdate = require("human-date");
 var dateFormat = require("dateformat");
-var I18n = require('./i18n.js');
+var I18n = require('./i18n');
 const moment = require('moment')
 
 if(typeof console === 'undefined') {

@@ -1,6 +1,6 @@
-const core = require('../core.js');
-const dao = require('../dao.js');
-const I18n = require('../utils/i18n.js');
+const core = require('../core');
+const dao = require('../dao');
+const I18n = require('../utils/i18n');
 const misc = require('../utils/misc');
 const Materialize = require('materialize-css');
 

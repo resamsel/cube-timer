@@ -1,5 +1,5 @@
-var core = require('../core.js');
-var dao = require('../dao.js');
+var core = require('../core');
+var dao = require('../dao');
 
 core.register(
 	'Hint',

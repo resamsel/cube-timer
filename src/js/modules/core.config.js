@@ -1,7 +1,7 @@
-var core = require('../core.js');
-var dao = require('../dao.js');
-var misc = require('../utils/misc.js');
-var I18n = require('../utils/i18n.js');
+var core = require('../core');
+var dao = require('../dao');
+var misc = require('../utils/misc');
+var I18n = require('../utils/i18n');
 var $ = require('jquery');
 
 require('../../css/core.config.css')

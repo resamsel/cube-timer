@@ -1,6 +1,6 @@
-var misc = require('./utils/misc.js');
-var Category = require('./utils/category.js');
-var I18n = require('./utils/i18n.js');
+var misc = require('./utils/misc');
+var Category = require('./utils/category');
+var I18n = require('./utils/i18n');
 //var $ = require('jquery');
 
 module.exports = function(core) {

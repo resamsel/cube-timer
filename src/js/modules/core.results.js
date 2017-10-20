@@ -1,7 +1,7 @@
-var core = require('../core.js');
-var dao = require('../dao.js');
-var misc = require('../utils/misc.js');
-var Category = require('../utils/category.js');
+var core = require('../core');
+var dao = require('../dao');
+var misc = require('../utils/misc');
+var Category = require('../utils/category');
 var $ = require('jquery');
 
 core.register(

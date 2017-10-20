@@ -1,4 +1,4 @@
-var core = require('../core.js');
+var core = require('../core');
 
 core.register(
     'Template',
