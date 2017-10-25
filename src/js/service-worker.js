@@ -38,19 +38,7 @@ self.addEventListener('install', function(event) {
 
   var urlsToPrefetch = [
     '',
-    'css/cube-timer.css',
-    'credentials.js',
-    'js/jquery.min.js',
-    'js/cube-timer.pre.js',
-    'js/cube-timer.js',
-    'fonts/roboto/Roboto-Regular.woff2',
-    'fonts/roboto/Roboto-Light.woff2',
-    'fonts/roboto/Roboto-Regular.woff2',
-    'fonts/roboto/Roboto-Medium.woff2',
-    'fonts/material-icons.woff2',
-    'audio/timer.mp3',
-    'audio/start.mp3',
-    'img/icon-128.png'
+    'app.bundle.js'
   ];
 
   // All of these logging statements should be visible via the "Inspect" interface

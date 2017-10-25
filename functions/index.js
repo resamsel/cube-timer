@@ -185,7 +185,8 @@ exports.onCreatePuzzle = functions.firestore
 		const now = new Date()
 		const data = {
 			whenCreated: now.getTime(),
-			whenCreatedText: now.toString()
+			whenCreatedText: now.toString(),
+			public: false
 		}
 
 		// Add puzzle to the global puzzles

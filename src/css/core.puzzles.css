@@ -1,0 +1,43 @@
+.main-nav .active-game>span, .main-nav .active-game {
+  display: none;
+}
+
+.active-game {
+  padding: 0 16px;
+  top: -4px;
+}
+
+.active-puzzle.dropdown-button {
+  padding: 0 12px;
+  top: -2px;
+  font-size: 15px;
+}
+
+.modal .modal-footer {
+  text-align: right;
+  padding: 4px 16px;
+}
+
+.modal .modal-footer .btn, .modal .modal-footer .btn-flat {
+  float: none;
+}
+
+.puzzle-container.collection {
+  border: none;
+}
+
+.collection.collection-medium .collection-item.avatar {
+  min-height: 64px;
+}
+
+.collection-medium li.entry .secondary-content {
+  display: none;
+}
+
+.collection-medium li.entry:hover .secondary-content {
+  display: inline-block;
+}
+
+.collection .collection-item.puzzle-item.active:hover .secondary-content {
+  display: none;
+}

@@ -1,66 +1,74 @@
-var misc = require('./utils/misc');
-var Category = require('./utils/category');
-var I18n = require('./utils/i18n');
-//var $ = require('jquery');
+import * as Category from './utils/category';
+import { scoreValue, compareNumbers } from './utils/misc';
 
-module.exports = function(core) {
+export default class Sandbox {
+  constructor(core) {
     this.core = core;
-    this.notify = function(event) {
-        core.notify(event);
+  }
+  notify(event) {
+    this.core.notify(event);
+  }
+  listen(types, handler, module) {
+    this.core.listen(types, handler, module);
+  }
+  activePuzzle(puzzle) {
+    return this.core.activePuzzle(puzzle);
+  }
+  goToPage(page) {
+    this.core.goToPage(page);
+  }
+  activePage() {
+    return this.core.activePage();
+  }
+
+  // FIXME: Helper function, move to utils
+  createStats(scores) {
+    if (!scores) {
+      scores = [];
+    }
+
+    var stats = {
+      scores: scores
     };
-    this.listen = function(types, handler, module) {
-        core.listen(types, handler, module);
-    };
-    this.activePuzzle = function(puzzle) {
-        return core.activePuzzle(puzzle);
-    };
-    this.goToPage = function(page) {
-        core.goToPage(page);
-    };
-    this.activePage = function() {
-        return core.activePage();
-    };
-    this.createStats = function(scores) {
-        if(!scores || scores.length < 1) {
-            scores = [{timestamp: 0, value: 0}];
-        }
 
-        var stats = {
-            scores: scores
-        };
+    if (!scores || scores.length < 1) {
+      return stats;
+    }
 
-        stats.values = scores.map(misc.scoreValue);
-        stats.latest = stats.values.last();
-        stats.latest5 = stats.values.slice(-5).sort(misc.compareNumbers);
-        stats.latest12 = stats.values.slice(-12).sort(misc.compareNumbers);
-        stats.latest50 = stats.values.slice(-50).sort(misc.compareNumbers);
-        stats.best3of5 = stats.latest5.slice(0, 3).sort(misc.compareNumbers);
-        stats.best10of12 = stats.latest12.slice(0, 10).sort(misc.compareNumbers);
+    stats.values = scores.map(scoreValue);
+    stats.latest = stats.values.last();
+    stats.latest5 = stats.values.slice(-5).sort(compareNumbers);
+    stats.latest12 = stats.values.slice(-12).sort(compareNumbers);
+    stats.latest50 = stats.values.slice(-50).sort(compareNumbers);
+    stats.best3of5 = stats.latest5.slice(0, 3).sort(compareNumbers);
+    stats.best10of12 = stats.latest12.slice(0, 10).sort(compareNumbers);
 
-        stats.values.sort(misc.compareNumbers);
+    stats.values.sort(compareNumbers);
 
-        stats.best = stats.values.first();
-        stats.avg = stats.values.avg();
-        stats.avg80 = stats.values.slice(
-            0,
-            Math.max(1, Math.floor(scores.length*0.8))
-        );
+    stats.best = stats.values.first();
+    stats.avg = stats.values.avg();
+    stats.avg80 = stats.values.slice(
+      0,
+      Math.max(1, Math.floor(scores.length * 0.8))
+    );
 
-        stats.categories = this.createCategories(stats.values);
+    stats.categories = this.createCategories(stats.values);
 
-        return stats;
-    };
-    this.createCategories = function(values) {
-        var categories = {};
+    return stats;
+  }
 
-        values.forEach(function(value) {
-            var category = Category.fromValue(value);
-            if (!(category in categories)) {
-                categories[category] = 0;
-            }
-            categories[category]++;
-        });
+  // FIXME: Helper function, move to utils
+  createCategories(values) {
+    var categories = {};
 
-        return categories;
-    };
-};
+    values.forEach(function(value) {
+      var category = Category.fromValue(value);
+      if (!(category in categories)) {
+        categories[category] = 0;
+      }
+      categories[category]++;
+    });
+
+    return categories;
+  }
+}

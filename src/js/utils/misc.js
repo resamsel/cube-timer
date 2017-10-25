@@ -1,7 +1,5 @@
-var hdate = require("human-date");
-var dateFormat = require("dateformat");
-var I18n = require('./i18n');
-const moment = require('moment')
+import { relativeTime } from 'human-date';
+import I18nUtils from './i18n';
 
 if(typeof console === 'undefined') {
 	var console = {
@@ -9,13 +7,11 @@ if(typeof console === 'undefined') {
 	};
 }
 
-var misc = {};
-
-misc.pad2 = function(number) {
+export function pad2(number) {
 	return (number < 10 ? '0' : '') + number;
 };
 
-misc.defaultFormatMilliseconds = function(millis) {
+export function defaultFormatMilliseconds(millis) {
 	var x, milliseconds, seconds, minutes;
 	x = millis / 10;
 	milliseconds = Math.floor(x % 100);
@@ -23,39 +19,40 @@ misc.defaultFormatMilliseconds = function(millis) {
 	seconds = Math.floor(x % 60);
 	x /= 60;
 	minutes = Math.floor(x % 60);
-	return [misc.pad2(minutes), misc.pad2(seconds)].join(':') + '.' + misc.pad2(milliseconds);
+	return [pad2(minutes), pad2(seconds)].join(':') + '.' + pad2(milliseconds);
 };
 
-misc.hourMinuteFormatMilliseconds = function(millis) {
+export function hourMinuteFormatMilliseconds(millis) {
 	var x, seconds, minutes;
 	x = millis / 1000;
 	seconds = Math.floor(x % 60);
 	x /= 60;
 	minutes = Math.floor(x % 60);
-	return [misc.pad2(minutes), misc.pad2(seconds)].join(':');
+	return [pad2(minutes), pad2(seconds)].join(':');
 };
 
-misc.scoreKey = function(score) {
+export function scoreKey(score) {
 	return score.timestamp;
 };
 
-misc.scoreValue = function(score) {
+export function scoreValue(score) {
 	return score.value;
 };
 
-misc.compareNumbers = function(a, b) {
+export function compareNumbers(a, b) {
 	return a - b;
 };
 
-misc.compareTimestamps = function(a, b) {
+export function compareTimestamps(a, b) {
 	return a.timestamp - b.timestamp;
 }
 
-misc.sortScores = function(scores) {
-	return scores.sort(misc.compareTimestamps);
+export function sortScores(scores) {
+	return scores.sort(compareTimestamps);
 };
 
-misc.toCsv = function(puzzle, scores) {
+export function toCsv(puzzle, scores) {
+	const dateFormat = require('dateformat');
 	var result = ['Puzzle;Date;Duration'];
 
 	Object.keys(scores).forEach(function(key) {
@@ -72,33 +69,35 @@ misc.toCsv = function(puzzle, scores) {
 	return result.join('\n');
 };
 
-misc.toDate = function(timestamp) {
+export function toDate(timestamp) {
 	var interval = Math.floor((new Date().getTime() - timestamp) / 1000);
-	return hdate.relativeTime(-interval);
+	return relativeTime(-interval);
 };
 
-misc.toIsoDate = function(timestamp) {
+export function toIsoDate(timestamp) {
+	const dateFormat = require('dateformat');
 	return dateFormat(new Date(timestamp), 'isoDateTime');
 }
 
-misc.toGroupedDate = function(timestamp) {
+export function toGroupedDate(timestamp) {
+	const dateFormat = require('dateformat');
 	var dayFormat = 'yyyy-mm-dd';
 	var date = new Date(timestamp);
 	var now = new Date();
 	if(dateFormat(date, dayFormat) == dateFormat(now, dayFormat)) {
 		// date is today
-		return I18n.translate('today');
+		return I18nUtils.translate('today');
 	}
 	var yesterday = new Date();
 	yesterday.setDate(yesterday.getDate() - 1);
 	if(dateFormat(date, dayFormat) == dateFormat(yesterday, dayFormat)) {
 		// date is yesterday
-		return I18n.translate('yesterday');
+		return I18nUtils.translate('yesterday');
 	}
 	var weekFormat = 'yyyy-W';
 	if(dateFormat(date, weekFormat) == dateFormat(now, weekFormat)) {
 		// date is within this week
-		return I18n.translate('thisWeek');
+		return I18nUtils.translate('thisWeek');
 	}
 	var yearFormat = 'yyyy';
 	if(dateFormat(date, yearFormat) == dateFormat(now, yearFormat)) {
@@ -112,7 +111,7 @@ misc.toGroupedDate = function(timestamp) {
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-misc.debounce = function(func, wait, immediate) {
+export function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {
 		var context = this, args = arguments;
@@ -127,37 +126,36 @@ misc.debounce = function(func, wait, immediate) {
 	};
 };
 
-misc.encodeKey = function(decoded) {
+export function encodeKey(decoded) {
 	if(typeof decoded === 'undefined') {
 		return decoded;
 	}
 	return encodeURIComponent(decoded).replace(/\./g, '%2E');
 };
 
-misc.decodeKey = function(encoded) {
+export function decodeKey(encoded) {
 	if(typeof encoded === 'undefined') {
 		return encoded;
 	}
-    return decodeURIComponent(encoded.replace('%2E', '.'));
+  return decodeURIComponent(encoded.replace('%2E', '.'));
 };
 
-misc.encodeClass = function(decoded) {
+export function encodeClass(decoded) {
 	if(typeof decoded === 'undefined') {
 		return decoded;
 	}
 	return decoded.replace(/[!"#\$%&'()\*\+ ,-\.\/:;<=>\?@\[\\\]\^`{\|}~]/g, '\\$&');
 };
 
-misc.updateWithTime = function($el, time, format) {
+export function updateWithTime($el, time, format) {
 	if(typeof time !== 'undefined') {
 		$el.attr('datetime', time.toISOString());
 	} else {
 		time = $el.attr('datetime');
 	}
 	if(typeof time !== 'undefined') {
+		const moment = require('moment');
 		var m = moment(time);
 		$el.text(m.fromNow()).attr('title', m.format($el.attr('format')));
 	}
 };
-
-module.exports = misc;

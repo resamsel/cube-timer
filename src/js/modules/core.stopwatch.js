@@ -1,187 +1,191 @@
-var core = require('../core');
+import Module from './core.module';
+
 var dao = require('../dao');
 var misc = require('../utils/misc');
-var Stopwatch = require('timer-stopwatch');
+var TimerStopwatch = require('timer-stopwatch');
 var $ = require('jquery');
 
 const timerSound = require('../../audio/timer.mp3')
 const startSound = require('../../audio/start.mp3')
 
-core.register(
-	'Stopwatch',
-	function(sandbox) {
-		var count, counter, beep;
-		var module = {};
-		var timerSound;
-		var startSound;
-		var inspectionTime = 0;
-		var soundAfterInspection = false;
-		var $body;
+import '../../css/core.stopwatch.css';
 
-		module.init = function() {
-			sandbox.listen(
-				['puzzle-changed'],
-				module.handlePuzzleChanged,
-				module
-			);
-			sandbox.listen(
-				['page-changed'],
-				module.handlePageChanged,
-				module
-			);
-			dao.listen(
-				['config-changed'],
-				'inspectionTime',
-				module.handleInspectionTimeChanged
-			);
-			dao.listen(
-				['config-changed'],
-				'soundAfterInspection',
-				module.handleSoundAfterInspectionChanged
-			);
+export default class Stopwatch extends Module {
+  static get id() {
+    return 'Stopwatch';
+  }
 
-			$body = $('body');
+  constructor(sandbox) {
+    super('Stopwatch', sandbox);
 
-			$('button.start-stop').on('click', module.toggleTimer);
-			$('.card-timer').css('display', 'block');
-			$('.timer-button')
-				.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/timer');
+    this.count = null;
+    this.counter = null;
+    this.beep = null;
+    this.module = {};
+    this.timerSound;
+    this.startSound;
+    this.inspectionTime = 0;
+    this.soundAfterInspection = false;
+    this.$body = null;
+  }
 
-			// pre-load sound
-			timerSound = new Audio(timerSound);
-			startSound = new Audio(startSound);
-			timerSound.load();
-			startSound.load();
-		};
+  init(sandbox) {
+    this.listen(['puzzle-changed'], this.handlePuzzleChanged);
+    this.listen(['page-changed'], this.handlePageChanged);
+    dao.subscribe(
+      ['config-changed'],
+      'inspectionTime',
+      this.handleInspectionTimeChanged,
+      this
+    );
+    dao.subscribe(
+      ['config-changed'],
+      'soundAfterInspection',
+      this.handleSoundAfterInspectionChanged,
+      this
+    );
 
-		/*
-		* Handlers
-		*/
-		module.handlePuzzleChanged = function(event) {
-			var puzzle = event.data;
-			$('.card-timer .card-title > span').text(puzzle);
-			$('.timer-button').attr('href', '#!'+misc.encodeKey(puzzle)+'/timer');
-		};
+    this.$body = $('body');
 
-		module.handlePageChanged = function(event) {
-			if(event.data == 'timer') {
-				$body
-					.on('keydown', module.handleSpaceDown)
-					.on('keyup', module.handleSpaceUp);
-				$('.timer-button').parent().addClass('active');
-			} else {
-				$body.off('keydown').off('keyup');
-				$('.timer-button').parent().removeClass('active');
-			}
-		};
+    $('button.start-stop').on('click', this.toggleTimer.bind(this));
+    $('.card-timer').css('display', 'block');
+    $('.timer-button')
+      .attr('href', '#!' + misc.encodeKey(this.sandbox.activePuzzle()) + '/timer');
 
-		module.handleInspectionTimeChanged = function(value) {
-			inspectionTime = value;
-		};
+    // pre-load sound
+    this.timerSound = new Audio(timerSound);
+    this.startSound = new Audio(startSound);
+    this.timerSound.load();
+    this.startSound.load();
+  }
 
-		module.handleSoundAfterInspectionChanged = function(value) {
-			soundAfterInspection = value;
-		};
+  /*
+   * Handlers
+   */
+  handlePuzzleChanged(event) {
+    var puzzle = event.data;
+    $('.card-timer .card-title > span').text(puzzle);
+    $('.timer-button').attr('href', '#!' + misc.encodeKey(puzzle) + '/timer');
+  }
 
-		module.handleSpaceDown = function(event) {
-			if(event.keyCode == 32 && event.target == document.body) {
-				event.preventDefault();
-				return false;
-			}
-		};
-		module.handleSpaceUp = function(event) {
-			if(event.keyCode == 32 && event.target == document.body) {
-				event.preventDefault();
-				module.toggleTimer();
-			}
-		};
+  handlePageChanged(event) {
+    if (event.data == 'timer') {
+      this.$body
+        .on('keydown', this.handleSpaceDown.bind(this))
+        .on('keyup', this.handleSpaceUp.bind(this));
+      $('.timer-button').parent().addClass('active');
+    } else {
+      this.$body.off('keydown').off('keyup');
+      $('.timer-button').parent().removeClass('active');
+    }
+  }
 
-		module.handleStart = function() {
-			$('body').removeClass('stopped').addClass('started');
-			if(inspectionTime > 0) {
-				module.startCountdown(inspectionTime);
-			} else {
-				module.startTimer();
-			}
-		};
+  handleInspectionTimeChanged(value) {
+    this.inspectionTime = value;
+  }
 
-		module.handleStop = function() {
-			var elapsed = 0;
-			clearInterval(counter);
-			if(typeof module.stopwatch !== 'undefined') {
-				module.stopwatch.stop();
-				elapsed = module.stopwatch.ms;
-			}
-			if(elapsed > 0) {
-				// Only use values when stopwatch actually started
-				sandbox.notify({type: 'stopwatch-stopped', data: null});
-				dao.storeScore(
-					sandbox.activePuzzle(),
-					{
-						timestamp: new Date().getTime(),
-						value: elapsed
-					}
-				);
-			}
-			$body.removeClass('started').addClass('stopped');
-		};
+  handleSoundAfterInspectionChanged(value) {
+    this.soundAfterInspection = value;
+  }
 
-		module.toggleTimer = function() {
-			if($body.hasClass('started')) {
-				module.handleStop();
-			} else {
-				module.handleStart();
-			}
-		};
+  handleSpaceDown(event) {
+    if (event.keyCode == 32 && event.target == document.body) {
+      event.preventDefault();
+      return false;
+    }
+  }
 
-		module.countdownTimer = function() {
-			count = count-1;
-			if (count <= 0)
-			{
-				clearInterval(counter);
-				module.startTimer();
-				return;
-			}
-			module.updateCountdown(count);
-		};
+  handleSpaceUp(event) {
+    if (event.keyCode == 32 && event.target == document.body) {
+      event.preventDefault();
+      this.toggleTimer();
+    }
+  }
 
-			// Code for showing the number of seconds
-		module.updateCountdown = function(currentCount) {
-			if(count <= 3) {
-				if(soundAfterInspection) {
-					timerSound.load();
-					timerSound.play();
-				}
-			}
-			$('#timer-display').text(count);
-		};
+  handleStart() {
+    this.$body.removeClass('stopped').addClass('started');
+    if (this.inspectionTime > 0) {
+      this.startCountdown(this.inspectionTime);
+    } else {
+      this.startTimer();
+    }
+  }
 
-		module.startCountdown = function(inspectionTime) {
-			count = inspectionTime;
-			counter = setInterval(module.countdownTimer, 1000);
-			module.updateCountdown(count);
-		};
+  handleStop() {
+    var elapsed = 0;
+    clearInterval(this.counter);
+    if (typeof this.stopwatch !== 'undefined' && this.stopwatch !== null) {
+      this.stopwatch.stop();
+      elapsed = this.stopwatch.ms;
+    }
+    if (elapsed > 0) {
+      // Only use values when stopwatch actually started
+      this.notify({
+        type: 'stopwatch-stopped',
+        data: null
+      });
+      dao.storeScore(
+        this.sandbox.activePuzzle(), {
+          timestamp: new Date().getTime(),
+          value: elapsed
+        }
+      );
+    }
+    this.$body.removeClass('started').addClass('stopped');
+  }
 
-		module.startTimer = function() {
-			var timerConfig = {
-				refreshRateMS: 31 // prime number
-			};
-			if(inspectionTime > 0 && soundAfterInspection) {
-				startSound.load();
-				startSound.play();
-			}
-			if(typeof module.stopwatch !== 'undefined') {
-				module.stopwatch.stop();
-			}
-			module.stopwatch = new Stopwatch(timerConfig);
-			module.stopwatch
-				.onTime(function(time) {
-					$('#timer-display')
-						.html(misc.defaultFormatMilliseconds(time.ms));
-				})
-				.start();
-		};
+  toggleTimer() {
+    if (this.$body.hasClass('started')) {
+      this.handleStop();
+    } else {
+      this.handleStart();
+    }
+  }
 
-		return module;
-	}
-);
+  countdownTimer() {
+    this.count = this.count - 1;
+    if (this.count <= 0) {
+      clearInterval(this.counter);
+      this.startTimer();
+      return;
+    }
+    this.updateCountdown(this.count);
+  }
+
+  // Code for showing the number of seconds
+  updateCountdown(currentCount) {
+    if (this.count <= 3) {
+      if (this.soundAfterInspection) {
+        this.timerSound.load();
+        this.timerSound.play();
+      }
+    }
+    $('#timer-display').text(this.count);
+  }
+
+  startCountdown(inspectionTime) {
+    this.count = inspectionTime;
+    this.counter = setInterval(this.countdownTimer.bind(this), 1000);
+    this.updateCountdown(this.count);
+  }
+
+  startTimer() {
+    var timerConfig = {
+      refreshRateMS: 31 // prime number
+    };
+    if (this.inspectionTime > 0 && this.soundAfterInspection) {
+      this.startSound.load();
+      this.startSound.play();
+    }
+    if (typeof this.stopwatch !== 'undefined' && this.stopwatch) {
+      this.stopwatch.stop();
+    }
+    this.stopwatch = new TimerStopwatch(this.timerConfig);
+    this.stopwatch
+      .onTime(function(time) {
+        $('#timer-display')
+          .html(misc.defaultFormatMilliseconds(time.ms));
+      })
+      .start();
+  }
+}

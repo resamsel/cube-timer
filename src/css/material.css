@@ -1,60 +1,77 @@
 /*
  * Material theme fixes
  */
+
 .form-horizontal .control-label {
-    padding-top: 7px;
-    margin-bottom: 0;
-    text-align: right;
+  padding-top: 7px;
+  margin-bottom: 0;
+  text-align: right;
 }
+
 .form-group {
-    margin-top: 0;
+  margin-top: 0;
 }
+
 .form-horizontal label {
-    text-align: left;
+  text-align: left;
 }
-.form-control,
-.form-group .checkbox label,
-.form-group .radio label,
-.form-group label,
-.form-group label.control-label {
-    font-size: 14px;
+
+.form-control, .form-group .checkbox label, .form-group .radio label, .form-group label, .form-group label.control-label {
+  font-size: 14px;
 }
+
 select.form-control {
-    margin-top: 7px;
+  margin-top: 7px;
 }
+
 .form-group label.control-label {
-    margin: 12px 0 0 0;
+  margin: 12px 0 0 0;
 }
+
 .list-group .list-group-item .row-content .action-secondary~* {
-    max-width: -webkit-calc(100%);
-    max-width: calc(100%);
+  max-width: -webkit-calc(100%);
+  max-width: calc(100%);
 }
 
 .dropdown-button i.material-icons.right {
-    margin-left: 0;
+  margin-left: 0;
 }
 
-.card-timer .card-image,
-.card-stats .card-image {
-    border-radius: 2px 2px 0 0;
+.card-timer .card-image, .card-stats .card-image, .card-config .card-image {
+  border-radius: 2px 2px 0 0;
 }
-.card-stats .card-image {
-    padding: 10px 15px;
-}
+
 .collection .collection-item.active {
-	background-color: #3f51b5;
+  background-color: #2196f3;
 }
+
+.collection .collection-item.avatar i.circle {
+  background-color: #2196f3;
+}
+
+.collection .collection-item.active.avatar i.circle {
+  background-color: #fff;
+  color: #2196f3;
+}
+
 .btn-hover {
-    padding: 0 0.6rem;
+  padding: 0 0.6rem;
 }
+
 .collection-item:hover .btn-hover {
-	visibility: visible;
-	color: #757575;
+  visibility: visible;
+  color: #757575;
 }
+
 .collection-item .btn-flat:hover {
-	background-color: transparent;
-	color: #343434;
+  background-color: transparent;
+  color: #343434;
 }
+
 .collection-item .btn-hover:hover {
-	color: #424242;
+  color: #424242;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+  color: #2196f3;
 }

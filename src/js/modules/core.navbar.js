@@ -1,62 +1,63 @@
-var core = require('../core');
+import Module from './core.module';
+import {
+  encodeKey
+} from '../utils/misc';
+
 var misc = require('../utils/misc');
 var $ = require('jquery');
-var Materialize = require('materialize-css');
+require('materialize-css');
 
-core.register(
-    'Navbar',
-    function(sandbox) {
-        var module = {};
+import '../../css/core.navbar.css';
 
-        module.init = function() {
-            sandbox.listen(
-                ['page-changed'],
-                module.handlePageChanged,
-                module
-            );
-            sandbox.listen(
-                ['main-menu-click'],
-                module.handleMainMenuClick,
-                module
-            );
-            sandbox.listen(
-                ['main-menu-closed'],
-                module.handleMainMenuClosed,
-                module
-            );
+export default class Navbar extends Module {
+  static get id() {
+    return 'Navbar';
+  }
 
-            $('#main-menu').on('click', module.handleMainMenuClick);
-            $(".button-collapse").sideNav();
-            $('.collapsible').collapsible();
-        };
+  constructor(sandbox) {
+    super(Navbar.id, sandbox);
 
-        module.handlePageChanged = function(event) {
-            $('#main-menu').attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/'+event.data).blur();
-            if(document.activeElement.nodeName != 'BODY') {
-                document.activeElement.blur();
-            }
-        };
+    this.body = null;
+  }
 
-        module.handleMainMenuClick = function() {
-            var body = $('body');
-            if($('#sidenav-overlay').length > 0) {
-                module.handleMainMenuClosed();
-            } else {
-                module.handleMainMenuOpened();
-            }
-            if(document.activeElement.nodeName != 'BODY') {
-                document.activeElement.blur();
-            }
-        };
+  init() {
+    this.body = $('body');
 
-        module.handleMainMenuOpened = function() {
-            //$('body').addClass('menu-active');
-        };
+    this.listen(['page-changed'], this.handlePageChanged);
+    this.listen(['main-menu-click'], this.handleMainMenuClick);
+    this.listen(['main-menu-closed'], this.handleMainMenuClosed);
 
-        module.handleMainMenuClosed = function() {
-            //$('body').removeClass('menu-active');
-        };
+    $('#main-menu').on('click', this.handleMainMenuClick.bind(this));
+    $(".button-collapse").sideNav();
+    $('.collapsible').collapsible();
+  };
 
-        return module;
+  handlePageChanged(event) {
+    $('#main-menu').attr(
+      'href',
+      '#!' + encodeKey(this.sandbox.activePuzzle()) + '/' + event.data
+    ).blur();
+    if (document.activeElement.nodeName != 'BODY') {
+      document.activeElement.blur();
     }
-);
+  }
+
+  handleMainMenuClick() {
+    if ($('#sidenav-overlay').length > 0) {
+      this.handleMainMenuClosed();
+    } else {
+      this.handleMainMenuOpened();
+    }
+    if (document.activeElement.nodeName != 'BODY') {
+      document.activeElement.blur();
+    }
+  }
+
+  handleMainMenuOpened() {
+    //this.body.addClass('menu-active');
+  }
+
+  handleMainMenuClosed() {
+    //this.body.removeClass('menu-active');
+  }
+}

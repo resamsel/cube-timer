@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="UTF-8">
 
@@ -9,7 +10,7 @@
 	<title i18n-key="appName">Rubik's Cube Timer</title>
 	<link rel="shortcut icon" type="image/x-icon" href="./img/icon-128.png">
 
-	<meta name="theme-color" content="#3f51b5">
+	<meta name="theme-color" content="#0d47a1">
 	<link rel="icon" sizes="128x128" href="./img/icon-128.png">
 
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -18,7 +19,9 @@
 	<meta name="google-signin-cookiepolicy" content="single_host_origin">
 	<meta name="google-signin-scope" content="profile email">
 </head>
-<body class="material"><!-- class="started/stopped" -->
+
+<body class="material" style="display: none">
+	<!-- class="started/stopped" -->
 	<ul id="puzzle-list" class="puzzle-list dropdown-content">
 		<li class="puzzle template">
 			<a href="#">
@@ -50,24 +53,20 @@
 			</div>
 		</li>
 		<li class="auth-google-signed-in">
-			<a class="google-sign-out indigo-text" i18n-key="authSignOut">Sign out</a>
+			<a class="google-sign-out blue-text" i18n-key="authSignOut">Sign out</a>
 		</li>
 	</ul>
 	<div class="navbar-fixed">
-		<nav class="indigo" role="navigation">
+		<nav class="blue" role="navigation">
 			<div class="nav-wrapper">
-				<a id="main-menu" href="#" data-activates="nav-mobile" class="button-collapse show-on-large waves-effect waves-light">
+				<a id="main-menu" href="#" data-activates="nav-mobile" class="button-collapse hide-on-large-only waves-effect waves-light">
 					<i class="material-icons">menu</i>
 				</a>
 				<a id="logo-container" href="#" class="brand-logo" i18n-key="appShortName">
 					Cube Timer
 				</a>
 				<span class="page-title" i18n-key="timer">Timer</span>
-				<a class="active-puzzle dropdown-button waves-effect waves-light"
-					href="#"
-					data-activates="puzzle-list"
-					data-beloworigin="true"
-					data-constrainWidth="false">
+				<a class="active-puzzle dropdown-button waves-effect waves-light" href="#" data-activates="puzzle-list" data-beloworigin="true" data-constrainWidth="false">
 					<span class="text">3x3x3</span>
 					<i class="material-icons right">arrow_drop_down</i>
 				</a>
@@ -83,21 +82,13 @@
 						</a>
 					</li>
 					<li>
-						<a
-							class="dropdown-button auth-dropdown"
-							href="#!"
-							data-activates="dropdown-auth"
-							data-belowOrigin="true"
-							data-alignment="right"
-							data-constrainWidth="false">
+						<a class="dropdown-button auth-dropdown" href="#!" style="display: none" data-activates="dropdown-auth" data-belowOrigin="true" data-alignment="right" data-constrainWidth="false">
 							<i class="material-icons">account_circle</i>
 							<img class="auth-user-image circle">
 						</a>
 					</li>
 				</ul>
-				<ul id="nav-mobile"
-						class="side-nav fixed text-black text-lighten-2 collapsible"
-						data-collapsible="accordion">
+				<ul id="nav-mobile" class="side-nav fixed text-black text-lighten-2 collapsible" data-collapsible="accordion">
 					<li>
 						<a class="timer-button waves-effect waves-light" href="#!">
 							<i class="material-icons left">timer</i>
@@ -169,7 +160,7 @@
 							</div>
 						</div>
 						<div class="card-action grey lighten-3 start-stop-container">
-							<button class="waves-effect waves-indigo btn-flat start-stop">
+							<button class="waves-effect waves-blue btn-flat start-stop">
 								<span class="start">
 									<i class="material-icons left">play_arrow</i>
 									<span i18n-key="buttonStart">Start</span>
@@ -185,7 +176,7 @@
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
 					<div class="card card-stats">
 						<div class="card-image">
-							<div id="ct-stats" class="ct-major-twelfth"></div>
+							<div id="ct-stats" class="ct-major-twelfth ct-stats"></div>
 						</div>
 						<div class="card-content relative">
 							<div id="stats-categories">
@@ -198,7 +189,8 @@
 					</div>
 				</div>
 			</div>
-		</div><!-- page: main -->
+		</div>
+		<!-- page: main -->
 
 		<div class="container page page-results">
 			<div class="row">
@@ -208,9 +200,11 @@
 							<div class="spinner-layer spinner-blue-only">
 								<div class="circle-clipper left">
 									<div class="circle"></div>
-								</div><div class="gap-patch">
+								</div>
+								<div class="gap-patch">
 									<div class="circle"></div>
-								</div><div class="circle-clipper right">
+								</div>
+								<div class="circle-clipper right">
 									<div class="circle"></div>
 								</div>
 							</div>
@@ -220,21 +214,26 @@
 						<div><span class="material-icons">assessment</span></div>
 						<p i18n-key="scoresEmpty">Nothing to see here, yet.</p>
 					</div>
-					<div id="results-content">
+					<div id="results-content" style="display: none">
+						<div class="card card-stats">
+							<div class="card-image">
+								<div id="ct-timeline" class="ct-major-twelfth ct-stats"></div>
+							</div>
+						</div>
 						<ul class="template result-container collection collection-small z-depth-1">
 						</ul>
 						<time class="template result-header"></time>
-						<ul style="display: none">
+						<ul>
 							<li class="template result-item entry collection-item avatar">
 								<i class="material-icons circle">assessment</i>
 								<span class="title">
 									<span class="index"></span>
-									<span class="value"></span>
-									<span class="tags">
+								<span class="value"></span>
+								<span class="tags">
 										<time class="sync" i18n-format="dateTimeFormat"></time>
 									</span>
 								</span>
-								<a href="#!results" class="secondary-content waves-effect waves-indigo delete">
+								<a href="#!results" class="secondary-content waves-effect waves-blue delete">
 									<i class="material-icons">delete</i>
 								</a>
 							</li>
@@ -244,13 +243,17 @@
 					</div>
 				</div>
 			</div>
-		</div><!-- page: results -->
+		</div>
+		<!-- page: results -->
 
 		<div class="container page page-puzzles">
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
 					<div id="puzzles-content">
-						<ul class="puzzle-container collection collection-medium z-depth-1">
+						<ul class="puzzle-container collection collection-medium z-depth-1 with-header">
+							<li class="collection-header">
+								<span class="title" i18n-key="puzzles">Puzzles!</span>
+							</li>
 							<li class="template puzzle-item entry collection-item avatar">
 								<i class="material-icons circle">games</i>
 								<span class="title"></span>
@@ -271,12 +274,23 @@
 					</div>
 				</div>
 			</div>
-		</div><!-- page: puzzles -->
+			<div class="fixed-action-btn">
+				<a class="btn-floating btn-large modal-trigger red" href="#create-puzzle-dialog">
+			      <i class="large material-icons">add</i>
+			    </a>
+			</div>
+		</div>
+		<!-- page: puzzles -->
 
 		<div class="container page page-config">
 			<div class="row">
 				<div class="col l8 offset-l2 m10 offset-m1 s12">
-					<div class="card card-stats">
+					<div class="card card-config">
+						<div class="card-image">
+							<h3 class="card-title">
+								<span i18n-key="config">Settings</span>
+							</h3>
+						</div>
 						<div class="card-content">
 							<div class="row">
 								<form id="config" class="col s12">
@@ -329,8 +343,10 @@
 					</div>
 				</div>
 			</div>
-		</div><!-- page: config -->
-	</div><!-- wrapper -->
+		</div>
+		<!-- page: config -->
+	</div>
+	<!-- wrapper -->
 
 	<footer class="page-footer grey lighten-2 grey-text">
 		<div class="container">
@@ -338,8 +354,7 @@
 				<div class="col l6 s12">
 					<h5 i18n-key="aboutTitle">About</h5>
 					<div i18n-key="about">
-						Designed and built by <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>.
-						Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.
+						Designed and built by <a href="https://twitter.com/resamsel" target="_blank">@resamsel</a>. Code licensed <a rel="license" href="https://github.com/resamsel/cube-timer/blob/master/LICENSE" target="_blank">GPLv2</a>.
 					</div>
 				</div>
 				<div class="col l4 offset-l2 s12">
@@ -367,24 +382,24 @@
 					<textarea id="export-content" class="materialize-textarea"></textarea>
 				</div>
 			</div>
-		</div><!-- /.modal-content -->
+		</div>
+		<!-- /.modal-content -->
 		<div class="modal-footer ">
-			<a href="#!"
-				class="modal-action modal-close waves-effect waves-indigo btn-flat"
-				i18n-key="buttonCancel">
+			<a href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat" i18n-key="buttonCancel">
 				Cancel
 			</a>
-			<a id="export-download" href="#!results" class="modal-action modal-close waves-effect waves-indigo btn-flat" style="display: none">
+			<a id="export-download" href="#!results" class="modal-action modal-close waves-effect waves-blue btn-flat" style="display: none">
 				Download
 			</a>
 		</div>
-	</div><!-- /.modal -->
+	</div>
+	<!-- /.modal -->
 
 	<div id="import-dialog" class="modal modal-fixed-footer" tabindex="-1" role="dialog">
 		<div class="modal-content">
 			<h4 class="modal-title">Import Times</h4>
 			<div class="btn-group" role="group">
-				<button id="import-from-file" type="button" class="btn btn-default">
+				<button id="import-from-file" type="button" class="btn btn-default blue">
 					<i class="material-icons left">file_upload</i>
 					Load from local file
 				</button>
@@ -404,23 +419,23 @@
 					</div>
 				</div>
 			</div>
-		</div><!-- /.modal-content -->
+		</div>
+		<!-- /.modal-content -->
 		<div class="modal-footer">
-			<a href="#!"
-				class="modal-action modal-close waves-effect waves-indigo btn-flat"
-				i18n-key="buttonCancel">
+			<a href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat" i18n-key="buttonCancel">
 				Cancel
 			</a>
-			<a id="import-replace" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+			<a id="import-replace" href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat">
 				<i class="material-icons left">content_paste</i>
 				Replace
 			</a>
-			<a id="import-append" href="#!" class="modal-action modal-close waves-effect waves-indigo btn-flat">
+			<a id="import-append" href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat">
 				<i class="material-icons left">add</i>
 				Append
 			</a>
 		</div>
-	</div><!-- /.modal -->
+	</div>
+	<!-- /.modal -->
 
 	<div id="create-puzzle-dialog" class="modal" tabindex="-1" role="dialog">
 		<div class="modal-content">
@@ -430,21 +445,18 @@
 					<input id="puzzle-name" />
 				</div>
 			</div>
-		</div><!-- /.modal-content -->
+		</div>
+		<!-- /.modal-content -->
 		<div class="modal-footer">
-			<a href="#!"
-				class="modal-action modal-close waves-effect waves-indigo btn-flat"
-				i18n-key="buttonCancel">
+			<a href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat" i18n-key="buttonCancel">
 				Cancel
 			</a>
-			<a id="create-puzzle-button"
-				href="#!"
-				class="modal-action modal-close waves-effect waves-indigo btn"
-				i18n-key="buttonCreatePuzzle">
+			<a id="create-puzzle-button" href="#!" class="modal-action modal-close waves-effect waves-blue btn" i18n-key="buttonCreatePuzzle">
 				Create Puzzle
 			</a>
 		</div>
-	</div><!-- /.modal -->
+	</div>
+	<!-- /.modal -->
 
 	<div id="delete-puzzle-dialog" class="modal" tabindex="-1" role="dialog">
 		<div class="modal-content">
@@ -452,39 +464,22 @@
 			<p i18n-key="puzzleDeleteDescription">
 				Do you want to delete the puzzle and all of its results?
 			</p>
-		</div><!-- /.modal-content -->
+		</div>
+		<!-- /.modal-content -->
 		<div class="modal-footer">
-			<a id="delete-puzzle-cancel"
-				href="#!"
-				class="modal-action modal-close waves-effect waves-indigo btn-flat"
-				i18n-key="buttonCancel">
+			<a id="delete-puzzle-cancel" href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat" i18n-key="buttonCancel">
 				Cancel
 			</a>
-			<a id="delete-puzzle-ok"
-				href="#!"
-				class="modal-action modal-close waves-effect waves-indigo btn"
-				i18n-key="buttonOk">
+			<a id="delete-puzzle-ok" href="#!" class="modal-action modal-close waves-effect waves-blue btn" i18n-key="buttonOk">
 				OK
 			</a>
 		</div>
-	</div><!-- /.modal -->
+	</div>
+	<!-- /.modal -->
 
 	<div style="display: none">
-		<input id="import-file" type="file">
+		<input id="import-file" type="file" class="blue">
 	</div>
-
-	<script>
-		if ('serviceWorker' in navigator) {
-			window.addEventListener('load', function() {
-				navigator.serviceWorker.register('/sw.bundle.js').then(function(registration) {
-					// Registration was successful
-					console.log('ServiceWorker registration successful with scope: ', registration.scope);
-				}, function(err) {
-					// registration failed :(
-					console.log('ServiceWorker registration failed: ', err);
-				});
-			});
-		}
-	</script>
 </body>
+
 </html>

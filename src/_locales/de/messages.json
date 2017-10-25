@@ -254,6 +254,10 @@
         "message": "Mittel 80%",
         "description": "The short name of the stat label for: average80."
     },
+    "average": {
+        "message": "Avg",
+        "description": "The short name of the stat label for: average."
+    },
     "average3of5_short": {
         "message": "Mittel 3/5",
         "description": "The short name of the stat label for: average3of5."

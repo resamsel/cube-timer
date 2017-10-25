@@ -1,288 +1,374 @@
-var core = require('../core');
+import Module from './core.module';
+import {
+  encodeKey,
+  sortScores,
+  defaultFormatMilliseconds,
+  hourMinuteFormatMilliseconds,
+  toDate,
+  toIsoDate,
+  toGroupedDate,
+  updateWithTime,
+  scoreValue,
+  scoreKey
+} from '../utils/misc';
+import {
+  movingAverage,
+  movingMinimum
+} from '../utils/stats';
+import Debounce from 'debounce-decorator';
+import I18nUtils from '../utils/i18n';
+import Chartist from 'chartist';
+import moment from 'moment';
+import _ from 'underscore';
+import 'chartist-plugin-legend';
+
 var dao = require('../dao');
-var misc = require('../utils/misc');
 var Category = require('../utils/category');
 var $ = require('jquery');
 
-core.register(
-	'Results',
-	function(sandbox) {
-		var module = {};
-		var results = [];
-		var subtext = false;
-		var timeout;
-		var $loading;
-		var $resultsButton;
-		var $scoresContent;
-		var $scoreTemplate;
-		var $noResults;
+import '../../css/core.results.css';
 
-		module.init = function() {
-			$loading = $('.page-results .loading');
-			$resultsButton = $('.results-button');
-			$scoresContent = $('#results-content .times-content');
-			$scoreTemplate = $('#results-content .template.result-container');
-			$noResults = $('.page-results .empty');
+export default class Results extends Module {
+  constructor(sandbox) {
+    super(Results.id, sandbox);
 
-			timeout = setTimeout(function() {
-				$loading.hide();
-				$noResults.fadeIn();
-			}, 2000);
+    this.results = [];
+    this.subtext = false;
+    this.timeout = undefined;
+    this.repaint = true;
 
-			dao.listen(
-				['config-changed'],
-				'subtext',
-				module.update
-			);
-			sandbox.listen(
-				['page-changed'],
-				module.handlePageChanged,
-				module
-			);
-			sandbox.listen(
-				['puzzle-changed'],
-				module.handlePuzzleChanged,
-				module
-			);
-			module.listen();
+    this.$loading = null;
+    this.$resultsButton = null;
+    this.$scoresContent = null;
+    this.$scoreTemplate = null;
+    this.$noResults = null;
+    this.$timeline = null;
+  }
 
-			$resultsButton
-				.css('display', 'block')
-				.attr('href', '#!'+misc.encodeKey(sandbox.activePuzzle())+'/results');
-			$noResults.hide();
-		};
+  init() {
+    this.$loading = $('.page-results .loading');
+    this.$resultsButton = $('.results-button');
+    this.$contents = $('#results-content');
+    this.$scoresContent = $('#results-content .times-content');
+    this.$scoreTemplate = $('#results-content .template.result-container');
+    this.$noResults = $('.page-results .empty');
+    this.$timeline = document.getElementById('ct-timeline');
 
-		module.listen = function() {
-			dao.unlisten(['score-added'], module.handleScoreAdded);
-			dao.unlisten(['score-removed'], module.handleScoreRemoved);
-			dao.unlisten(['config-changed'], module.handleSubtextChanged);
+    const self = this;
+    this.timeout = setTimeout(function() {
+      self.$loading.hide();
+      self.$noResults.fadeIn();
+    }, 2000);
 
-			var puzzle = sandbox.activePuzzle();
-			dao.listen(
-				['score-added'],
-				puzzle,
-				module.handleScoreAdded
-			);
-			dao.listen(
-				['score-removed'],
-				puzzle,
-				module.handleScoreRemoved
-			);
-			dao.listen(
-				['config-changed'],
-				'subtext',
-				module.handleSubtextChanged
-			);
-		};
+    this.listen(['page-changed'], this.handlePageChanged);
+    this.listen(['puzzle-changed'], this.handlePuzzleChanged);
+    this.subscribe();
 
-		module.handlePageChanged = function(event) {
-			if(event.data == 'results') {
-				$resultsButton.parent().addClass('active');
-			} else {
-				$resultsButton.parent().removeClass('active');
-			}
-		};
+    this.$resultsButton
+      .css('display', 'block')
+      .attr('href', '#!' + encodeKey(this.sandbox.activePuzzle()) + '/results');
+    this.$noResults.hide();
+  }
 
-		module.handlePuzzleChanged = function(event) {
-			module.cleanResults();
-			$loading.fadeIn();
+  subscribe() {
+    dao.unsubscribe(['score-added'], this.handleScoreAdded);
+    dao.unsubscribe(['score-removed'], this.handleScoreRemoved);
+    dao.unsubscribe(['config-changed'], this.handleSubtextChanged);
 
-			$resultsButton.attr(
-				'href',
-				'#!'+misc.encodeKey(event.data)+'/results'
-			);
+    var puzzle = this.sandbox.activePuzzle();
+    dao.subscribe(
+      ['score-added'],
+      puzzle,
+      this.handleScoreAdded,
+      this
+    );
+    dao.subscribe(
+      ['score-removed'],
+      puzzle,
+      this.handleScoreRemoved,
+      this
+    );
+    dao.subscribe(
+      ['config-changed'],
+      'subtext',
+      this.handleSubtextChanged,
+      this
+    );
+  }
 
-			results = [];
+  handlePageChanged(event) {
+    if (event.data == 'results') {
+      this.$resultsButton.parent().addClass('active');
+    } else {
+      this.$resultsButton.parent().removeClass('active');
+    }
+  }
 
-			module.listen();
+  handlePuzzleChanged(event) {
+    this.cleanResults();
+    this.$loading.fadeIn();
 
-			module.handleResultsChanged();
-		};
+    this.$resultsButton.attr(
+      'href',
+      '#!' + encodeKey(event.data) + '/results'
+    );
 
-		module.handleResultsChanged = misc.debounce(function() {
-			misc.sortScores(results);
-			module.updateResults(sandbox.activePuzzle());
-		}, 250);
+    this.results = [];
+    this.repaint = true;
 
-		module.handleScoreAdded = function(score) {
-			if(typeof timeout !== 'undefined') {
-				clearTimeout(timeout);
-				timeout = undefined;
-			}
+    this.subscribe();
 
-			results.push(score);
-			module.handleResultsChanged();
-		};
+    this.handleResultsChanged();
+  }
 
-		module.handleScoreRemoved = function(score) {
-			results = results.filter(function(result) {
-				return result.timestamp != score.timestamp;
-			});
-			$('#id-' + score.timestamp).fadeOut({
-				complete: function(a) {
-					var $this = $(this);
-					if($this.parent().children().length < 2) {
-						$this.parent().prev().remove();
-						$this.parent().remove();
-					}
-					$this.remove();
-					module.update();
-				}
-			});
-		};
+  @Debounce(250)
+  handleResultsChanged() {
+    sortScores(this.results);
+    this.updateResults(this.sandbox.activePuzzle());
+    this.updateChart(this.sandbox.createStats(this.results));
+  }
 
-		module.handleSubtextChanged = function(value) {
-			subtext = value;
-		};
+  handleScoreAdded(score) {
+    if (typeof this.timeout !== 'undefined') {
+      clearTimeout(this.timeout);
+      this.timeout = undefined;
+    }
 
-		module.removeResult = function(element) {
-			element = $(element);
-			var puzzle = element.data('puzzle');
-			var score = element.data('score');
-			dao.removeScore(puzzle, score);
-		};
+    this.results.push(score);
+    this.repaint = true;
+    this.handleResultsChanged();
+  }
 
-		module.createContainer = function() {
-			var container = $scoreTemplate.clone().removeClass('template');
-			$scoresContent.append(container);
-			return container;
-		};
+  handleScoreRemoved(score) {
+    this.results = this.results.filter(function(result) {
+      return result.timestamp != score.timestamp;
+    });
+    this.repaint = true;
+    const self = this;
+    $('#id-' + score.timestamp).fadeOut({
+      complete: function(a) {
+        var $this = $(this);
+        if ($this.parent().children().length < 2) {
+          $this.parent().prev().remove();
+          $this.parent().remove();
+        }
+        $this.remove();
+        self.update();
+      }
+    });
+  }
 
-		module.createResult = function(score, index) {
-			var row = $('#results-content .template.result-item').clone();
+  handleSubtextChanged(value) {
+    this.subtext = value;
+  }
 
-			row.attr('id', 'id-' + score.timestamp).removeClass('template');
-			row
-				.find('.value')
-				.text(misc.defaultFormatMilliseconds(score.value));
-			row
-				.find('.date')
-				.text(misc.toDate(score.timestamp)).data('date', score.timestamp);
-			row
-				.find('.delete')
-				.data('puzzle', sandbox.activePuzzle())
-				.data('score', score)
-				.on('click', function(event) {
-					module.removeResult(this);
-				});
+  removeResult(el) {
+    const element = $(el);
+    const puzzle = element.data('puzzle');
+    const score = element.data('score');
+    dao.removeScore(puzzle, score);
+  }
 
-			return row;
-		};
+  createContainer() {
+    const container = this.$scoreTemplate.clone().removeClass('template');
+    this.$scoresContent.append(container);
+    return container;
+  }
 
-		module.createDate = function(date) {
-			var element = $('#results-content .template.result-header')
-				.clone()
-				.removeClass('template')
-				.attr('datetime', misc.toIsoDate(date))
-				.html(misc.toGroupedDate(date));
-			var firstChar = element.html().substring(0, 1);
-			if(firstChar == firstChar.toLowerCase()) {
-				// The content was not translated, so add the i18n-key attribute
-				// to translate it later
-				element.attr('i18n-key', element.html());
-			}
-			return element;
-		};
+  createResult(score, index) {
+    const row = $('#results-content .template.result-item').clone();
+    const self = this;
 
-		module.cleanResults = function() {
-			$('#results-content .times-content > *').remove();
-			$noResults.hide();
-		};
+    row.attr('id', 'id-' + score.timestamp).removeClass('template');
+    row
+      .find('.value')
+      .text(defaultFormatMilliseconds(score.value));
+    row
+      .find('.date')
+      .text(toDate(score.timestamp)).data('date', score.timestamp);
+    row
+      .find('.delete')
+      .data('puzzle', this.sandbox.activePuzzle())
+      .data('score', score)
+      .on('click', function(event) {
+        self.removeResult(this);
+      });
 
-		module.updateResults = misc.debounce(function() {
-			module.cleanResults();
-			$loading.hide();
+    return row;
+  }
 
-			var result;
-			var latestDate = '', date;
-			var container;
-			var previous;
+  createDate(date) {
+    const element = $('#results-content .template.result-header')
+      .clone()
+      .removeClass('template')
+      .attr('datetime', toIsoDate(date))
+      .html(toGroupedDate(date));
+    var firstChar = element.html().substring(0, 1);
+    if (firstChar == firstChar.toLowerCase()) {
+      // The content was not translated, so add the i18n-key attribute
+      // to translate it later
+      element.attr('i18n-key', element.html());
+    }
+    return element;
+  }
 
-			if(results.length < 1) {
-				$noResults.fadeIn();
-				return;
-			}
+  cleanResults() {
+    $('#results-content .times-content > *').remove();
+    this.$noResults.hide();
+  }
 
-			results.slice().reverse().forEach(function(result, i) {
-				date = misc.toGroupedDate(result.timestamp);
-				if(date !== latestDate) {
-					$scoresContent.append(module.createDate(result.timestamp));
-					container = module.createContainer();
-					latestDate = date;
-				}
-				container.append(
-					module.createResult(result, i+1)
-				);
-			});
-			module.update(results);
-		}, 250);
+  @Debounce(250)
+  updateResults() {
+    this.cleanResults();
+    this.$loading.hide();
 
-		module.update = misc.debounce(function() {
-			module.updateDates();
-			module.updateIndices(results);
-			module.updateLabels(results);
-		}, 250);
+    let result;
+    var latestDate = '',
+      date;
+    var container;
+    var previous;
 
-		module.updateDates = function() {
-			results.forEach(function(result, index) {
-				misc.updateWithTime(
-					$('#id-' + result.timestamp + ' time'),
-					new Date(result.timestamp)
-				);
-			});
-			$('#results-content .times-content > * .date').each(function() {
-				var that = $(this);
-				that.text(misc.toDate(that.data('date')));
-			});
+    if (this.results.length < 1) {
+      this.$noResults.fadeIn();
+      return;
+    }
 
-		};
+    const self = this;
+    this.results.slice().reverse().forEach(function(result, i) {
+      date = toGroupedDate(result.timestamp);
+      if (date !== latestDate) {
+        self.$scoresContent.append(self.createDate(result.timestamp));
+        container = self.createContainer();
+        latestDate = date;
+      }
+      container.append(
+        self.createResult(result, i + 1)
+      );
+    });
+    this.update();
+    this.$contents.fadeIn();
+  }
 
-		module.updateIndices = function(results) {
-			results.forEach(function(result, index) {
-				$('#id-' + result.timestamp + ' .index').text('#' + (index+1));
-			});
-		};
+  @Debounce(250)
+  update() {
+    this.updateDates();
+    this.updateIndices();
+    this.updateLabels();
+  }
 
-		module.mark = function(result, text, type_) {
-			$('#id-' + result.timestamp + ' .tags')
-				.append(' <span class="label label-' + type_ + '">' + text + '</span>');
-		};
+  updateDates() {
+    this.results.forEach(function(result, index) {
+      updateWithTime(
+        $('#id-' + result.timestamp + ' time'),
+        new Date(result.timestamp)
+      );
+    });
+    $('#results-content .times-content > * .date').each(function() {
+      const $this = $(this);
+      $this.text(toDate($this.data('date')));
+    });
+  }
 
-		module.updateLabels = function(results) {
-			var result,
-				best = {timestamp: 0, value: 999999999},
-				best5 = {timestamp: 0, value: 999999999},
-				best12 = {timestamp: 0, value: 999999999},
-				sub;
+  updateIndices() {
+    this.results.forEach(function(result, index) {
+      $('#id-' + result.timestamp + ' .index').text('#' + (index + 1));
+    });
+  }
 
-			// Remove first
-			$('#results-content .label').remove();
+  mark(result, text, type_) {
+    $('#id-' + result.timestamp + ' .tags')
+      .append(' <span class="label label-' + type_ + '">' + text + '</span>');
+  }
 
-			for (var i = 0; i < results.length; i++) {
-				result = results[i];
-				if (result.value < best.value) {
-					best = result;
-				}
-				if ((results.length - i - 1) < 5 && result.value < best5.value) {
-					best5 = result;
-				}
-				if ((results.length - i - 1) < 12 && result.value < best12.value) {
-					best12 = result;
-				}
-				if(subtext) {
-					sub = Category.fromValue(result.value);
-					if (sub > 0) {
-						module.mark(result, 'sub ' + sub, 'info');
-					}
-				}
-			}
+  updateLabels() {
+    var result,
+      best = {
+        timestamp: 0,
+        value: 999999999
+      },
+      best5 = {
+        timestamp: 0,
+        value: 999999999
+      },
+      best12 = {
+        timestamp: 0,
+        value: 999999999
+      },
+      sub;
 
-			// Then mark
-			module.mark(best, 'best', 'success');
-			module.mark(best5, 'best #5', 'success');
-			module.mark(best12, 'best #12', 'success');
-		};
+    // Remove first
+    $('#results-content .label').remove();
 
-		return module;
-	}
-);
+    let i = 0;
+    this.results.forEach(result => {
+      if (result.value < best.value) {
+        best = result;
+      }
+      if ((this.results.length - i - 1) < 5 && result.value < best5.value) {
+        best5 = result;
+      }
+      if ((this.results.length - i - 1) < 12 && result.value < best12.value) {
+        best12 = result;
+      }
+      if (subtext) {
+        sub = Category.fromValue(result.value);
+        if (sub > 0) {
+          this.mark(result, 'sub ' + sub, 'info');
+        }
+      }
+      i++;
+    });
+
+    // Then mark
+    this.mark(best, 'best', 'success');
+    this.mark(best5, 'best of 5', 'success');
+    this.mark(best12, 'best of 12', 'success');
+  }
+
+  updateChart(stats) {
+    if (!this.repaint || this.sandbox.activePage() !== 'results') {
+      return;
+    }
+
+    this.detachChart(this.$timeline);
+
+    this.$timeline.dataset.chartist = this.createTimeline(stats);
+
+    this.repaint = false;
+  }
+
+  detachChart(container) {
+    if (typeof container === 'undefined') {
+      return;
+    }
+    const chart = container.dataset.chartist;
+    if (chart) {
+      while (container.hasChildNodes()) {
+        container.removeChild(container.lastChild);
+      }
+    }
+  }
+
+  createTimeline(statistics) {
+    const d = _.groupBy(statistics.scores, score => new Date(score.timestamp).setHours(0,0,0,0));
+    const data = Object.keys(d).map(key => { return {x: new Date(parseInt(key)), y: d[key].length}; });
+    console.log('data', data);
+
+    //    return new Chartist.Line('#ct-timeline', data, options);
+    return new Chartist.Line('#ct-timeline', {
+      series: [{
+          name: 'series-1',
+          data
+        }
+      ]
+    }, {
+      axisX: {
+        type: Chartist.FixedScaleAxis,
+        divisor: 5,
+        labelInterpolationFnc: function(value) {
+          return moment(value).format('MMM D');
+        }
+      }
+    });
+  }
+}

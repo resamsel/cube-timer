@@ -12,15 +12,13 @@ module.exports = {
     filename: '[name].bundle.js'
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
-          presets: [
-            'es2015'
-          ]
+          plugins: ['transform-decorators-legacy'],
+          presets: ['es2015']
         }
       },
       {
@@ -55,7 +53,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({template: './src/index.html'}),
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|de/)
   ]

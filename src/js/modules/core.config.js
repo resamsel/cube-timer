@@ -1,147 +1,133 @@
-var core = require('../core');
+import Module from './core.module';
+import I18nUtils from '../utils/i18n';
+import {
+  debounce
+} from '../utils/misc';
+
 var dao = require('../dao');
-var misc = require('../utils/misc');
-var I18n = require('../utils/i18n');
 var $ = require('jquery');
 
-require('../../css/core.config.css')
+import '../../css/core.config.css';
 
-core.register(
-	'Config',
-	function(sandbox) {
-		var module = {};
-		var $language;
-		var $inspectionTime;
-		var $subtext;
-		var $soundAfterInspection;
-		var $windowSize;
-		var configListeners;
+export default class Config extends Module {
+  static get id() {
+    return 'Config';
+  }
 
-		module.init = function() {
-			configListeners = {
-				inspectionTime: module.handleInspectionTimeChanged,
-				subtext: module.handleSubtextChanged,
-				soundAfterInspection: module.handleSoundAfterInspectionChanged
-			};
+  constructor(sandbox) {
+    super(Config.id, sandbox);
 
-			sandbox.listen(
-				['page-changed'],
-				module.handlePageChanged,
-				module
-			);
-			sandbox.listen(
-				['puzzle-changed'],
-				module.handlePuzzleChanged,
-				module
-			);
+    this.$language = null;
+    this.$inspectionTime = null;
+    this.$subtext = null;
+    this.$soundAfterInspection = null;
+    this.$windowSize = null;
+    this.configButton = null;
+    this.configListeners = {
+      language: this.handleLanguageChanged,
+      inspectionTime: this.handleInspectionTimeChanged,
+      subtext: this.handleSubtextChanged,
+      soundAfterInspection: this.handleSoundAfterInspectionChanged,
+      windowSize: this.handleWindowSizeChanged
+    };
+  }
 
-			$language = $('#language');
-			I18n.languages.forEach(function(language) {
-				$language.append($('<option value="'+language+'" i18n-key="language_'+language+'">'+language+'</option>'));
-			});
-			$language.change(function() {
-				dao.storeConfig('language', $(this).val());
-			});
-			dao.listen(
-				['config-changed'],
-				'language',
-				module.handleLanguageChanged
-			);
+  init() {
+    this.$language = $('#language');
+    this.$inspectionTime = $('#inspectionTime');
+    this.$subtext = $('#subtext');
+    this.$soundAfterInspection = $('#soundAfterInspection');
+    this.$windowSize = $('#windowSize');
+    this.configButton = $('.config-button');
+    const self = this;
 
-			$inspectionTime = $('#inspectionTime');
-			$inspectionTime.change(function() {
-				dao.storeConfig('inspectionTime', Number($(this).val()));
-			});
-			dao.listen(
-				['config-changed'],
-				'inspectionTime',
-				module.handleInspectionTimeChanged
-			);
+    this.listen(['page-changed'], this.handlePageChanged);
+    // this.listen(['puzzle-changed'], this.handlePuzzleChanged);
 
-			$subtext = $('#subtext');
-			$subtext.on('click', function(e) {
-				dao.storeConfig('subtext', e.target.checked);
-			});
-			dao.listen(
-				['config-changed'],
-				'subtext',
-				module.handleSubtextChanged
-			);
+    I18nUtils.languages.forEach(function(language) {
+      self.$language.append($('<option value="' + language + '" i18n-key="language_' + language + '">' + language + '</option>'));
+    });
 
-			$soundAfterInspection = $('#soundAfterInspection');
-			$soundAfterInspection.on('click', function(e) {
-				dao.storeConfig('soundAfterInspection', e.target.checked);
-			});
-			dao.listen(
-				['config-changed'],
-				'soundAfterInspection',
-				module.handleSoundAfterInspectionChanged
-			);
+    this.$language.change(function() {
+      console.debug('changeLanguage');
+      dao.storeConfig('language', $(this).val());
+    });
+    this.$inspectionTime.change(function() {
+      dao.storeConfig('inspectionTime', Number($(this).val()));
+    });
+    this.$subtext.on('click', function(e) {
+      dao.storeConfig('subtext', e.target.checked);
+    });
+    this.$soundAfterInspection.on('click', function(e) {
+      dao.storeConfig('soundAfterInspection', e.target.checked);
+    });
+    this.$windowSize.on('change', debounce(function(e) {
+      dao.storeConfig('windowSize', self.$windowSize.val());
+    }, 250));
 
-			$windowSize = $('#windowSize');
-			$windowSize.on('change', misc.debounce(function(e) {
-				dao.storeConfig('windowSize', $windowSize.val());
-			}, 250));
-			dao.listen(
-				['config-changed'],
-				'windowSize',
-				module.handleWindowSizeChanged
-			);
+    // this.handlePuzzleChanged();
 
-			$('.config-button').css('display', 'block');
-		};
+    const configListeners = this.configListeners;
+    Object.keys(configListeners).forEach(function(key) {
+      var listener = configListeners[key];
+      dao.unsubscribe(['config-changed'], listener);
+      dao.subscribe(['config-changed'], key, listener, self);
+    });
 
-		module.handlePageChanged = function(event) {
-			if(event.data == 'config') {
-				$('.config-button').parent().addClass('active');
-			} else {
-				$('.config-button').parent().removeClass('active');
-			}
-		};
+    this.configButton.css('display', 'block');
+  }
 
-		module.handlePuzzleChanged = function(event) {
-			Object.keys(configListeners).forEach(function(key) {
-				var listener = configListeners[key];
-				dao.unlisten(['config-changed'], listener);
-				dao.listen(['config-changed'], key, listener);
-			});
-		};
+  handlePageChanged(event) {
+    if (event.data == 'config') {
+      this.configButton.parent().addClass('active');
+    } else {
+      this.configButton.parent().removeClass('active');
+    }
+  }
 
-		module.handleLanguageChanged = function(language) {
-			if(language === null) {
-				language = 'en';
-			}
-			$language.val(language);
-		};
+  // handlePuzzleChanged(event) {
+  //   const self = this;
+  // 	const configListeners = this.configListeners;
+  //   Object.keys(configListeners).forEach(function(key) {
+  //     var listener = configListeners[key];
+  //     dao.unsubscribe(['config-changed'], listener);
+  //     dao.subscribe(['config-changed'], key, listener, self);
+  //   });
+  // }
 
-		module.handleInspectionTimeChanged = function(inspectionTime) {
-			if(inspectionTime === null) {
-				inspectionTime = 0;
-			}
-			$inspectionTime.val(inspectionTime);
-		};
+  handleLanguageChanged(language) {
+    console.debug('handleLanguageChanged');
+    if (language === null) {
+      language = 'en';
+    }
+    this.$language.val(language);
+  }
 
-		module.handleSubtextChanged = function(subtext) {
-			if(subtext === null) {
-				subtext = true;
-			}
-			$subtext.prop('checked', subtext);
-		};
+  handleInspectionTimeChanged(inspectionTime) {
+    if (inspectionTime === null) {
+      inspectionTime = 0;
+    }
+    this.$inspectionTime.val(inspectionTime);
+  }
 
-		module.handleSoundAfterInspectionChanged = function(soundAfterInspection) {
-			if(soundAfterInspection === null) {
-				soundAfterInspection = false;
-			}
-			$soundAfterInspection.prop('checked', soundAfterInspection);
-		};
+  handleSubtextChanged(subtext) {
+    if (subtext === null) {
+      subtext = true;
+    }
+    this.$subtext.prop('checked', subtext);
+  }
 
-		module.handleWindowSizeChanged = function(windowSize) {
-			if(windowSize === null) {
-				windowSize = 50;
-			}
-			$windowSize.val(windowSize);
-		};
+  handleSoundAfterInspectionChanged(soundAfterInspection) {
+    if (soundAfterInspection === null) {
+      soundAfterInspection = false;
+    }
+    this.$soundAfterInspection.prop('checked', soundAfterInspection);
+  }
 
-		return module;
-	}
-);
+  handleWindowSizeChanged(windowSize) {
+    if (windowSize === null) {
+      windowSize = 50;
+    }
+    this.$windowSize.val(windowSize);
+  }
+}

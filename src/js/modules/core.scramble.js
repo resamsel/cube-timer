@@ -1,68 +1,65 @@
-var core = require('../core');
-var I18n = require('../utils/i18n');
+import Module from './core.module';
+
+import I18nUtils from '../utils/i18n';
 var Cube = require('../external/rubiks-cube-scrambler');
 var $ = require('jquery');
 
-core.register(
-    'Scramble',
-    function(sandbox) {
-        var module = {};
-        var scrambles = {
-            '2x2x2': { cube: Cube['3x3x3'], len: 15 },
-            '3x3x3': { cube: Cube['3x3x3'], len: 25 }
-        };
+const scrambles = {
+  '2x2x2': {
+    cube: Cube['3x3x3'],
+    len: 15
+  },
+  '3x3x3': {
+    cube: Cube['3x3x3'],
+    len: 25
+  }
+};
 
-        module.init = function() {
-            sandbox.listen(
-                ['puzzle-changed'],
-                module.handlePuzzleChanged,
-                module
-            );
-            sandbox.listen(
-                ['result-created'],
-                module.handleResultCreated,
-                module
-            );
-            sandbox.listen(
-                ['i18n-started'],
-                module.handleI18nStarted,
-                module
-            );
+export default class Scramble extends Module {
+  static get id() {
+    return 'Scramble';
+  }
 
-            Cube['3x3x3'].reset();
+  constructor(sandbox) {
+    super(Scramble.id, sandbox);
+  }
 
-            module.scramble(sandbox.activePuzzle());
-        };
+  init() {
+    this.listen(['puzzle-changed'], this.handlePuzzleChanged);
+    this.listen(['result-created'], this.handleResultCreated);
+    this.listen(['i18n-started'], this.handleI18nStarted);
 
-        module.handlePuzzleChanged = function(event) {
-            module.scramble(event.data);
-        };
+    Cube['3x3x3'].reset();
 
-        module.handleResultCreated = function(event) {
-            module.scramble(sandbox.activePuzzle());
-        };
+    this.scramble(this.sandbox.activePuzzle());
+  }
 
-        module.scramble = function(puzzle) {
-            if (Object.keys(scrambles).indexOf(puzzle) > -1) {
-                var scramble = scrambles[puzzle];
-                var i,
-                    scrambled = scramble.cube.scramble(),
-                    len = Math.min(scramble.len, scrambled.length),
-                    result = "";
-                for (i = 0; i < len; i += 5) {
-                    // Only allow a line break every 5 moves
-                    result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
-                }
-                $('#scramble').html(I18n.translate('scrambleLabel', [result]));
-            } else {
-                $('#scramble').html(I18n.translate('scrambleLabelNone'));
-            }
-        };
+  handlePuzzleChanged(event) {
+    this.scramble(event.data);
+  }
 
-        module.handleI18nStarted = function(event) {
-            module.scramble(sandbox.activePuzzle());
-        };
+  handleResultCreated(event) {
+    this.scramble(this.sandbox.activePuzzle());
+  }
 
-        return module;
+  scramble(puzzle) {
+    if (Object.keys(scrambles).indexOf(puzzle) > -1) {
+      var scramble = scrambles[puzzle];
+      var i,
+        scrambled = scramble.cube.scramble(),
+        len = Math.min(scramble.len, scrambled.length),
+        result = "";
+      for (i = 0; i < len; i += 5) {
+        // Only allow a line break every 5 moves
+        result += scrambled.slice(i, i + 5).join("&nbsp;") + " ";
+      }
+      $('#scramble').html(I18nUtils.translate('scrambleLabel', [result]));
+    } else {
+      $('#scramble').html(I18nUtils.translate('scrambleLabelNone'));
     }
-);
+  }
+
+  handleI18nStarted(event) {
+    this.scramble(this.sandbox.activePuzzle());
+  }
+}

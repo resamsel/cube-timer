@@ -1,37 +1,43 @@
-html,
-body {
-    font-family: Roboto,Helvetica,Arial,sans-serif;
-    font-size: 87.5%;
+html, body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-size: 87.5%;
 }
+
 body {
-    background-color: #fafafa;
+  background-color: #fafafa;
 }
+
 #wrapper {
-    min-height: 250px;
+  min-height: 250px;
 }
 
-.material .card-stats .card-image,
-.material .card-timer .card-image {
-    background-color: #283593;
-    color: rgba(255,255,255,0.84);
+.material .card-image, .collection.with-header .collection-header {
+  background-color: #1976D2;
+  color: #fff;
 }
 
-.material .card-stats .card-title,
-.material .card-timer .card-title {
-    position: initial;
+.material .card .card-image .card-title {
+  position: initial;
 }
 
-#ct-stats .ct-legend {
-    background: #1A237E;
-    color: rgba(255,255,255,0.84);
+.collection.with-header {
+  margin: 1.46rem 0 1.168rem 0;
+}
+
+.collection.with-header .collection-header {
+  padding: 24px;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 110%;
+  border-bottom: none;
 }
 
 .stat .label.label-success {
-    background-color: #cecece;
+  background-color: #cecece;
 }
 
 /* Buttons */
-.material .btn:not(.btn-raised).btn-primary,
-.material .input-group-btn .btn:not(.btn-raised).btn-primary {
-    color: #5C6BC0;
+
+.material .btn:not(.btn-raised).btn-primary, .material .input-group-btn .btn:not(.btn-raised).btn-primary {
+  color: #5C6BC0;
 }

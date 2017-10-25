@@ -1,29 +1,30 @@
-var core = require('../core');
-var misc = require('../utils/misc');
+import Module from './core.module';
+import { encodeKey } from '../utils/misc';
 
-core.register(
-	'HashChange',
-	function(sandbox) {
-		var module = {};
+export default class HashChange extends Module {
+	static get id() {
+    return 'HashChange';
+  }
 
-		module.init = function() {
-			window.onhashchange = module.handleHashChange;
-
-			module.handleHashChange();
-
-			if(!window.location.hash.startsWith('#!')) {
-				var puzzle = sandbox.activePuzzle();
-				var page = sandbox.activePage();
-				window.location.hash = '#!' + misc.encodeKey(puzzle) + '/' + page;
-			}
-		};
-
-		module.handleHashChange = function() {
-			if(window.location.hash.startsWith('#!')) {
-				sandbox.goToPage(window.location.hash.substring(2));
-			}
-		};
-
-		return module;
+	constructor(sandbox) {
+		super(HashChange.id, sandbox);
 	}
-);
+
+	init() {
+		window.onhashchange = this.handleHashChange.bind(this);
+
+		this.handleHashChange();
+
+		if(!window.location.hash.startsWith('#!')) {
+			var puzzle = this.sandbox.activePuzzle();
+			var page = this.sandbox.activePage();
+			window.location.hash = '#!' + encodeKey(puzzle) + '/' + page;
+		}
+	}
+
+	handleHashChange() {
+		if(window.location.hash.startsWith('#!')) {
+			this.sandbox.goToPage(window.location.hash.substring(2));
+		}
+	}
+}

@@ -1,6 +1,7 @@
-var core = require('../core');
+import Module from './core.module';
+import I18nUtils from '../utils/i18n';
+
 var dao = require('../dao');
-var I18n = require('../utils/i18n');
 var NProgress = require('nprogress');
 var $ = require('jquery');
 const messages = {
@@ -10,66 +11,63 @@ const messages = {
 
 const DEFAULT_LOCALE = 'en';
 
-core.register(
-  'I18n',
-  function(sandbox) {
-    var module = {};
-
-    module.init = function() {
-      sandbox.listen(
-        ['i18n-started'],
-        module.i18n,
-        module
-      );
-      dao.listen(
-        ['config-changed'],
-        'language',
-        module.handleLanguageChanged
-      );
-
-      if (typeof(chrome) === 'undefined' || typeof(chrome.i18n) === 'undefined') {
-        module.loadMessages(DEFAULT_LOCALE);
-      } else {
-        module.i18n();
-      }
-      if(module)return 1;
-    };
-
-    module.i18n = function() {
-      document.querySelectorAll("*[i18n-key]").forEach(el => {
-        el.innerHTML = I18n.translate(el.getAttribute('i18n-key'));
-      });
-      document.querySelectorAll('*[i18n-title]').forEach(el => {
-        el.setAttribute('title', I18n.translate(el.getAttribute('i18n-title')));
-      });
-      document.querySelectorAll('*[i18n-format]').forEach(el => {
-        el.setAttribute('format', I18n.translate(el.getAttribute('i18n-format')));
-      });
-      $('select').material_select();
-
-      NProgress.done();
-    };
-
-    module.handleLanguageChanged = function(value) {
-      module.loadMessages(value);
-    };
-
-    module.loadMessages = function(locale) {
-      console.debug('loadMessages(locale=%s)', locale);
-      if (I18n.language === locale) {
-        return;
-      }
-      NProgress.start();
-      if (!messages.hasOwnProperty(locale)) {
-        locale = DEFAULT_LOCALE;
-      }
-      I18n.messages = messages[locale];
-      I18n.language = locale;
-      sandbox.notify({
-        type: 'i18n-started'
-      });
-    };
-
-    return module;
+export default class I18n extends Module {
+  static get id() {
+    return 'I18n';
   }
-);
+
+  constructor(sandbox) {
+    super(I18n.id, sandbox);
+  }
+
+  init() {
+    this.listen(['i18n-started'], this.i18n);
+    dao.subscribe(
+      ['config-changed'],
+      'language',
+      this.handleLanguageChanged,
+      this
+    );
+
+    if (typeof(chrome) === 'undefined' || typeof(chrome.i18n) === 'undefined') {
+      this.loadMessages(DEFAULT_LOCALE);
+    } else {
+      this.i18n();
+    }
+  }
+
+  i18n() {
+    document.querySelectorAll("*[i18n-key]").forEach(el => {
+      el.innerHTML = I18nUtils.translate(el.getAttribute('i18n-key'));
+    });
+    document.querySelectorAll('*[i18n-title]').forEach(el => {
+      el.setAttribute('title', I18nUtils.translate(el.getAttribute('i18n-title')));
+    });
+    document.querySelectorAll('*[i18n-format]').forEach(el => {
+      el.setAttribute('format', I18nUtils.translate(el.getAttribute('i18n-format')));
+    });
+    $('select').material_select();
+
+    NProgress.done();
+  }
+
+  handleLanguageChanged(value) {
+    this.loadMessages(value);
+  }
+
+  loadMessages(locale) {
+    console.debug('loadMessages(locale=%s)', locale);
+    if (I18nUtils.language === locale) {
+      return;
+    }
+    NProgress.start();
+    if (!messages.hasOwnProperty(locale)) {
+      locale = DEFAULT_LOCALE;
+    }
+    I18nUtils.messages = messages[locale];
+    I18nUtils.language = locale;
+    this.notify({
+      type: 'i18n-started'
+    });
+  }
+}
