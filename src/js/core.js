@@ -1,6 +1,6 @@
 import Sandbox from './sandbox';
+import routes from './utils/routes';
 import * as dao from './dao';
-import { encodeKey, decodeKey } from'./utils/misc';
 import I18nUtils from './utils/i18n';
 import * as NProgress from 'nprogress';
 
@@ -117,16 +117,13 @@ class Core {
 	};
 
 	goToPage(path) {
-		var parts = path.split('/');
-		if(parts.length > 1) {
-			var puzzle = decodeKey(parts[0]);
-			if(puzzle.length > 0 && this.activePuzzle() != puzzle) {
-				this.activePuzzle(puzzle);
-				return this.goToPage(path);
-			}
+		const route = routes.decode(path);
+		if(route.puzzle && this.activePuzzle() !== route.puzzle) {
+			this.activePuzzle(route.puzzle);
+			return this.goToPage(path);
 		}
 
-		var page_ = parts.reverse()[0];
+		var page_ = route.page;
 		var element = $('.page.page-' + page_);
 		if(element.length < 1) {
 			return;

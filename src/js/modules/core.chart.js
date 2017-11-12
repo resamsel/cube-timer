@@ -10,12 +10,12 @@ import {
   movingAverage,
   movingMinimum
 } from '../utils/stats';
+import Chartist from 'chartist';
+import 'chartist-plugin-legend';
 import I18nUtils from '../utils/i18n';
 import '../../css/core.chart.css';
 
 var dao = require('../dao');
-var Chartist = require('chartist');
-import 'chartist-plugin-legend';
 
 export default class Chart extends Module {
   static get id() {

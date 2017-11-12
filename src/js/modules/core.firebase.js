@@ -341,11 +341,11 @@ export default class Firebase extends Module {
   };
 
   subscribe(types, key, callback, context) {
-    console.log(
-      'subscribe(types=%s, key=%s, callback, context)',
-      types.join('/'), key, callback
-    );
-    console.log('subscribe: listeners.length=%d', this.listeners.length);
+    // console.log(
+    //   'subscribe(types=%s, key=%s, callback, context)',
+    //   types.join('/'), key, callback
+    // );
+    // console.log('subscribe: listeners.length=%d', this.listeners.length);
     var existing = this.listeners.filter(function(listener) {
       return listener.callback === callback && listener.key === key;
     });
@@ -411,8 +411,8 @@ export default class Firebase extends Module {
   }
 
   unsubscribe(types, callback) {
-    console.log('unsubscribe(types=%s, callback)', types.join('/'));
-    console.log('unsubscribe: listeners.length=%d', this.listeners.length);
+    // console.log('unsubscribe(types=%s, callback)', types.join('/'));
+    // console.log('unsubscribe: listeners.length=%d', this.listeners.length);
     var callbacks = this.listeners.filter(function(listener) {
       return listener.callback === callback;
     });

@@ -1,5 +1,5 @@
 import Module from './core.module';
-import { encodeKey } from '../utils/misc';
+import routes from '../utils/routes';
 
 export default class HashChange extends Module {
 	static get id() {
@@ -18,7 +18,7 @@ export default class HashChange extends Module {
 		if(!window.location.hash.startsWith('#!')) {
 			var puzzle = this.sandbox.activePuzzle();
 			var page = this.sandbox.activePage();
-			window.location.hash = '#!' + encodeKey(puzzle) + '/' + page;
+			window.location.hash = routes.encode(puzzle, page);
 		}
 	}
 

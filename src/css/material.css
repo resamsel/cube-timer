@@ -42,16 +42,16 @@ select.form-control {
 }
 
 .collection .collection-item.active {
-  background-color: #2196f3;
+  background-color: #1976D2;
 }
 
 .collection .collection-item.avatar i.circle {
-  background-color: #2196f3;
+  background-color: #1976D2;
 }
 
 .collection .collection-item.active.avatar i.circle {
   background-color: #fff;
-  color: #2196f3;
+  color: #1976D2;
 }
 
 .btn-hover {
@@ -73,5 +73,5 @@ select.form-control {
 }
 
 .dropdown-content li>a, .dropdown-content li>span {
-  color: #2196f3;
+  color: #1976D2;
 }

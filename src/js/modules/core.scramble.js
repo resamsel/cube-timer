@@ -1,6 +1,7 @@
 import Module from './core.module';
-
 import I18nUtils from '../utils/i18n';
+import * as dao from '../dao';
+
 var Cube = require('../external/rubiks-cube-scrambler');
 var $ = require('jquery');
 
@@ -26,8 +27,8 @@ export default class Scramble extends Module {
 
   init() {
     this.listen(['puzzle-changed'], this.handlePuzzleChanged);
-    this.listen(['result-created'], this.handleResultCreated);
     this.listen(['i18n-started'], this.handleI18nStarted);
+    dao.subscribe(['score-added'], null, this.handleResultCreated, this);
 
     Cube['3x3x3'].reset();
 
@@ -43,8 +44,9 @@ export default class Scramble extends Module {
   }
 
   scramble(puzzle) {
-    if (Object.keys(scrambles).indexOf(puzzle) > -1) {
-      var scramble = scrambles[puzzle];
+    const options = Object.keys(scrambles).filter(scramble => puzzle.indexOf(scramble) !== -1);
+    if (options.length > 0) {
+      var scramble = scrambles[options[0]];
       var i,
         scrambled = scramble.cube.scramble(),
         len = Math.min(scramble.len, scrambled.length),

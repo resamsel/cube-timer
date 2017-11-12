@@ -2,63 +2,67 @@
 
 var defaultDAO = {
   get: function(key, callback, context) {
-    if (callback) {
-			callback.apply(context, null);
-    }
+    return new Promise(function(resolve, reject) {
+      resolve(null);
+    });
   },
   set: function(key, value, callback, context) {
-    if (callback) {
-			callback.apply(context, []);
-    }
+    return new Promise(function(resolve, reject) {
+      resolve(value);
+    });
   },
   remove: function(key, callback, context) {
-    if (callback) {
-			callback.apply(context, []);
-    }
+    return new Promise(function(resolve, reject) {
+      resolve();
+    });
   }
 };
 var localDAO = {
-  get: function(key, callback, context) {
-    var value = localStorage.getItem(key);
-    if (typeof(value) !== 'undefined') {
-      value = JSON.parse(value);
-    }
-    if (callback) {
-			callback.apply(context, [value]);
-    }
+  get: function(key) {
+    return new Promise(function(resolve, reject) {
+      var value = localStorage.getItem(key);
+      if (typeof(value) !== 'undefined') {
+        value = JSON.parse(value);
+      }
+      resolve(value);
+    });
   },
-  set: function(key, value, callback, context) {
-    localStorage.setItem(key, JSON.stringify(value));
-    if (callback) {
-			callback.apply(context, []);
-    }
+  set: function(key, value) {
+    return new Promise(function(resolve, reject) {
+      localStorage.setItem(key, JSON.stringify(value));
+      resolve(value);
+    });
   },
-  remove: function(key, callback, context) {
-    localStorage.removeItem(key);
-    if (callback) {
-			callback.apply(context, []);
-    }
+  remove: function(key) {
+    return new Promise(function(resolve, reject) {
+      localStorage.removeItem(key);
+      resolve();
+    });
   }
 };
 var chromeDAO = {
-  get: function(key, callback, context) {
-    chrome.storage.local.get(key, function(v) {
-      var value = v[key];
-      if (typeof(value) !== 'undefined') {
-        value = JSON.parse(v[key]);
-      }
-      if (callback) {
-        callback.apply(context, [value]);
-      }
+  get: function(key) {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(key, function(v) {
+        var value = v[key];
+        if (typeof(value) !== 'undefined') {
+          value = JSON.parse(v[key]);
+        }
+        resolve(value);
+      });
     });
   },
-  set: function(key, value, callback) {
-    var obj = {};
-    obj[key] = JSON.stringify(value);
-    chrome.storage.local.set(obj, callback);
+  set: function(key, value) {
+    return new Promise((resolve, reject) => {
+      var obj = {};
+      obj[key] = JSON.stringify(value);
+      chrome.storage.local.set(obj, resolve);
+    })
   },
-  remove: function(key, callback) {
-    chrome.storage.local.remove(key, callback);
+  remove: function(key) {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.remove(key, resolve);
+    });
   }
 };
 var dao = {
@@ -78,13 +82,25 @@ if (typeof(Storage) !== 'undefined' && typeof(localStorage) !== 'undefined') {
 }
 
 dao.get = function(key, callback, context) {
-  dao.localstore.get(key, callback, context);
+  return dao.localstore.get(key).then(value => {
+    if (callback) {
+      callback.apply(context, [value]);
+    }
+  });
 }
 dao.set = function(key, value, callback, context) {
-  dao.localstore.set(key, value, callback, context);
+  return dao.localstore.set(key, value).then(value => {
+    if (callback) {
+      callback.apply(context, [value]);
+    }
+  });
 }
 dao.remove = function(key, callback, context) {
-  dao.localstore.remove(key, callback, context);
+  return dao.localstore.remove(key).then(value => {
+    if (callback) {
+      callback.apply(context, [value]);
+    }
+  });
 }
 
 dao.defaultCallback = function(key, defaultValue, callback, context) {
@@ -93,7 +109,7 @@ dao.defaultCallback = function(key, defaultValue, callback, context) {
       value = defaultValue;
     }
     if (callback) {
-			callback.apply(context, [value]);
+      callback.apply(context, [value]);
     }
   };
 };
@@ -121,26 +137,26 @@ dao.subscribe = function(types, key, callback, context) {
 
       // Notify of existing puzzles
       if (type == 'puzzle-added') {
-        dao.get('puzzles', function(puzzles) {
+        dao.get('puzzles').then(puzzles => {
           puzzles.forEach(puzzle => {
-						callback.apply(context, [puzzle]);
-					});
+            callback.apply(context, [puzzle]);
+          });
         });
       }
 
       // Notify of existing results
       if (type == 'score-added') {
-        dao.get('scores-' + key, function(scores) {
+        dao.get('scores-' + key).then(scores => {
           if (scores) {
             scores.forEach(score => {
-							callback.apply(context, [score]);
-						});
+              callback.apply(context, [score]);
+            });
           }
         });
       }
 
       if (type == 'config-changed') {
-        dao.get(key, callback, context);
+        dao.get(key).then(callback.bind(context));
       }
     });
   }
@@ -177,85 +193,77 @@ dao.retrieveScores = function(puzzle, callback) {
   if (dao.datasource) {
     dao.datasource.retrieveScores(puzzle, callback);
   } else {
-    dao.get('scores-' + puzzle, callback);
+    dao.get('scores-' + puzzle).then(callback);
   }
 };
 
 dao.storeScore = function(puzzle, score, callback) {
   if (dao.datasource) {
-    dao.datasource.storeScore(puzzle, score, callback);
+    return dao.datasource.storeScore(puzzle, score, callback);
   } else {
     score.puzzle = puzzle;
-    dao.get('scores-' + puzzle, function(scores) {
-      if (!scores) {
-        scores = [];
-      }
-      scores.push(score);
-      // Fix data
-      scores.forEach(function(score) {
-        if (score.id) {
-          score.timestamp = score.id;
-          delete score['id'];
+    return new Promise(function(resolve, reject) {
+      dao.get('scores-' + puzzle).then(scores => {
+        if (!scores) {
+          scores = [];
         }
-      });
-      scores = scores.unique(function(a, b) {
-        return a.timestamp == b.timestamp;
-      });
-      dao.set(
-        'scores-' + puzzle,
-        scores,
-        v => {
-          if (callback) {
-            callback();
+        scores.push(score);
+        // Fix data
+        scores.forEach(function(score) {
+          if (score.id) {
+            score.timestamp = score.id;
+            delete score['id'];
           }
-          dao.notify('score-added', score);
         });
+        scores = scores.unique(function(a, b) {
+          return a.timestamp == b.timestamp;
+        });
+        dao.set('scores-' + puzzle, scores).then(resolve);
+      });
+    }).then(v => {
+      if (callback) {
+        callback(v);
+      }
+      dao.notify('score-added', score);
     });
   }
 };
 
 dao.removeScore = function(puzzle, score, callback) {
   if (dao.datasource) {
-    dao.datasource.removeScore(puzzle, score, callback);
+    return dao.datasource.removeScore(puzzle, score, callback);
   } else {
-    dao.get('scores-' + puzzle, function(scores) {
-      scores = scores.filter(function(s) {
-        return s.timestamp != score.timestamp;
+    return new Promise(function(resolve, reject) {
+      dao.get('scores-' + puzzle).then(scores => {
+        scores = scores.filter(function(s) {
+          return s.timestamp != score.timestamp;
+        });
+        dao.set('scores-' + puzzle, scores).then(resolve);
       });
-      dao.set(
-        'scores-' + puzzle,
-        scores,
-        v => {
-          if (callback) {
-            callback();
-          }
-          dao.notify('score-removed', score);
-        }
-      );
+    }).then(callback).then(() => {
+      dao.notify('score-removed', score);
     });
   }
 };
 
 dao.resetScores = function(puzzle, callback) {
   if (dao.datasource) {
-    dao.datasource.resetScores(puzzle, callback);
+    return dao.datasource.resetScores(puzzle, callback);
   } else {
-    dao.get('scores-' + puzzle, function(scores) {
-      dao.set('scores-' + puzzle, [], function() {
-        scores.forEach(function(score) {
-          dao.notify('score-removed', score);
+    return new Promise(function(resolve, reject) {
+      dao.get('scores-' + puzzle).then(scores => {
+        dao.set('scores-' + puzzle, []).then(() => {
+          scores.forEach(function(score) {
+            dao.notify('score-removed', score);
+          });
         });
-        if (callback) {
-          callback();
-        }
-      })
-    });
+      });
+    }).then(callback);
   }
 }
 
 dao.retrievePuzzles = function(callback, context) {
-  dao.get(
-    'puzzles',
+  dao.get('puzzles').then(
     dao.defaultCallback('puzzles', ['3x3x3'], callback, context)
   );
 };
@@ -269,7 +277,7 @@ dao.storePuzzle = function(puzzle) {
         puzzles.push({
           name: puzzle
         });
-        dao.set('puzzles', puzzles, function() {
+        dao.set('puzzles', puzzles).then(() => {
           dao.notify('puzzle-added', puzzle);
         });
       }
@@ -286,7 +294,7 @@ dao.removePuzzle = function(puzzle) {
         puzzles = puzzles.filter(function(p) {
           return p.name !== puzzle;
         });
-        dao.set('puzzles', puzzles, function() {
+        dao.set('puzzles', puzzles).then(() => {
           dao.notify('puzzle-removed', {
             name: puzzle
           });
@@ -300,9 +308,7 @@ dao.storeConfig = function(key, value, callback) {
   if (dao.datasource) {
     dao.datasource.storeConfig(key, value, callback);
   } else {
-    return new Promise((resolve, reject) => {
-      dao.set(key, value, resolve);
-    }).then(() => {
+    return dao.set(key, value).then(() => {
       if (callback) {
         callback();
       }

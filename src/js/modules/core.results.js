@@ -1,6 +1,6 @@
 import Module from './core.module';
+import routes from '../utils/routes';
 import {
-  encodeKey,
   sortScores,
   defaultFormatMilliseconds,
   hourMinuteFormatMilliseconds,
@@ -9,7 +9,8 @@ import {
   toGroupedDate,
   updateWithTime,
   scoreValue,
-  scoreKey
+  scoreKey,
+  daysBetween
 } from '../utils/misc';
 import {
   movingAverage,
@@ -42,6 +43,7 @@ export default class Results extends Module {
     this.$scoresContent = null;
     this.$scoreTemplate = null;
     this.$noResults = null;
+    this.timelineContainer = null;
     this.$timeline = null;
   }
 
@@ -52,6 +54,7 @@ export default class Results extends Module {
     this.$scoresContent = $('#results-content .times-content');
     this.$scoreTemplate = $('#results-content .template.result-container');
     this.$noResults = $('.page-results .empty');
+    this.timelineContainer = document.querySelector('.card-timeline');
     this.$timeline = document.getElementById('ct-timeline');
 
     const self = this;
@@ -65,8 +68,8 @@ export default class Results extends Module {
     this.subscribe();
 
     this.$resultsButton
-      .css('display', 'block')
-      .attr('href', '#!' + encodeKey(this.sandbox.activePuzzle()) + '/results');
+      .attr('href', routes.encode(this.sandbox.activePuzzle(), 'results'))
+      .show();
     this.$noResults.hide();
   }
 
@@ -99,6 +102,7 @@ export default class Results extends Module {
   handlePageChanged(event) {
     if (event.data == 'results') {
       this.$resultsButton.parent().addClass('active');
+      this.updateChart(this.sandbox.createStats(this.results));
     } else {
       this.$resultsButton.parent().removeClass('active');
     }
@@ -110,7 +114,7 @@ export default class Results extends Module {
 
     this.$resultsButton.attr(
       'href',
-      '#!' + encodeKey(event.data) + '/results'
+      routes.encode(event.data, 'results')
     );
 
     this.results = [];
@@ -215,6 +219,7 @@ export default class Results extends Module {
   cleanResults() {
     $('#results-content .times-content > *').remove();
     this.$noResults.hide();
+    this.$contents.hide();
   }
 
   @Debounce(250)
@@ -246,7 +251,7 @@ export default class Results extends Module {
       );
     });
     this.update();
-    this.$contents.fadeIn();
+    this.$contents.show();
   }
 
   @Debounce(250)
@@ -332,9 +337,17 @@ export default class Results extends Module {
 
     this.detachChart(this.$timeline);
 
-    this.$timeline.dataset.chartist = this.createTimeline(stats);
+    if (this.results.length > 0) {
+      this.timelineContainer.show();
+      const element = this.$timeline;
+      element.fadeIn().then(() => {
+        element.dataset.chartist = this.createTimeline(stats);
+      });
 
-    this.repaint = false;
+      this.repaint = false;
+    } else {
+      this.timelineContainer.hide();
+    }
   }
 
   detachChart(container) {
@@ -350,24 +363,35 @@ export default class Results extends Module {
   }
 
   createTimeline(statistics) {
-    const d = _.groupBy(statistics.scores, score => new Date(score.timestamp).setHours(0,0,0,0));
-    const data = Object.keys(d).map(key => { return {x: new Date(parseInt(key)), y: d[key].length}; });
-    console.log('data', data);
+    const d = _.groupBy(statistics.scores, score => new Date(score.timestamp).setHours(0, 0, 0, 0));
+    const dates = Object.keys(d).map(key => new Date(parseInt(key)));
+    const labels = dates.length > 0 ? daysBetween(dates[0], dates[dates.length - 1]) : [];
+    const series = labels.map(date => (date.getTime() in d) ? d[date.getTime()].length : 0);
+    console.log('labels', labels);
+    console.log('series', series);
 
-    //    return new Chartist.Line('#ct-timeline', data, options);
-    return new Chartist.Line('#ct-timeline', {
-      series: [{
-          name: 'series-1',
-          data
-        }
-      ]
+    return new Chartist.Bar('#ct-timeline', {
+      labels,
+      series: [series]
     }, {
+      high: 10,
       axisX: {
-        type: Chartist.FixedScaleAxis,
+        // type: Chartist.FixedScaleAxis,
         divisor: 5,
-        labelInterpolationFnc: function(value) {
-          return moment(value).format('MMM D');
+        labelInterpolationFnc: function(value, index) {
+          const dist = Math.max(parseInt(labels.length / 5), 1);
+          return index % dist === 0 ? moment(value).format('MMM D Y') : null;
         }
+      },
+      axisY: {
+        onlyInteger: true
+      }
+    }).on('draw', function(data) {
+      const width = $('#ct-timeline').width() - 100;
+      if (data.type === 'bar') {
+        data.element.attr({
+          style: `stroke-width: ${Math.max(Math.min(width/labels.length, 10), 1)}px`
+        });
       }
     });
   }

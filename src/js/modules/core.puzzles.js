@@ -1,4 +1,5 @@
 import Module from './core.module';
+import routes from '../utils/routes';
 import {
   encodeKey,
   encodeClass,
@@ -48,7 +49,7 @@ export default class Puzzles extends Module {
 
     this.puzzlesButton
       .css('display', 'block')
-      .attr('href', '#!' + encodeKey(this.sandbox.activePuzzle()) + '/puzzles');
+      .attr('href', routes.encode(this.sandbox.activePuzzle(), 'puzzles'));
 
     $('#create-puzzle-button').click(this.handleCreatePuzzle.bind(this));
 
@@ -62,7 +63,7 @@ export default class Puzzles extends Module {
     $('.puzzle-list .active').removeClass('active');
     $('.puzzle-list .puzzle-' + encodeClass(puzzle)).addClass('active');
     $('.active-puzzle .text').text(puzzle);
-    $('.active-puzzle').attr('href', '#!' + encodeKey(puzzle) + '/' + this.sandbox.activePage());
+    $('.active-puzzle').attr('href', routes.encode(puzzle, this.sandbox.activePage()));
 
     $('.puzzle-item.active').removeClass('active');
     $(document.getElementById('puzzle-' + encodeClass(puzzle))).addClass('active');
@@ -75,11 +76,11 @@ export default class Puzzles extends Module {
       this.puzzlesButton.parent().removeClass('active');
     }
 
-    $('.active-puzzle').attr('href', '#!' + encodeKey(this.sandbox.activePuzzle()) + '/' + event.data);
-    $('.puzzles-button').attr('href', '#!' + encodeKey(this.sandbox.activePuzzle()) + '/puzzles');
+    $('.active-puzzle').attr('href', routes.encode(this.sandbox.activePuzzle(), event.data));
+    $('.puzzles-button').attr('href', routes.encode(this.sandbox.activePuzzle(), 'puzzles'));
     $('.puzzle-list .puzzle:not(.puzzle-create) > a').each(function(index, el) {
       var $el = $(el);
-      $el.attr('href', '#!' + encodeKey($el.data('puzzle')) + '/' + event.data);
+      $el.attr('href', routes.encode($el.data('puzzle'), event.data));
     });
   }
 
@@ -177,19 +178,19 @@ export default class Puzzles extends Module {
     }
     row
       .find('.select')
-      .attr('href', '#!' + encodeKey(puzzle.name) + '/puzzles');
+      .attr('href', routes.encode(puzzle.name, 'puzzles'));
     row
       .find('.delete')
       .data('puzzle', puzzle.name)
       .on('click', function(event) {
         var puzzle = $(this).data('puzzle');
         $('#delete-puzzle-ok')
-          .attr('href', '#!' + encodeKey(self.sandbox.activePuzzle()) + '/puzzles')
+          .attr('href', routes.encode(self.sandbox.activePuzzle(), 'puzzles'))
           .on('click', function() {
             dao.removePuzzle(puzzle);
           });
         $('#delete-puzzle-cancel')
-          .attr('href', '#!' + encodeKey(self.sandbox.activePuzzle()) + '/puzzles')
+          .attr('href', routes.encode(self.sandbox.activePuzzle(), 'puzzles'))
           .on('click', function() {
             $('#delete-puzzle-ok').off('click');
           });
@@ -219,7 +220,7 @@ export default class Puzzles extends Module {
       // 2. Update clone
       clone.removeClass('template').addClass('puzzle-' + encodeClass(puzzle.name));
       var $a = clone.find('a')
-        .attr('href', '#!' + encodeKey(puzzle.name) + '/' + self.sandbox.activePage())
+        .attr('href', routes.encode(puzzle.name, self.sandbox.activePage()))
         .data('puzzle', puzzle.name);
       $a.find('span').text(puzzle.name);
 

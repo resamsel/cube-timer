@@ -1,7 +1,5 @@
 import Module from './core.module';
-import {
-  encodeKey
-} from '../utils/misc';
+import routes from '../utils/routes';
 
 var misc = require('../utils/misc');
 var $ = require('jquery');
@@ -35,7 +33,7 @@ export default class Navbar extends Module {
   handlePageChanged(event) {
     $('#main-menu').attr(
       'href',
-      '#!' + encodeKey(this.sandbox.activePuzzle()) + '/' + event.data
+      routes.encode(this.sandbox.activePuzzle(), event.data)
     ).blur();
     if (document.activeElement.nodeName != 'BODY') {
       document.activeElement.blur();

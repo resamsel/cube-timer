@@ -42,7 +42,6 @@ export default class Config extends Module {
     const self = this;
 
     this.listen(['page-changed'], this.handlePageChanged);
-    // this.listen(['puzzle-changed'], this.handlePuzzleChanged);
 
     I18nUtils.languages.forEach(function(language) {
       self.$language.append($('<option value="' + language + '" i18n-key="language_' + language + '">' + language + '</option>'));
@@ -65,8 +64,6 @@ export default class Config extends Module {
       dao.storeConfig('windowSize', self.$windowSize.val());
     }, 250));
 
-    // this.handlePuzzleChanged();
-
     const configListeners = this.configListeners;
     Object.keys(configListeners).forEach(function(key) {
       var listener = configListeners[key];
@@ -85,29 +82,20 @@ export default class Config extends Module {
     }
   }
 
-  // handlePuzzleChanged(event) {
-  //   const self = this;
-  // 	const configListeners = this.configListeners;
-  //   Object.keys(configListeners).forEach(function(key) {
-  //     var listener = configListeners[key];
-  //     dao.unsubscribe(['config-changed'], listener);
-  //     dao.subscribe(['config-changed'], key, listener, self);
-  //   });
-  // }
-
   handleLanguageChanged(language) {
     console.debug('handleLanguageChanged');
     if (language === null) {
       language = 'en';
     }
-    this.$language.val(language);
+    this.$language.val(language).material_select();
   }
 
   handleInspectionTimeChanged(inspectionTime) {
+    console.debug('handleInspectionTimeChanged(%s)', JSON.stringify(inspectionTime));
     if (inspectionTime === null) {
       inspectionTime = 0;
     }
-    this.$inspectionTime.val(inspectionTime);
+    this.$inspectionTime.val(inspectionTime).material_select();
   }
 
   handleSubtextChanged(subtext) {

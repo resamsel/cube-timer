@@ -49,3 +49,8 @@ td.actions {
 #results-content button.btn-remove {
     margin: 0;
 }
+
+#ct-timeline .ct-series .ct-bar {
+  stroke-width: 32px;
+  stroke: #fff;
+}

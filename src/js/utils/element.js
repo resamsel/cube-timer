@@ -23,6 +23,14 @@ const FADE_FRAMES = FADE_DURATION / FADE_INTERVAL;
 
 Element.prototype.fadeOut = function() {
   const target = this;
+  if (target.style.opacity && target.style.opacity !== 1) {
+    console.debug('Not fading out %s because opacity was', target.getAttribute('class'), target.style.opacity);
+    return new Promise((resolve, reject) => {
+      target.hide();
+      setTimeout(resolve, FADE_DURATION);
+    });
+  }
+
   return new Promise((resolve, reject) => {
     const fadeEffect = setInterval(function() {
       if (!target.style.opacity) {
@@ -43,6 +51,14 @@ Element.prototype.fadeOut = function() {
 
 Element.prototype.fadeIn = function() {
   const target = this;
+  if (target.style.opacity && target.style.opacity !== 0) {
+    console.debug('Not fading in %s because opacity was', target.getAttribute('class'), target.style.opacity);
+    return new Promise((resolve, reject) => {
+      target.show();
+      setTimeout(resolve, FADE_DURATION);
+    });
+  }
+
   return new Promise((resolve, reject) => {
     const fadeEffect = setInterval(function() {
       if (!target.style.opacity) {

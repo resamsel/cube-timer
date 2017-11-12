@@ -20,15 +20,27 @@ Cube Timer uses [Webpack](https://webpack.js.org/) as build system, which must
 be installed using npm. Node.js packages the command npm, so it needs to be
 installed as well. On Mac you could use [Homebrew](https://brew.sh/) to do that.
 
+### macOS
+
 ```
 brew install nodejs
 npm install
 npm install -g webpack webpack-dev-server
 ```
 
-### Local Firebase Development
+### Debian based
+
 ```
-npm install -g firebase-tools
+sudo apt install nodejs npm # Debian based
+npm install
+sudo npm install -g webpack webpack-dev-server
+```
+
+### Local Firebase Development
+
+```
+# Skip sudo when installed with Homebrew
+sudo npm install -g firebase-tools
 firebase login
 firebase init
 ```

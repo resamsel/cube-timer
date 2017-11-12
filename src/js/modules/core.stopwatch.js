@@ -1,4 +1,5 @@
 import Module from './core.module';
+import routes from '../utils/routes';
 
 var dao = require('../dao');
 var misc = require('../utils/misc');
@@ -50,22 +51,25 @@ export default class Stopwatch extends Module {
     $('button.start-stop').on('click', this.toggleTimer.bind(this));
     $('.card-timer').css('display', 'block');
     $('.timer-button')
-      .attr('href', '#!' + misc.encodeKey(this.sandbox.activePuzzle()) + '/timer');
+      .attr('href', routes.encode(this.sandbox.activePuzzle(), 'timer'));
 
     // pre-load sound
     this.timerSound = new Audio(timerSound);
     this.startSound = new Audio(startSound);
     this.timerSound.load();
     this.startSound.load();
+
+    this.resetTimer();
   }
 
   /*
    * Handlers
    */
   handlePuzzleChanged(event) {
-    var puzzle = event.data;
+    const puzzle = event.data;
     $('.card-timer .card-title > span').text(puzzle);
-    $('.timer-button').attr('href', '#!' + misc.encodeKey(puzzle) + '/timer');
+    $('.timer-button').attr('href', routes.encode(puzzle, 'timer'));
+    this.resetTimer();
   }
 
   handlePageChanged(event) {
@@ -81,6 +85,7 @@ export default class Stopwatch extends Module {
   }
 
   handleInspectionTimeChanged(value) {
+    console.debug('handleInspectionTimeChanged(%s)', JSON.stringify(value));
     this.inspectionTime = value;
   }
 
@@ -131,6 +136,10 @@ export default class Stopwatch extends Module {
         }
       );
     }
+    this.resetTimer();
+  }
+
+  resetTimer() {
     this.$body.removeClass('started').addClass('stopped');
   }
 
