@@ -34,13 +34,13 @@ export default class Stopwatch extends Module {
     this.listen(['puzzle-changed'], this.handlePuzzleChanged);
     this.listen(['page-changed'], this.handlePageChanged);
     dao.subscribe(
-      ['config-changed'],
+      'config-changed',
       'inspectionTime',
       this.handleInspectionTimeChanged,
       this
     );
     dao.subscribe(
-      ['config-changed'],
+      'config-changed',
       'soundAfterInspection',
       this.handleSoundAfterInspectionChanged,
       this

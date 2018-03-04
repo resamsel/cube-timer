@@ -1,6 +1,6 @@
 import Sandbox from './sandbox';
 import routes from './utils/routes';
-import * as dao from './dao';
+import dao from './dao';
 import I18nUtils from './utils/i18n';
 import * as NProgress from 'nprogress';
 
@@ -11,9 +11,10 @@ class Core {
 		this.handlers = {};
 		this.eventQueue = [];
 		this.started = false;
-		this.puzzle = '3x3x3';
+		this.puzzle = undefined;
 		this.page = 'timer';
 
+		this.activePuzzle('3x3x3');
 	}
 
 	register(id, creator) {
@@ -104,13 +105,15 @@ class Core {
 		}
 	}
 
-	activePuzzle(puzzle_) {
-		if(typeof puzzle_ !== 'undefined' && puzzle_ !== this.puzzle) {
-			this.puzzle = puzzle_;
+	activePuzzle(puzzle) {
+		console.log('Core.activePuzzle(puzzle=%s)', puzzle);
+		if(typeof puzzle !== 'undefined' && puzzle !== this.puzzle) {
+			this.puzzle = puzzle;
 			this.notify({
 				type: 'puzzle-changed',
-				data: this.puzzle
+				data: puzzle
 			});
+			dao.puzzle = puzzle;
 		}
 
 		return this.puzzle;

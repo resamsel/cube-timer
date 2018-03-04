@@ -67,8 +67,8 @@ export default class Config extends Module {
     const configListeners = this.configListeners;
     Object.keys(configListeners).forEach(function(key) {
       var listener = configListeners[key];
-      dao.unsubscribe(['config-changed'], listener);
-      dao.subscribe(['config-changed'], key, listener, self);
+      dao.unsubscribe('config-changed', listener);
+      dao.subscribe('config-changed', key, listener, self);
     });
 
     this.configButton.css('display', 'block');

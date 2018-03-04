@@ -18,7 +18,7 @@ export default class Discovery extends Module {
     this.$hintSpacebar.hide();
 
     dao.subscribe(
-      ['config-changed'],
+      'config-changed',
       'hintVisible',
       this.handleHintVisibleChanged,
 			this

@@ -74,25 +74,25 @@ export default class Results extends Module {
   }
 
   subscribe() {
-    dao.unsubscribe(['score-added'], this.handleScoreAdded);
-    dao.unsubscribe(['score-removed'], this.handleScoreRemoved);
-    dao.unsubscribe(['config-changed'], this.handleSubtextChanged);
+    dao.unsubscribe('score-added', this.handleScoreAdded);
+    dao.unsubscribe('score-removed', this.handleScoreRemoved);
+    dao.unsubscribe('config-changed', this.handleSubtextChanged);
 
     var puzzle = this.sandbox.activePuzzle();
     dao.subscribe(
-      ['score-added'],
+      'score-added',
       puzzle,
       this.handleScoreAdded,
       this
     );
     dao.subscribe(
-      ['score-removed'],
+      'score-removed',
       puzzle,
       this.handleScoreRemoved,
       this
     );
     dao.subscribe(
-      ['config-changed'],
+      'config-changed',
       'subtext',
       this.handleSubtextChanged,
       this

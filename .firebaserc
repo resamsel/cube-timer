@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "resamsel-cube-timer",
-    "staging": "resamsel-cube-timer"
+    "prod": "resamsel-cube-timer",
+    "dev": "resamsel-cube-timer-dev"
   }
 }

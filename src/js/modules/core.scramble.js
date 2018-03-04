@@ -1,6 +1,6 @@
 import Module from './core.module';
 import I18nUtils from '../utils/i18n';
-import * as dao from '../dao';
+import dao from '../dao';
 
 var Cube = require('../external/rubiks-cube-scrambler');
 var $ = require('jquery');
@@ -28,7 +28,7 @@ export default class Scramble extends Module {
   init() {
     this.listen(['puzzle-changed'], this.handlePuzzleChanged);
     this.listen(['i18n-started'], this.handleI18nStarted);
-    dao.subscribe(['score-added'], null, this.handleResultCreated, this);
+    dao.subscribe('score-added', null, this.handleResultCreated, this);
 
     Cube['3x3x3'].reset();
 

@@ -28,17 +28,17 @@ export default class Achievement extends Module {
     this.results = [];
     this.consumeNext = false;
 
-    dao.unsubscribe(['score-added'], this.handleScoreAdded);
-    dao.unsubscribe(['score-removed'], this.handleScoreRemoved);
+    dao.unsubscribe('score-added', this.handleScoreAdded);
+    dao.unsubscribe('score-removed', this.handleScoreRemoved);
 
     dao.subscribe(
-      ['score-added'],
+      'score-added',
       this.sandbox.activePuzzle(),
       this.handleScoreAdded,
       this
     );
     dao.subscribe(
-      ['score-removed'],
+      'score-removed',
       this.sandbox.activePuzzle(),
       this.handleScoreRemoved,
       this

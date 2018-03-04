@@ -1,5 +1,5 @@
 import Module from './core.module';
-import * as dao from '../dao';
+import dao from '../dao';
 import {
   toCsv
 } from '../utils/misc';

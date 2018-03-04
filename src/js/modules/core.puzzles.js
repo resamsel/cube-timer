@@ -38,10 +38,10 @@ export default class Puzzles extends Module {
     this.listen(['puzzle-changed'], this.handlePuzzleSwitched);
     this.listen(['page-changed'], this.handlePageChanged);
 
-    dao.subscribe(['puzzle-added'], null, this.handlePuzzleAdded, this);
-    dao.subscribe(['puzzle-removed'], null, this.handlePuzzleRemoved, this);
+    dao.subscribe('puzzle-added', null, this.handlePuzzleAdded, this);
+    dao.subscribe('puzzle-removed', null, this.handlePuzzleRemoved, this);
     dao.subscribe(
-      ['config-changed'],
+      'config-changed',
       'language',
       this.handleLanguageChanged,
       this
@@ -95,7 +95,7 @@ export default class Puzzles extends Module {
     this.populatePuzzles();
 
     dao.subscribe(
-      ['puzzle-changed'],
+      'puzzle-changed',
       encodeKey(puzzle.name),
       this.handlePuzzleChanged,
 			this

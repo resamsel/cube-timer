@@ -23,7 +23,7 @@ export default class I18n extends Module {
   init() {
     this.listen(['i18n-started'], this.i18n);
     dao.subscribe(
-      ['config-changed'],
+      'config-changed',
       'language',
       this.handleLanguageChanged,
       this

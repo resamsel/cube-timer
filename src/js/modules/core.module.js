@@ -7,6 +7,7 @@ export default class Module {
     this.sandbox.listen(types, handler.bind(this), this);
   }
   notify(event) {
+    console.debug('%s.notify(%s)', this.id, JSON.stringify(event));
     this.sandbox.notify(event);
   }
 }

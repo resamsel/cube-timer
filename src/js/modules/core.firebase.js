@@ -89,7 +89,7 @@ export default class Firebase extends Module {
   }
 
   handleAuthStateChanged(user) {
-    super.notify({
+    this.notify({
       type: 'datasource-changed'
     });
     // NProgress.done();
@@ -98,7 +98,7 @@ export default class Firebase extends Module {
   handleDatasourceChanged() {
     const user = firebase.auth().currentUser;
     if (user) {
-      dao.datasource = this;
+      dao.registerDatasource(this);
       const now = new Date();
 
       firebase.firestore().doc(Keys.userInfo(user)).set({
@@ -114,15 +114,8 @@ export default class Firebase extends Module {
       $('.auth-google-email').text(user.email);
 
       this.migrateData();
-
-      const self = this;
-      Object.keys(dao.listeners).forEach(function(type) {
-        dao.listeners[type].forEach(function(listener) {
-          dao.subscribe([type], listener.key, listener.callback, listener.context);
-        });
-      });
     } else {
-      dao.datasource = undefined;
+      dao.unregisterDatasource(this);
 
       this.$body.removeClass('auth-ok');
     }
@@ -340,7 +333,7 @@ export default class Firebase extends Module {
     return remove.unsubscribe;
   };
 
-  subscribe(types, key, callback, context) {
+  subscribe(type, key, callback, context) {
     // console.log(
     //   'subscribe(types=%s, key=%s, callback, context)',
     //   types.join('/'), key, callback
@@ -357,52 +350,50 @@ export default class Firebase extends Module {
     const db = firebase.firestore();
     const user = firebase.auth().currentUser;
     let unsubscribe;
-    types.forEach(function(type) {
-      if (type == 'puzzle-added') {
-        unsubscribe = self.listenChildAdded(
-          Keys.userPuzzles(user),
-          callback,
-          context
-        );
-      } else if (type == 'puzzle-removed') {
-        unsubscribe = self.listenChildRemoved(
-          Keys.userPuzzles(user),
-          callback,
-          context
-        );
-      } else if (type == 'puzzle-changed') {
-        unsubscribe = self.listenChanged(
-          Keys.userPuzzle(user, key),
-          callback,
-          context
-        );
-      } else if (type == 'score-added') {
-        unsubscribe = self.listenChildAdded(
-          Keys.userScores(user, key),
-          callback,
-          context
-        );
-      } else if (type == 'score-removed') {
-        unsubscribe = self.listenChildRemoved(
-          Keys.userScores(user, key),
-          callback,
-          context
-        );
-      } else if (type == 'config-changed') {
-        // FIXME: This is an expensive operation, as many listeners on the
-        // user exist. All those listeners make a separate read on the
-        // database, which drains the quota quickly...
-        unsubscribe = self.listenChanged(
-          Keys.userInfo(user),
-          function(value) {
-            return callback.apply(context, [value[key]]);
-          }
-        );
-      }
-    });
+    if (type == 'puzzle-added') {
+      unsubscribe = self.listenChildAdded(
+        Keys.userPuzzles(user),
+        callback,
+        context
+      );
+    } else if (type == 'puzzle-removed') {
+      unsubscribe = self.listenChildRemoved(
+        Keys.userPuzzles(user),
+        callback,
+        context
+      );
+    } else if (type == 'puzzle-changed') {
+      unsubscribe = self.listenChanged(
+        Keys.userPuzzle(user, key),
+        callback,
+        context
+      );
+    } else if (type == 'score-added') {
+      unsubscribe = self.listenChildAdded(
+        Keys.userScores(user, key),
+        callback,
+        context
+      );
+    } else if (type == 'score-removed') {
+      unsubscribe = self.listenChildRemoved(
+        Keys.userScores(user, key),
+        callback,
+        context
+      );
+    } else if (type == 'config-changed') {
+      // FIXME: This is an expensive operation, as many listeners on the
+      // user exist. All those listeners make a separate read on the
+      // database, which drains the quota quickly...
+      unsubscribe = self.listenChanged(
+        Keys.userInfo(user),
+        function(value) {
+          return callback.apply(context, [value[key]]);
+        }
+      );
+    }
 
     this.listeners.push({
-      types: types,
+      types: [type],
       key: key,
       callback: callback,
       context: context,
@@ -410,7 +401,7 @@ export default class Firebase extends Module {
     });
   }
 
-  unsubscribe(types, callback) {
+  unsubscribe(type, callback) {
     // console.log('unsubscribe(types=%s, callback)', types.join('/'));
     // console.log('unsubscribe: listeners.length=%d', this.listeners.length);
     var callbacks = this.listeners.filter(function(listener) {
@@ -429,13 +420,18 @@ export default class Firebase extends Module {
     });
   }
 
-  storePuzzle(puzzle) {
+  storePuzzle(puzzleName) {
+    console.log('storePuzzle', puzzleName);
+    if(!puzzleName) {
+      return;
+    }
+
     var user = firebase.auth().currentUser;
 
     firebase.firestore()
-      .doc('users/' + user.uid + '/puzzles/' + encodeKey(puzzle))
+      .doc('users/' + user.uid + '/puzzles/' + encodeKey(puzzleName))
       .set({
-        name: puzzle
+        name: puzzleName
       })
       .then(function(docRef) {
         console.debug("Document written with ID: ", docRef);
@@ -472,7 +468,7 @@ export default class Firebase extends Module {
       });
   }
 
-  storeScore(puzzle, score, callback) {
+  storeScore(puzzle, score) {
     const firestore = firebase.firestore();
     const user = firebase.auth().currentUser;
     const now = new Date();
@@ -576,16 +572,21 @@ export default class Firebase extends Module {
               if (score.id) {
                 score.timestamp = score.id;
               }
-              dao.storeScore(puzzle.name, score);
+              self.storeScore(puzzle.name, score);
             });
-            dao.set('scores-' + puzzle.name, [], self.notifyMigrated);
+            //dao.set('scores-' + puzzle.name, [], self.notifyMigrated);
+            dao.set(
+              `scores-${puzzle.name}-last-sent`,
+              new Date(),
+              self.notifyMigrated.bind(self)
+            );
           }
         });
-        dao.storePuzzle(puzzle.name);
+        self.storePuzzle(puzzle.name);
       });
-      dao.set('puzzles', []);
+      // dao.set('puzzles', []);
     });
-    this.configKeys.forEach(function(key) {
+    self.configKeys.forEach(function(key) {
       dao.get(key, function(value) {
         if (value !== null && typeof(value) !== 'undefined') {
           self.storeConfig(key, value);
